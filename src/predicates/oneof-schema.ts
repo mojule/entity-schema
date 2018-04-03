@@ -7,6 +7,6 @@ export interface IOneOfSchema extends IWsSchema{
 }
 
 export const isOneOfSchema = ( value ) : value is IOneOfSchema =>
-  isWsSchema( value ) &&
   is.array( value.oneOf ) &&
-  value.oneOf.every( isSubschema )
+  value.oneOf.every( isSubschema ) &&
+  isWsSchema( value )

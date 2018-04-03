@@ -2,11 +2,9 @@ import * as Mapper from '@mojule/mapper'
 import { ISchemaMap } from './schema-map'
 import { NormalizeSchema } from './normalize-schema'
 import { Schema } from 'mongoose'
-import { IPredicateMap } from '../types/predicate-map'
 import { JSONSchema4 } from 'json-schema'
-import { IMapperMapOf } from '../types/mapper-map'
 import * as validate from 'mongoose-validator'
-import { is } from '../utils/is'
+import { is } from '@mojule/is'
 import { IEntitySchema } from './predicates/entity-schema'
 import { IWsSchema } from './predicates/ws-schema';
 

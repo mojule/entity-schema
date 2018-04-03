@@ -21,6 +21,7 @@ export const isObjectSchemaProperties = ( value ) : value is IObjectSchemaProper
   )
 
 export const isObjectSchema = ( value ) : value is IObjectSchema =>
-  isAppSchema( value ) && value.type === 'object' &&
+  value.type === 'object' &&
   isObjectSchemaProperties( value.properties ) &&
-  value.additionalProperties === false
+  value.additionalProperties === false &&
+  isAppSchema( value )

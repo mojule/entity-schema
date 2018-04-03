@@ -1,0 +1,8 @@
+{
+  "id": "http://workingspec.com/schema/mongo-id",
+  "title": "Mongo ID",
+  "description": "Hex representation of Mongo Object Id.",
+  "type": "string",
+  "pattern": "^[0-9a-f]{24}$",
+  "message": "Mongo Id must be a 24 character hex string. (0-9, a-f)"
+}

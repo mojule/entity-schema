@@ -1,0 +1,44 @@
+{
+  "id": "http://workingspec.com/schema/manufacturer",
+  "title": "Manufacturer",
+  "description": "Building product manufacturer or supplier.",
+  "type": "object",
+  "format": "workingspec-entity",
+  "properties": {
+    "name": {
+      "$ref": "http://workingspec.com/schema/name"
+    },
+    "isActive": {
+      "$ref": "http://workingspec.com/schema/is-active"
+    },
+    "abbrev": {
+      "$ref": "http://workingspec.com/schema/abbreviation"
+    },
+    "brief": {
+      "$ref": "http://workingspec.com/schema/brief"
+    },
+    "description": {
+      "$ref": "http://workingspec.com/schema/description"
+    },
+    "logoUrl": {
+      "$ref": "http://workingspec.com/schema/logo-uri"
+    },
+    "websiteUrl": {
+      "$ref": "http://workingspec.com/schema/website-uri"
+    },
+    "domainName": {
+      "$ref": "http://workingspec.com/schema/domain"
+    },
+    "tags": {
+      "title": "Tags",
+      "type": "array",
+      "items": {
+        "$ref": "http://workingspec.com/schema/tag"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required":[
+    "name", "abbrev"
+  ]
+}

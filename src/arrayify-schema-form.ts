@@ -1,6 +1,6 @@
 import { IH } from '@mojule/h/types'
-import { strictSelect } from '../web/strict-select'
-import { ArrayifySymbol } from './schema-to-form';
+import { ArrayifySymbol } from './schema-to-form'
+import { strictSelect } from '@mojule/dom-utils'
 
 const arrayify = ( arrayEl: HTMLDivElement, h: IH ) => {
   const { button } = h
@@ -11,7 +11,7 @@ const arrayify = ( arrayEl: HTMLDivElement, h: IH ) => {
   const arrayFieldset = strictSelect( arrayEl, 'fieldset' )
   // we are using [] as a convention to name the item subschema of an array schema
   const arrayItemEl = strictSelect( arrayEl, `[data-array="${ path }"]` )
-  const arrayItemList = strictSelect( arrayEl, 'ol' )
+  const arrayItemList = <HTMLOListElement>strictSelect( arrayEl, 'ol' )
   const arrayItemWrapper = <HTMLLIElement>arrayItemEl.parentNode
 
   arrayItemList.removeChild( arrayItemWrapper )
@@ -38,10 +38,10 @@ const arrayify = ( arrayEl: HTMLDivElement, h: IH ) => {
     listSchemaItems.forEach( ( item, index ) => {
       item.setAttribute( 'data-path', `${ path }/${ index }` )
 
-      const labelEl = strictSelect( item, 'label' )
+      const labelEl = <HTMLLabelElement>strictSelect( item, 'label' )
       labelEl.setAttribute( 'for', `/${ path }/${ index }` )
 
-      const inputEl = strictSelect( item, 'input' )
+      const inputEl = <HTMLInputElement>strictSelect( item, 'input' )
       inputEl.setAttribute( 'id', `/${ path }/${ index }` )
     })
   }

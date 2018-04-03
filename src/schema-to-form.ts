@@ -3,8 +3,8 @@ import * as H from '@mojule/h'
 import { predicates } from './predicates'
 import { JSONSchema4 } from 'json-schema'
 import { upperFirst, startCase } from 'lodash'
-import { is } from '../utils/is';
-import { strictSelect } from '../web/strict-select';
+import { is } from '@mojule/is'
+import { strictSelect } from '@mojule/dom-utils'
 import { uploadablePropertyNames } from './uploadable-properties'
 import { IObjectSchema } from './predicates/object-schema'
 import { arrayifySchemaForm } from './arrayify-schema-form'
@@ -192,8 +192,7 @@ export const schemaToForm = ( document: HTMLDocument, schema: IObjectSchema ) =>
 
       if( schema.format === 'uri' && schema.wsUploadable ){
         const pathLabel = <HTMLLabelElement>strictSelect( inputWrapper, 'label' )
-        const pathInput = strictSelect( inputWrapper, 'input' )
-
+        const pathInput = <HTMLInputElement>strictSelect( inputWrapper, 'input' )
         const fileInput = <HTMLInputElement>pathInput.cloneNode( true )
 
         pathLabel.htmlFor = pathLabel.htmlFor + '__path'

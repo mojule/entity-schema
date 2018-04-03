@@ -1,5 +1,3 @@
-import { IPredicateMap } from '../../types/predicate-map'
-import { TPredicate } from '../../types/predicate'
 import { is } from '@mojule/is'
 import { isOneOfSchema, IOneOfSchema } from './oneof-schema'
 import { isEntitySchema, IEntitySchema } from './entity-schema'
@@ -11,44 +9,25 @@ import { IConstPropertySchema, isConstPropertySchema } from './const-property-sc
 import { IEntityReferenceSchema, isEntityReferenceSchema } from './entity-reference-schema'
 import { isSubschema, TSubschema } from './subschema'
 import { isWsSchema, IWsSchema } from './ws-schema'
-
-const TypedSchemaPredicate = ( type ) : TPredicate<any> =>
-  ( value ) : value is any => is.object( value ) && value.type === type
-
-export interface ISchemaPredicates extends IPredicateMap {
-  oneOfSchema: TPredicate<IOneOfSchema>
-  constPropertySchema: TPredicate<IConstPropertySchema>
-  stringSchema: TPredicate<any>
-  numberSchema: TPredicate<any>
-  booleanSchema: TPredicate<any>
-  nullSchema: TPredicate<any>
-  arraySchema: TPredicate<any>
-  childEntitySchema: TPredicate<IChildEntitySchema>
-  entitySchema: TPredicate<IEntitySchema>
-  appSchema: TPredicate<IAppSchema>
-  refSchema: TPredicate<IRefSchema>
-  entityReferenceSchema: TPredicate<IEntityReferenceSchema>
-  objectSchema: TPredicate<any>
-  enumSchema: TPredicate<IEnumSchema>
-  anySchema: TPredicate<any>
-  subSchema: TPredicate<TSubschema>
-  wsSchema: TPredicate<IWsSchema>
-}
+import { isObjectSchema, IObjectSchema } from './object-schema'
+import { isStringSchema, IStringSchema } from './string-schema'
+import { isNumberSchema, INumberSchema } from './number-schema'
+import { isBooleanSchema, IBooleanSchema } from './boolean-schema'
+import { isArraySchema, IArraySchema } from './array-schema'
 
 // object key order is important - will match in that order when finding types!
-export const predicates : ISchemaPredicates = {
+export const predicates = {
   oneOfSchema: isOneOfSchema,
   constPropertySchema: isConstPropertySchema,
-  stringSchema: TypedSchemaPredicate( 'string' ),
-  numberSchema: TypedSchemaPredicate( 'number' ),
-  booleanSchema: TypedSchemaPredicate( 'boolean' ),
-  nullSchema: TypedSchemaPredicate( 'null' ),
-  arraySchema: TypedSchemaPredicate( 'array' ),
+  stringSchema: isStringSchema,
+  numberSchema: isNumberSchema,
+  booleanSchema: isBooleanSchema,
+  arraySchema: isArraySchema,
   childEntitySchema: isChildEntitySchema,
   entitySchema: isEntitySchema,
   entityReferenceSchema: isEntityReferenceSchema,
+  objectSchema: isObjectSchema,
   appSchema: isAppSchema,
-  objectSchema: TypedSchemaPredicate( 'object' ),
   refSchema: isRefSchema,
   enumSchema: isEnumSchema,
   wsSchema: isWsSchema,

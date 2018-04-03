@@ -16,13 +16,15 @@ export interface IEntityReferenceSchema extends IWsSchema {
 }
 
 export const isEntityIdSchema = ( value ) : value is IEntityIdSchema =>
-  isWsSchema( value ) &&
+  value &&
   value.type === 'string' &&
-  value.pattern === '^[0-9a-f]{24}$'
+  value.pattern === '^[0-9a-f]{24}$' &&
+  isWsSchema( value )
 
 export const isEntityReferenceSchema = ( value ) : value is IEntityReferenceSchema =>
-  isWsSchema( value ) &&
+  value &&
   value.type === 'object' &&
   is.object( value.properties ) &&
-  isEntityIdSchema( value.properties!.entityId ) &&
-  isConstPropertySchema( value.properties!.entityType )
+  isEntityIdSchema( value.properties.entityId ) &&
+  isConstPropertySchema( value.properties.entityType ) &&
+  isWsSchema( value )

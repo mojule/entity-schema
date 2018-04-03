@@ -11,11 +11,12 @@ export interface IConstPropertySchema extends IWsSchema {
 }
 
 export const isConstPropertySchema = ( value ) : value is IConstPropertySchema =>
-  isWsSchema( value ) &&
+  value &&
   value.type === 'string' &&
   is.array( value.enum ) &&
-  value.enum!.length === 1 &&
-  is.string( value.enum![ 0 ]! ) &&
+  value.enum.length === 1 &&
+  is.string( value.enum[ 0 ] ) &&
   value.readOnly === true &&
   is.string( value.default ) &&
-  value.enum[ 0 ] === value.default
+  value.enum[ 0 ] === value.default &&
+  isWsSchema( value )

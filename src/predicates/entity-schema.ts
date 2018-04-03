@@ -5,4 +5,6 @@ export interface IEntitySchema extends IObjectSchema {
 }
 
 export const isEntitySchema = ( value ) : value is IEntitySchema =>
-  isObjectSchema( value ) && value.format === 'workingspec-entity'
+  value &&
+  value.format === 'workingspec-entity' &&
+  isObjectSchema( value )

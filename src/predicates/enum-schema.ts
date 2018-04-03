@@ -8,10 +8,11 @@ export interface IEnumSchema extends IWsSchema {
 }
 
 export const isEnumSchema = ( value ) : value is IEnumSchema =>
-  isWsSchema( value ) &&
+  value &&
   value.type === 'string' &&
   is.array( value.enum ) &&
   value.enum.every( is.string ) &&
   is.array( value.wsEnumTitles ) &&
   value.wsEnumTitles.every( is.string ) &&
-  value.enum.length === value.wsEnumTitles.length
+  value.enum.length === value.wsEnumTitles.length &&
+  isWsSchema( value )

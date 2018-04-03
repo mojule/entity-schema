@@ -7,5 +7,7 @@ export interface IChildEntitySchema extends IEntitySchema {
 }
 
 export const isChildEntitySchema = ( value ) : value is IChildEntitySchema =>
-  isEntitySchema( value ) && is.string( value.wsParentProperty ) &&
-  isEntityReferenceSchema( value.properties[ value.wsParentProperty ] )
+  value &&
+  is.string( value.wsParentProperty ) &&
+  isEntityReferenceSchema( value.properties[ value.wsParentProperty ] ) &&
+  isEntitySchema( value )

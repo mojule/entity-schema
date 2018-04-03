@@ -6,4 +6,6 @@ export interface IAppSchema extends IWsSchema {
 }
 
 export const isAppSchema = ( value ) : value is IAppSchema =>
-  value && is.string( value.id ) && isWsSchema( value )
+  value &&
+  is.string( value.id ) &&
+  isWsSchema( value )
