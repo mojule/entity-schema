@@ -2,8 +2,6 @@
 
 import * as assert from 'assert'
 import * as mongoose from 'mongoose'
-import { EntitySchema } from '../'
-import { loadSchemas } from '../load-schemas'
 
 import {
   validAppSchema, validEntitySchema, normalizedValidEntitySchema,
@@ -16,15 +14,15 @@ import {
   validOneOfSchema
 } from './fixtures/schema'
 
-import { SchemaMap } from '../schema-map'
-import { subschemaMap } from '../subschema-map'
-import { predicates } from '../predicates'
-import { linkTitlesForSchema } from '../link-titles-for-schema'
-import { ILinkMap, addLinks } from '../add-links'
-import { IExistingValuesMap, addUniques } from '../add-uniques'
 import { is, Utils } from '@mojule/is'
 import { IAppSchema } from '../predicates/app-schema'
-import { IEntitySchema } from '../predicates/entity-schema';
+import { IEntitySchema } from '../predicates/entity-schema'
+import { IExistingValuesMap } from '../add-uniques'
+import { ILinkMap } from '../add-links'
+
+import {
+  SchemaCollection, loadSchemas, SchemaMap, subschemaMap, predicates, addUniques, linkTitlesForSchema, addLinks
+} from '..'
 
 describe( 'Schema', () => {
   it( 'loadSchemas', () => {
@@ -36,7 +34,7 @@ describe( 'Schema', () => {
       const schemas = <IAppSchema[]>loadSchemas( './src/test/fixtures/json' )
 
       assert.doesNotThrow( () => {
-        EntitySchema( schemas )
+        SchemaCollection( schemas )
       })
     })
 
@@ -49,11 +47,11 @@ describe( 'Schema', () => {
     })
 
     it( 'no arguments', () => {
-      assert.throws( () => ( <any>EntitySchema )() )
+      assert.throws( () => ( <any>SchemaCollection )() )
     })
 
     it( 'bad schema array', () => {
-      assert.throws( () => ( <any>EntitySchema )( [{}] ) )
+      assert.throws( () => ( <any>SchemaCollection )( [{}] ) )
     })
 
     // array where the input is so bad it can't even JSON.stringify to create an error message
@@ -63,20 +61,20 @@ describe( 'Schema', () => {
 
       circular.b = b
 
-      assert.throws( () => ( <any>EntitySchema )( [circular] ) )
+      assert.throws( () => ( <any>SchemaCollection )( [circular] ) )
     })
 
     it( 'empty schema array', () => {
-      assert.throws( () => EntitySchema( [] ) )
+      assert.throws( () => SchemaCollection( [] ) )
     })
 
     it( 'non unique titles', () => {
-      assert.throws( () => EntitySchema( [ validAppSchema, validAppSchema ] ) )
+      assert.throws( () => SchemaCollection( [ validAppSchema, validAppSchema ] ) )
     })
   })
 
   describe( 'Schema Collection API', () => {
-    const schemaCollection = EntitySchema( [ validAppSchema, validEntitySchema, entitySchemaWithArray ] )
+    const schemaCollection = SchemaCollection( [ validAppSchema, validEntitySchema, entitySchemaWithArray ] )
 
     it( 'titles', () => {
       const expect = [ 'valid-app-schema', 'valid-entity-schema', 'entity-schema-array' ]
@@ -89,7 +87,7 @@ describe( 'Schema', () => {
     })
 
     it( 'enumTitles', () => {
-      const schemaCollection = EntitySchema( [ validAppSchema, validEntitySchema, entitySchemaWithArray, validEnumSchema ] )
+      const schemaCollection = SchemaCollection( [ validAppSchema, validEntitySchema, entitySchemaWithArray, validEnumSchema ] )
 
       const expect = [ 'Copyright' ]
 
@@ -184,7 +182,7 @@ describe( 'Schema', () => {
       })
 
       it( 'complex schema', () => {
-        const schemaCollection = EntitySchema( [ toMongooseSchema ] )
+        const schemaCollection = SchemaCollection( [ toMongooseSchema ] )
         const mongooseSchema = schemaCollection.mongooseSchema( 'mongoose-schema' )
 
         const Entity = mongoose.model( 'Entity6', mongooseSchema )
@@ -242,7 +240,7 @@ describe( 'Schema', () => {
     })
 
     describe( 'parent', () => {
-      const collection = EntitySchema( [ validChildSchema, validEntitySchema ] )
+      const collection = SchemaCollection( [ validChildSchema, validEntitySchema ] )
 
       it( 'parent', () => {
         assert.strictEqual( collection.parent( 'valid-child-schema' ), 'Parent' )
@@ -270,7 +268,7 @@ describe( 'Schema', () => {
 
   describe( 'Subschema Map', () => {
     describe( 'Reduces subschema to a JSON pointer path -> schema map', () => {
-      const schemas = EntitySchema( [ validAppSchema, entitySchemaWithArray, validChildSchema, validOneOfSchema, withOneOf ] )
+      const schemas = SchemaCollection( [ validAppSchema, entitySchemaWithArray, validChildSchema, validOneOfSchema, withOneOf ] )
 
       it( 'Schema with array', () => {
         const schema = <IEntitySchema>schemas.normalize( 'entity-schema-array' )
@@ -485,7 +483,7 @@ describe( 'Schema', () => {
   })
 
   describe( 'Unique properties', () => {
-    const schemas = EntitySchema( [ validEntitySchemaUniques, validAppSchema ] )
+    const schemas = SchemaCollection( [ validEntitySchemaUniques, validAppSchema ] )
 
     it( 'Gets unique property names for a schema', () => {
       const expect = [ 'abbrev' ]
@@ -519,7 +517,7 @@ describe( 'Schema', () => {
   })
 
   describe( 'Entity links', () => {
-    const schemas = EntitySchema( [ validAppSchema, validEntitySchema, entitySchemaWithLinks ])
+    const schemas = SchemaCollection( [ validAppSchema, validEntitySchema, entitySchemaWithLinks ])
     const schema = <IEntitySchema>schemas.normalize( 'entity-schema-links' )
 
     it( 'gets link titles', () => {

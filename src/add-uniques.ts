@@ -1,7 +1,7 @@
 import { uniquePropertyNames } from './unique-properties'
 import * as Mapper from '@mojule/mapper'
 import { is } from '@mojule/is'
-import { IEntitySchema } from './predicates/entity-schema';
+import { IEntitySchema } from './predicates/entity-schema'
 
 export interface IExistingValuesMap {
   [ propertyName: string ]: string[]

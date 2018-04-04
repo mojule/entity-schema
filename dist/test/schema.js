@@ -3,55 +3,48 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require("assert");
 const mongoose = require("mongoose");
-const _1 = require("../");
-const load_schemas_1 = require("../load-schemas");
 const schema_1 = require("./fixtures/schema");
-const schema_map_1 = require("../schema-map");
-const subschema_map_1 = require("../subschema-map");
-const predicates_1 = require("../predicates");
-const link_titles_for_schema_1 = require("../link-titles-for-schema");
-const add_links_1 = require("../add-links");
-const add_uniques_1 = require("../add-uniques");
 const is_1 = require("@mojule/is");
+const __1 = require("..");
 describe('Schema', () => {
     it('loadSchemas', () => {
-        assert.doesNotThrow(() => load_schemas_1.loadSchemas('./src/test/fixtures/json'));
+        assert.doesNotThrow(() => __1.loadSchemas('./src/test/fixtures/json'));
     });
     describe('Schema Collection Factory arguments', () => {
         it('from schema array', () => {
-            const schemas = load_schemas_1.loadSchemas('./src/test/fixtures/json');
+            const schemas = __1.loadSchemas('./src/test/fixtures/json');
             assert.doesNotThrow(() => {
-                _1.EntitySchema(schemas);
+                __1.SchemaCollection(schemas);
             });
         });
         it('from cache', () => {
-            const schemas = load_schemas_1.loadSchemas('./src/test/fixtures/json');
-            const schemas2 = load_schemas_1.loadSchemas('./src/test/fixtures/json');
+            const schemas = __1.loadSchemas('./src/test/fixtures/json');
+            const schemas2 = __1.loadSchemas('./src/test/fixtures/json');
             // should refer to the same referential instance if it were loaded from cache
             assert.strictEqual(schemas, schemas2);
         });
         it('no arguments', () => {
-            assert.throws(() => _1.EntitySchema());
+            assert.throws(() => __1.SchemaCollection());
         });
         it('bad schema array', () => {
-            assert.throws(() => _1.EntitySchema([{}]));
+            assert.throws(() => __1.SchemaCollection([{}]));
         });
         // array where the input is so bad it can't even JSON.stringify to create an error message
         it('very bad schema array', () => {
             const circular = {};
             const b = { circular };
             circular.b = b;
-            assert.throws(() => _1.EntitySchema([circular]));
+            assert.throws(() => __1.SchemaCollection([circular]));
         });
         it('empty schema array', () => {
-            assert.throws(() => _1.EntitySchema([]));
+            assert.throws(() => __1.SchemaCollection([]));
         });
         it('non unique titles', () => {
-            assert.throws(() => _1.EntitySchema([schema_1.validAppSchema, schema_1.validAppSchema]));
+            assert.throws(() => __1.SchemaCollection([schema_1.validAppSchema, schema_1.validAppSchema]));
         });
     });
     describe('Schema Collection API', () => {
-        const schemaCollection = _1.EntitySchema([schema_1.validAppSchema, schema_1.validEntitySchema, schema_1.entitySchemaWithArray]);
+        const schemaCollection = __1.SchemaCollection([schema_1.validAppSchema, schema_1.validEntitySchema, schema_1.entitySchemaWithArray]);
         it('titles', () => {
             const expect = ['valid-app-schema', 'valid-entity-schema', 'entity-schema-array'];
             assert.deepEqual(schemaCollection.titles, expect);
@@ -60,7 +53,7 @@ describe('Schema', () => {
             assert.deepEqual(schemaCollection.entityTitles, ['valid-entity-schema', 'entity-schema-array']);
         });
         it('enumTitles', () => {
-            const schemaCollection = _1.EntitySchema([schema_1.validAppSchema, schema_1.validEntitySchema, schema_1.entitySchemaWithArray, schema_1.validEnumSchema]);
+            const schemaCollection = __1.SchemaCollection([schema_1.validAppSchema, schema_1.validEntitySchema, schema_1.entitySchemaWithArray, schema_1.validEnumSchema]);
             const expect = ['Copyright'];
             assert.deepEqual(schemaCollection.enumTitles, expect);
         });
@@ -128,7 +121,7 @@ describe('Schema', () => {
                 assert(badPatternErr && badPatternErr.name === 'ValidationError');
             });
             it('complex schema', () => {
-                const schemaCollection = _1.EntitySchema([schema_1.toMongooseSchema]);
+                const schemaCollection = __1.SchemaCollection([schema_1.toMongooseSchema]);
                 const mongooseSchema = schemaCollection.mongooseSchema('mongoose-schema');
                 const Entity = mongoose.model('Entity6', mongooseSchema);
                 const valid = new Entity({
@@ -177,7 +170,7 @@ describe('Schema', () => {
             });
         });
         describe('parent', () => {
-            const collection = _1.EntitySchema([schema_1.validChildSchema, schema_1.validEntitySchema]);
+            const collection = __1.SchemaCollection([schema_1.validChildSchema, schema_1.validEntitySchema]);
             it('parent', () => {
                 assert.strictEqual(collection.parent('valid-child-schema'), 'Parent');
             });
@@ -194,18 +187,18 @@ describe('Schema', () => {
     });
     describe('SchemaMap', () => {
         it('Schema with no id', () => {
-            assert.throws(() => schema_map_1.SchemaMap([{ type: 'object' }]));
+            assert.throws(() => __1.SchemaMap([{ type: 'object' }]));
         });
     });
     describe('Subschema Map', () => {
         describe('Reduces subschema to a JSON pointer path -> schema map', () => {
-            const schemas = _1.EntitySchema([schema_1.validAppSchema, schema_1.entitySchemaWithArray, schema_1.validChildSchema, schema_1.validOneOfSchema, schema_1.withOneOf]);
+            const schemas = __1.SchemaCollection([schema_1.validAppSchema, schema_1.entitySchemaWithArray, schema_1.validChildSchema, schema_1.validOneOfSchema, schema_1.withOneOf]);
             it('Schema with array', () => {
                 const schema = schemas.normalize('entity-schema-array');
                 const expect = [
                     '/', '/name', '/abbrev', '/tags', '/tags/[]'
                 ];
-                const map = subschema_map_1.subschemaMap(schema);
+                const map = __1.subschemaMap(schema);
                 const jsonPointerPaths = Object.keys(map);
                 assert.deepEqual(jsonPointerPaths, expect);
                 assert.deepEqual(map['/'], schema);
@@ -215,7 +208,7 @@ describe('Schema', () => {
                 const expect = [
                     '/', '/name', '/one', '/one/?0', '/one/?1'
                 ];
-                const map = subschema_map_1.subschemaMap(schema);
+                const map = __1.subschemaMap(schema);
                 const jsonPointerPaths = Object.keys(map);
                 assert.deepEqual(jsonPointerPaths, expect);
                 assert.deepEqual(map['/'], schema);
@@ -225,7 +218,7 @@ describe('Schema', () => {
                 const expect = [
                     '/', '/parent', '/parent/entityId', '/parent/entityType'
                 ];
-                const map = subschema_map_1.subschemaMap(schema);
+                const map = __1.subschemaMap(schema);
                 const jsonPointerPaths = Object.keys(map);
                 assert.deepEqual(jsonPointerPaths, expect);
                 assert.deepEqual(map['/'], schema);
@@ -245,7 +238,7 @@ describe('Schema', () => {
                 },
                 additionalProperties: false
             };
-            const schemaMap = subschema_map_1.subschemaMap(entitySchema);
+            const schemaMap = __1.subschemaMap(entitySchema);
             const expect = ['/', '/tags'];
             assert.deepEqual(Object.keys(schemaMap), expect);
         });
@@ -258,7 +251,7 @@ describe('Schema', () => {
                 properties: {},
                 additionalProperties: false
             };
-            const schemaMap = subschema_map_1.subschemaMap(entitySchema);
+            const schemaMap = __1.subschemaMap(entitySchema);
             const expect = ['/'];
             assert.deepEqual(Object.keys(schemaMap), expect);
         });
@@ -273,14 +266,14 @@ describe('Schema', () => {
                 },
                 additionalProperties: false
             };
-            assert.throws(() => subschema_map_1.subschemaMap(entitySchema));
+            assert.throws(() => __1.subschemaMap(entitySchema));
         });
         it('Rejects any schema', () => {
-            assert.throws(() => subschema_map_1.subschemaMap({}));
+            assert.throws(() => __1.subschemaMap({}));
         });
     });
     describe('Predicates', () => {
-        const utils = is_1.Utils(predicates_1.predicates);
+        const utils = is_1.Utils(__1.predicates);
         const isOf = utils.of;
         describe('Schema types', () => {
             it('anySchema', () => {
@@ -364,7 +357,7 @@ describe('Schema', () => {
         });
     });
     describe('Unique properties', () => {
-        const schemas = _1.EntitySchema([schema_1.validEntitySchemaUniques, schema_1.validAppSchema]);
+        const schemas = __1.SchemaCollection([schema_1.validEntitySchemaUniques, schema_1.validAppSchema]);
         it('Gets unique property names for a schema', () => {
             const expect = ['abbrev'];
             const uniqueNames = schemas.uniquePropertyNames('valid-entity-schema-uniques');
@@ -375,7 +368,7 @@ describe('Schema', () => {
                 abbrev: ['foo', 'bar']
             };
             const normalized = schemas.normalize('valid-entity-schema-uniques');
-            const withUniques = add_uniques_1.addUniques(normalized, existingValues);
+            const withUniques = __1.addUniques(normalized, existingValues);
             assert.deepEqual(withUniques, schema_1.validEntitySchemaUniquesAdded);
         });
         it('Fails with bad existing values map', () => {
@@ -383,14 +376,14 @@ describe('Schema', () => {
                 baz: ['foo', 'bar']
             };
             const normalized = schemas.normalize('valid-entity-schema-uniques');
-            assert.throws(() => add_uniques_1.addUniques(normalized, existingValues));
+            assert.throws(() => __1.addUniques(normalized, existingValues));
         });
     });
     describe('Entity links', () => {
-        const schemas = _1.EntitySchema([schema_1.validAppSchema, schema_1.validEntitySchema, schema_1.entitySchemaWithLinks]);
+        const schemas = __1.SchemaCollection([schema_1.validAppSchema, schema_1.validEntitySchema, schema_1.entitySchemaWithLinks]);
         const schema = schemas.normalize('entity-schema-links');
         it('gets link titles', () => {
-            const linkTitles = link_titles_for_schema_1.linkTitlesForSchema(schema);
+            const linkTitles = __1.linkTitlesForSchema(schema);
             const expect = ['valid-entity-schema'];
             assert.deepEqual(linkTitles, expect);
         });
@@ -403,7 +396,7 @@ describe('Schema', () => {
                     }
                 ]
             };
-            const linkedSchema = add_links_1.addLinks(schema, linkMap);
+            const linkedSchema = __1.addLinks(schema, linkMap);
             assert.deepEqual(linkedSchema, schema_1.entitySchemaWithLinksAdded);
         });
         it('fails on bad link map', () => {
@@ -415,7 +408,7 @@ describe('Schema', () => {
                     }
                 ]
             };
-            assert.throws(() => add_links_1.addLinks(schema, badLinkMap));
+            assert.throws(() => __1.addLinks(schema, badLinkMap));
         });
     });
 });
