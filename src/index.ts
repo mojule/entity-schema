@@ -13,7 +13,7 @@ import { linkTitlesForSchema } from './link-titles-for-schema'
 import { loadSchemas } from './load-schemas'
 import { NormalizeSchema } from './normalize-schema'
 import { SchemaMap, ISchemaMap } from './schema-map'
-import { schemaToForm } from './schema-to-form';
+import { schemaToForm, ArrayifySymbol } from './schema-to-form'
 import { IObjectSchema } from './predicates/object-schema'
 import { schemaToMongooseSchema } from './schema-to-mongoose-schema'
 import { schemaWalk } from './schema-walk'
@@ -27,5 +27,5 @@ export {
   filterEntityBySchema, interfaceSchemaMapper, linkTitlesForSchema,
   loadSchemas, NormalizeSchema, SchemaMap, schemaToForm, schemaToMongooseSchema,
   schemaWalk, subschemaMap, uniquePropertyNames, uploadablePropertyNames,
-  predicates
+  predicates, ArrayifySymbol
 }
