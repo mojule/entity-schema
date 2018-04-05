@@ -8,6 +8,8 @@ exports.filterEntityBySchema = (entity, schema) => {
     const entityPathMap = json_pointer_1.flatten(entity);
     const filteredEntityPathMap = {};
     const schemaPathRegexps = Object.keys(schemaPathMap).map(pointerPath => {
+        // replace any oneOf segments
+        pointerPath = pointerPath.replace(/\/\?\d+/, '');
         // first, replace instances of [] in the path with a token
         const arrayRefsToTokens = pointerPath.replace(/\[\]/g, '~~array~~');
         // escape out any characters in path that clash with regexp

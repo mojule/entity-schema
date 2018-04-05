@@ -21,11 +21,12 @@ import { subschemaMap } from './subschema-map'
 import { uniquePropertyNames } from './unique-properties'
 import { uploadablePropertyNames } from './uploadable-properties'
 import { predicates } from './predicates'
+import { oneOfSchemaForm } from './oneof-schema-form'
 
 export {
   SchemaCollection, addLinks, addUniques, arrayifySchemaForm,
   filterEntityBySchema, interfaceSchemaMapper, linkTitlesForSchema,
   loadSchemas, NormalizeSchema, SchemaMap, schemaToForm, schemaToMongooseSchema,
   schemaWalk, subschemaMap, uniquePropertyNames, uploadablePropertyNames,
-  predicates, ArrayifySymbol
+  predicates, ArrayifySymbol, oneOfSchemaForm
 }

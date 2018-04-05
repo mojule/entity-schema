@@ -8,6 +8,7 @@ const is_1 = require("@mojule/is");
 const dom_utils_1 = require("@mojule/dom-utils");
 const uploadable_properties_1 = require("./uploadable-properties");
 const arrayify_schema_form_1 = require("./arrayify-schema-form");
+const _1 = require(".");
 const inputTypeMap = {
     string: 'text',
     number: 'number',
@@ -208,6 +209,7 @@ exports.schemaToForm = (document, schema) => {
         enctype: 'multipart/form-data'
     } : {}, mapper(schema, { pathSegs: [] }));
     schemaFormEl[exports.ArrayifySymbol] = arrayify_schema_form_1.arrayifySchemaForm(schemaFormEl, h);
+    _1.oneOfSchemaForm(schemaFormEl, h);
     return schemaFormEl;
 };
 //# sourceMappingURL=schema-to-form.js.map

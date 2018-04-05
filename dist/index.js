@@ -35,4 +35,6 @@ const uploadable_properties_1 = require("./uploadable-properties");
 exports.uploadablePropertyNames = uploadable_properties_1.uploadablePropertyNames;
 const predicates_1 = require("./predicates");
 exports.predicates = predicates_1.predicates;
+const oneof_schema_form_1 = require("./oneof-schema-form");
+exports.oneOfSchemaForm = oneof_schema_form_1.oneOfSchemaForm;
 //# sourceMappingURL=index.js.map

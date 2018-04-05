@@ -8,6 +8,7 @@ import { strictSelect } from '@mojule/dom-utils'
 import { uploadablePropertyNames } from './uploadable-properties'
 import { IObjectSchema } from './predicates/object-schema'
 import { arrayifySchemaForm } from './arrayify-schema-form'
+import { oneOfSchemaForm } from '.';
 
 const inputTypeMap = {
   string: 'text',
@@ -309,6 +310,8 @@ export const schemaToForm = ( document: HTMLDocument, schema: IObjectSchema ) =>
   )
 
   schemaFormEl[ ArrayifySymbol ] = arrayifySchemaForm( schemaFormEl, h )
+
+  oneOfSchemaForm( schemaFormEl, h )
 
   return schemaFormEl
 }

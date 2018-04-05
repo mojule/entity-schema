@@ -10,6 +10,9 @@ export const filterEntityBySchema = <TEntityModel>( entity: TEntityModel, schema
   const filteredEntityPathMap = {}
 
   const schemaPathRegexps = Object.keys( schemaPathMap ).map( pointerPath => {
+    // replace any oneOf segments
+    pointerPath = pointerPath.replace( /\/\?\d+/, '' )
+
     // first, replace instances of [] in the path with a token
     const arrayRefsToTokens = pointerPath.replace( /\[\]/g, '~~array~~' )
     // escape out any characters in path that clash with regexp
