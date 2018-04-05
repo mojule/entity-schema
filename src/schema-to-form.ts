@@ -165,15 +165,17 @@ export const schemaToForm = ( document: HTMLDocument, schema: IObjectSchema ) =>
         const newPathSegs = ( <string[]>pathSegs ).concat( `?${ i }` )
         const newOptions = Object.assign( {}, options, { pathSegs: newPathSegs } )
         const optionTitle = subschema.title || ( 'Option ' + ( i + 1 ) )
+        const optionInput = input( {
+          type: 'radio',
+          value: String( i ),
+          id: optionName
+        })
+
+        if( i === 0 ) optionInput.checked = true
 
         const option = li(
           label(
-            input({
-              type: 'radio',
-              value: String( i ),
-              name: optionName
-            }),
-            ' ' + optionTitle
+            optionInput, ' ' + optionTitle
           )
         )
 
