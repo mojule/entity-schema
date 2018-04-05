@@ -118,7 +118,7 @@ exports.schemaToForm = (document, schema) => {
                 const optionInput = input({
                     type: 'radio',
                     value: String(i),
-                    id: optionName
+                    name: optionName
                 });
                 if (i === 0)
                     optionInput.checked = true;

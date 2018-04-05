@@ -168,7 +168,7 @@ export const schemaToForm = ( document: HTMLDocument, schema: IObjectSchema ) =>
         const optionInput = input( {
           type: 'radio',
           value: String( i ),
-          id: optionName
+          name: optionName
         })
 
         if( i === 0 ) optionInput.checked = true
