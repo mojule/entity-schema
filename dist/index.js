@@ -23,6 +23,7 @@ exports.SchemaMap = schema_map_1.SchemaMap;
 const schema_to_form_1 = require("./schema-to-form");
 exports.schemaToForm = schema_to_form_1.schemaToForm;
 exports.ArrayifySymbol = schema_to_form_1.ArrayifySymbol;
+exports.OneOfSymbol = schema_to_form_1.OneOfSymbol;
 const schema_to_mongoose_schema_1 = require("./schema-to-mongoose-schema");
 exports.schemaToMongooseSchema = schema_to_mongoose_schema_1.schemaToMongooseSchema;
 const schema_walk_1 = require("./schema-walk");

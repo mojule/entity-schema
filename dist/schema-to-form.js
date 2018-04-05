@@ -15,6 +15,7 @@ const inputTypeMap = {
     boolean: 'checkbox'
 };
 exports.ArrayifySymbol = Symbol('arrayify');
+exports.OneOfSymbol = Symbol('oneOf');
 const Id = (pathSegs) => '/' + pathSegs.join('/');
 exports.schemaToForm = (document, schema) => {
     const uploadableProperties = uploadable_properties_1.uploadablePropertyNames(schema);
@@ -209,7 +210,7 @@ exports.schemaToForm = (document, schema) => {
         enctype: 'multipart/form-data'
     } : {}, mapper(schema, { pathSegs: [] }));
     schemaFormEl[exports.ArrayifySymbol] = arrayify_schema_form_1.arrayifySchemaForm(schemaFormEl, h);
-    _1.oneOfSchemaForm(schemaFormEl, h);
+    schemaFormEl[exports.OneOfSymbol] = _1.oneOfSchemaForm(schemaFormEl, h);
     return schemaFormEl;
 };
 //# sourceMappingURL=schema-to-form.js.map

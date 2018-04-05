@@ -52,9 +52,14 @@ const oneOfEvents = (oneOfElement) => {
             toggleOptions();
         });
     });
+    return { [path]: toggleOptions };
 };
 exports.oneOfSchemaForm = (schemaFormEl, h) => {
     const oneOfSchemaEls = Array.from(schemaFormEl.querySelectorAll('[data-schema][data-one-of]'));
-    oneOfSchemaEls.forEach(oneOfEvents);
+    const api = {};
+    oneOfSchemaEls.forEach(el => {
+        Object.assign(api, oneOfEvents(el));
+    });
+    return api;
 };
 //# sourceMappingURL=oneof-schema-form.js.map
