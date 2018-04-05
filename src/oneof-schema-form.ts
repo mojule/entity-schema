@@ -33,7 +33,7 @@ const oneOfEvents = ( oneOfElement: HTMLDivElement ) => {
     optionEls.push( optionEl )
   }
 
-  const toggleOptions = () => {
+  const toggle = () => {
     radios.forEach( radio => {
       if ( radio.checked ) selected = radio.value
     })
@@ -63,7 +63,7 @@ const oneOfEvents = ( oneOfElement: HTMLDivElement ) => {
     }
   }
 
-  toggleOptions()
+  toggle()
 
   radios.forEach( radio => {
     radio.addEventListener( 'change', () => {
@@ -71,11 +71,11 @@ const oneOfEvents = ( oneOfElement: HTMLDivElement ) => {
         selected = radio.value
       }
 
-      toggleOptions()
+      toggle()
     })
   })
 
-  return { [ '/' + path ]: toggleOptions }
+  return { [ '/' + path + '/?' ]: { toggle } }
 }
 
 export const oneOfSchemaForm = ( schemaFormEl: HTMLFormElement, h: IH ) => {

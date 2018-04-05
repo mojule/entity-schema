@@ -22,7 +22,7 @@ const oneOfEvents = (oneOfElement) => {
         const optionEl = dom_utils_1.strictSelect(oneOfElement, `div[data-path="${path}/?${i}"]`);
         optionEls.push(optionEl);
     }
-    const toggleOptions = () => {
+    const toggle = () => {
         radios.forEach(radio => {
             if (radio.checked)
                 selected = radio.value;
@@ -47,16 +47,16 @@ const oneOfEvents = (oneOfElement) => {
             }
         }
     };
-    toggleOptions();
+    toggle();
     radios.forEach(radio => {
         radio.addEventListener('change', () => {
             if (radio.checked) {
                 selected = radio.value;
             }
-            toggleOptions();
+            toggle();
         });
     });
-    return { ['/' + path]: toggleOptions };
+    return { ['/' + path + '/?']: { toggle } };
 };
 exports.oneOfSchemaForm = (schemaFormEl, h) => {
     const oneOfSchemaEls = Array.from(schemaFormEl.querySelectorAll('[data-schema][data-one-of]'));
