@@ -70,6 +70,8 @@ const oneOfEvents = ( oneOfElement: HTMLDivElement ) => {
       toggleOptions()
     })
   })
+
+  return { [ path ]: toggleOptions }
 }
 
 export const oneOfSchemaForm = ( schemaFormEl: HTMLFormElement, h: IH ) => {
@@ -77,5 +79,11 @@ export const oneOfSchemaForm = ( schemaFormEl: HTMLFormElement, h: IH ) => {
     schemaFormEl.querySelectorAll( '[data-schema][data-one-of]' )
   )
 
-  oneOfSchemaEls.forEach( oneOfEvents )
+  const api = {}
+
+  oneOfSchemaEls.forEach( el => {
+    Object.assign( api, oneOfEvents( el ) )
+  })
+
+  return api
 }

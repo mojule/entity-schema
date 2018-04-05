@@ -25,6 +25,7 @@ interface ISchemaElModel {
 }
 
 export const ArrayifySymbol = Symbol( 'arrayify' )
+export const OneOfSymbol = Symbol( 'oneOf' )
 
 const Id = ( pathSegs: string[] ) => '/' + pathSegs.join( '/' )
 
@@ -310,8 +311,7 @@ export const schemaToForm = ( document: HTMLDocument, schema: IObjectSchema ) =>
   )
 
   schemaFormEl[ ArrayifySymbol ] = arrayifySchemaForm( schemaFormEl, h )
-
-  oneOfSchemaForm( schemaFormEl, h )
+  schemaFormEl[ OneOfSymbol ] = oneOfSchemaForm( schemaFormEl, h )
 
   return schemaFormEl
 }
