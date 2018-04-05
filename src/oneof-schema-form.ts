@@ -34,6 +34,10 @@ const oneOfEvents = ( oneOfElement: HTMLDivElement ) => {
   }
 
   const toggleOptions = () => {
+    radios.forEach( radio => {
+      if ( radio.checked ) selected = radio.value
+    })
+
     for ( let i = 0; i < count; i++ ) {
       const optionEl = <HTMLDivElement>strictSelect( oneOfElement, `div[data-path="${ path }/?${ i }"]` )
 
@@ -71,7 +75,7 @@ const oneOfEvents = ( oneOfElement: HTMLDivElement ) => {
     })
   })
 
-  return { [ path ]: toggleOptions }
+  return { [ '/' + path ]: toggleOptions }
 }
 
 export const oneOfSchemaForm = ( schemaFormEl: HTMLFormElement, h: IH ) => {

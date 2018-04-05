@@ -23,6 +23,10 @@ const oneOfEvents = (oneOfElement) => {
         optionEls.push(optionEl);
     }
     const toggleOptions = () => {
+        radios.forEach(radio => {
+            if (radio.checked)
+                selected = radio.value;
+        });
         for (let i = 0; i < count; i++) {
             const optionEl = dom_utils_1.strictSelect(oneOfElement, `div[data-path="${path}/?${i}"]`);
             if (String(i) === selected) {
@@ -52,7 +56,7 @@ const oneOfEvents = (oneOfElement) => {
             toggleOptions();
         });
     });
-    return { [path]: toggleOptions };
+    return { ['/' + path]: toggleOptions };
 };
 exports.oneOfSchemaForm = (schemaFormEl, h) => {
     const oneOfSchemaEls = Array.from(schemaFormEl.querySelectorAll('[data-schema][data-one-of]'));
