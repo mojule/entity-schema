@@ -7,7 +7,7 @@ const oneOfEvents = (oneOfElement) => {
         return;
     oneOfElement.dataset.wired = 'true';
     const path = oneOfElement.dataset.path;
-    const radios = Array.from(oneOfElement.querySelectorAll(`input[type="radio"][name="${path + '/?'}"]`));
+    const radios = Array.from(oneOfElement.querySelectorAll(`input[type="radio"][name="/${path + '/?'}"]`));
     const count = radios.length;
     let selected = '0';
     radios.forEach(radio => {
