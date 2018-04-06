@@ -1,5 +1,11 @@
 import { IH } from '@mojule/h/types'
-import { strictSelect } from '@mojule/dom-utils';
+import { strictSelect } from '@mojule/dom-utils'
+
+export interface OneOfApi {
+  [ path: string ]: {
+    toggle: () => void
+  }
+}
 
 const oneOfEvents = ( oneOfElement: HTMLDivElement ) => {
   const isWired = oneOfElement.dataset.wired === 'true'
@@ -83,7 +89,7 @@ export const oneOfSchemaForm = ( schemaFormEl: HTMLFormElement, h: IH ) => {
     schemaFormEl.querySelectorAll( '[data-schema][data-one-of]' )
   )
 
-  const api = {}
+  const api: OneOfApi = {}
 
   oneOfSchemaEls.forEach( el => {
     Object.assign( api, oneOfEvents( el ) )

@@ -1,13 +1,10 @@
 import { IH } from '@mojule/h/types'
 import { ArrayifySymbol } from './schema-to-form'
-import { strictSelect } from '@mojule/dom-utils'
+import { strictSelect, strictGetAttribute } from '@mojule/dom-utils'
 
 const arrayify = ( arrayEl: HTMLDivElement, h: IH ) => {
   const { button } = h
-  const { path } = arrayEl.dataset
-
-  if( !path ) throw Error( 'Expected array schema element to have a data-path attribute' )
-
+  const path = strictGetAttribute( arrayEl, 'data-path' )
   const arrayFieldset = strictSelect( arrayEl, 'fieldset' )
   // we are using [] as a convention to name the item subschema of an array schema
   const arrayItemEl = strictSelect( arrayEl, `[data-array="${ path }"]` )
@@ -16,7 +13,7 @@ const arrayify = ( arrayEl: HTMLDivElement, h: IH ) => {
 
   arrayItemList.removeChild( arrayItemWrapper )
 
-  const createNewArrayItem = ( index: number ) => {
+  const createNewArrayItem = () => {
     const newItem = <HTMLLIElement>arrayItemWrapper.cloneNode( true )
 
     const remove = () => {
@@ -47,22 +44,57 @@ const arrayify = ( arrayEl: HTMLDivElement, h: IH ) => {
   }
 
   const add = () => {
-    const listSchemaItems = Array.from( arrayItemList.querySelectorAll( `[data-schema][data-array="${ path }"]` ) )
-    const newIndex = listSchemaItems.length
-    const newItem = createNewArrayItem( newIndex )
+    const newItem = createNewArrayItem()
 
     arrayItemList.appendChild( newItem )
 
     reindex()
+
+    return newItem
+  }
+
+  const size = () => {
+    const listSchemaItems = Array.from( arrayItemList.querySelectorAll( `[data-schema][data-array="${ path }"]` ) )
+    return listSchemaItems.length
+  }
+
+  const remove = ( index: number ) => {
+    const listSchemaItems = Array.from( arrayItemList.querySelectorAll( `[data-schema][data-array="${ path }"]` ) )
+    const item = listSchemaItems[ index ]
+
+    if( !item ) throw Error( 'No element at that index' )
+
+    arrayItemList.removeChild( item.parentNode! )
+
+    reindex()
+
+    return <HTMLLIElement>item.parentNode
+  }
+
+  const get = ( index: number ) => {
+    const listSchemaItems = Array.from( arrayItemList.querySelectorAll( `[data-schema][data-array="${ path }"]` ) )
+    const item = listSchemaItems[ index ]
+
+    if ( !item ) throw Error( 'No element at that index' )
+
+    return <HTMLLIElement>item.parentNode
   }
 
   arrayFieldset.appendChild(
     button( { type: 'button', click: add, data: { action: 'add', array: path } }, 'Add' )
   )
 
-  add()
+  return { add, size, remove, get, reindex }
+}
 
-  return { add, reindex }
+export interface ArrayifyApi {
+  [ path: string ]: {
+    add: () => HTMLLIElement
+    size: () => number
+    remove: ( index: number ) => HTMLLIElement
+    get: ( index: number ) => HTMLLIElement
+    reindex: () => void
+  }
 }
 
 export const arrayifySchemaForm = ( schemaFormEl : HTMLFormElement, h: IH ) => {
@@ -73,12 +105,10 @@ export const arrayifySchemaForm = ( schemaFormEl : HTMLFormElement, h: IH ) => {
     schemaFormEl.querySelectorAll( '[data-schema][data-type="array"]' )
   )
 
-  const api = {}
+  const api: ArrayifyApi = {}
 
   arraySchemaEls.forEach( arraySchemaEl => {
-    const { path } = arraySchemaEl.dataset
-
-    if( !path ) throw Error( 'Expected array schema element to have a data-path attribute' )
+    const path = strictGetAttribute( arraySchemaEl, 'data-path' )
 
     // we should probably change the way paths are added to dataset etc to have leading '/'
     api[ '/' + path ] = arrayify( arraySchemaEl, h )

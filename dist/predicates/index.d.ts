@@ -31,3 +31,12 @@ export declare const predicates: {
     subSchema: (value: any) => value is TSubschema;
     anySchema: (value: any) => value is any;
 };
+export declare const predicateUtils: {
+    isType: (subject: any, typename: string) => boolean;
+    isOnly: (subject: any, typename: string) => boolean;
+    some: (subject: any, ...typenames: string[]) => boolean;
+    every: (subject: any, ...typenames: string[]) => boolean;
+    of: (subject: any) => string | undefined;
+    allOf: (subject: any) => string[];
+    types: () => string[];
+};

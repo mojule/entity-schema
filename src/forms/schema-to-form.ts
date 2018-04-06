@@ -1,14 +1,14 @@
 import * as Mapper from '@mojule/mapper'
 import * as H from '@mojule/h'
-import { predicates } from './predicates'
+import { predicates } from '../predicates'
 import { JSONSchema4 } from 'json-schema'
 import { upperFirst, startCase } from 'lodash'
 import { is } from '@mojule/is'
 import { strictSelect } from '@mojule/dom-utils'
-import { uploadablePropertyNames } from './uploadable-properties'
-import { IObjectSchema } from './predicates/object-schema'
-import { arrayifySchemaForm } from './arrayify-schema-form'
-import { oneOfSchemaForm } from '.';
+import { uploadablePropertyNames } from '../uploadable-properties'
+import { IObjectSchema } from '../predicates/object-schema'
+import { arrayifySchemaForm, ArrayifyApi } from './arrayify-schema-form'
+import { oneOfSchemaForm, OneOfApi } from './oneof-schema-form'
 
 const inputTypeMap = {
   string: 'text',
@@ -29,7 +29,12 @@ export const OneOfSymbol = Symbol( 'oneOf' )
 
 const Id = ( pathSegs: string[] ) => '/' + pathSegs.join( '/' )
 
-export const schemaToForm = ( document: HTMLDocument, schema: IObjectSchema ) => {
+export interface SchemaFormElement extends HTMLFormElement {
+  [ ArrayifySymbol ]: ArrayifyApi
+  [ OneOfSymbol ]: OneOfApi
+}
+
+export const schemaToForm = ( document: Document, schema: IObjectSchema ) => {
   const uploadableProperties = uploadablePropertyNames( schema )
 
   const h = H( document )
@@ -313,5 +318,5 @@ export const schemaToForm = ( document: HTMLDocument, schema: IObjectSchema ) =>
   schemaFormEl[ ArrayifySymbol ] = arrayifySchemaForm( schemaFormEl, h )
   schemaFormEl[ OneOfSymbol ] = oneOfSchemaForm( schemaFormEl, h )
 
-  return schemaFormEl
+  return <SchemaFormElement>schemaFormEl
 }

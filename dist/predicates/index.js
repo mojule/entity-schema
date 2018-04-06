@@ -35,4 +35,5 @@ exports.predicates = {
     subSchema: subschema_1.isSubschema,
     anySchema: (value) => is_1.is.object(value)
 };
+exports.predicateUtils = is_1.Utils(exports.predicates);
 //# sourceMappingURL=index.js.map

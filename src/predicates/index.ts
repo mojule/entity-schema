@@ -1,4 +1,4 @@
-import { is } from '@mojule/is'
+import { is, Utils } from '@mojule/is'
 import { isOneOfSchema, IOneOfSchema } from './oneof-schema'
 import { isEntitySchema, IEntitySchema } from './entity-schema'
 import { isAppSchema, IAppSchema } from './app-schema'
@@ -34,3 +34,5 @@ export const predicates = {
   subSchema: isSubschema,
   anySchema: ( value ) : value is any => is.object( value )
 }
+
+export const predicateUtils = Utils( predicates )

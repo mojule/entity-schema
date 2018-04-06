@@ -3,10 +3,22 @@
 A subset of JSON Schema for defining entities and some tools for working with
 them
 
-Designed to be used with json-schema-to-typescript and mongoose
+Intent is to reduce duplication of effort by allowing you to define your
+application entities once using JSON schema, and then from that automatically
+generate express API routes, typescript interfaces, mongoose schema, HTML forms
+for editing and creating entities etc.
 
 Needs better docs, renaming, refactoring etc. - was extracted from an existing
 project
+
+We extend JSON schema but not in any way that affects validation, just extra
+metadata etc, and as little as possible (eg if it can be done with plain JSON
+Schema do it that way instead)
+
+Currently designed to be used with json-schema-to-typescript and mongoose, but
+at some point the project should be broken up into various component parts and
+abstractions added so you can use with any db, with connect or any other web
+server instead of express, etc.
 
 ## Schema Types
 
@@ -196,7 +208,7 @@ should be unique
 If the Entity Schema is a Child Entity Schema, it must be unique amongst the
 children of the parent Entity
 
-If the Entity Schema is not a Child Enity Schema, it must be unique amonst all
+If the Entity Schema is not a Child Entity Schema, it must be unique amonst all
 of the Entities of this type
 
 ```json
