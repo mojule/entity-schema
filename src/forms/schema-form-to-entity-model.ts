@@ -32,8 +32,7 @@ const resolveOneOf = jsonPointerToValueMap => {
   } )
 }
 
-export const schemaFormToEntityModel = ( schemaFormEl: SchemaFormElement ) => {
-  const formEl = <SchemaFormElement>schemaFormEl.cloneNode( true )
+export const schemaFormToEntityModel = ( formEl: SchemaFormElement ) => {
   const editors: SchemaFieldEditor[] = Array.from( formEl.querySelectorAll( 'input, textarea, select' ) )
 
   const arraySubSchemaEls = <HTMLDirectoryElement[]>Array.from(
