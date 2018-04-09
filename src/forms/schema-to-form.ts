@@ -79,9 +79,9 @@ export const schemaToForm = ( document: Document, schema: IObjectSchema ) => {
       return option( { value: item }, title )
     })
 
-    const id = Id( pathSegs )
+    const name = Id( pathSegs )
 
-    return select( { id }, ...selectOptions )
+    return select( { name }, ...selectOptions )
   }
 
   const schemaInput = ( model: ISchemaElModel ) => {
@@ -100,7 +100,7 @@ export const schemaToForm = ( document: Document, schema: IObjectSchema ) => {
       'string'
 
     const schemaEl = schemaWrapper( model )
-    const id = Id( pathSegs )
+    const name = Id( pathSegs )
     let inputType = inputTypeMap[ type ]
 
     if( schema.readOnly ){
@@ -113,12 +113,12 @@ export const schemaToForm = ( document: Document, schema: IObjectSchema ) => {
 
     const editor =
       inputType === 'hidden' ?
-      input( { id, type: inputType, data: { type } } ) :
+      input( { name, type: inputType, data: { type } } ) :
       editorType === 'multiline' ?
-      textarea( { id } ) :
+      textarea( { name } ) :
       editorType === 'enum' ?
       enumSelect( model ) :
-      input( { id, type: inputType, data: { type } } )
+      input( { name, type: inputType, data: { type } } )
 
     if( inputType === 'text' ){
       if( schema.minLength )
@@ -145,7 +145,7 @@ export const schemaToForm = ( document: Document, schema: IObjectSchema ) => {
 
     schemaEl.appendChild(
       documentFragment(
-        label( { data: { title }, for: id }, title ),
+        label( { data: { title }, for: name }, title ),
         editor,
         inputType === 'hidden' ? editor.value : ''
       )
@@ -205,7 +205,7 @@ export const schemaToForm = ( document: Document, schema: IObjectSchema ) => {
         const fileInput = <HTMLInputElement>pathInput.cloneNode( true )
 
         pathLabel.htmlFor = pathLabel.htmlFor + '__path'
-        pathInput.id = pathInput.id + '__path'
+        pathInput.name = pathInput.name + '__path'
 
         fileInput.type = 'file'
 

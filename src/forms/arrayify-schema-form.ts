@@ -39,7 +39,7 @@ const arrayify = ( arrayEl: HTMLDivElement, h: IH ) => {
       labelEl.setAttribute( 'for', `/${ path }/${ index }` )
 
       const inputEl = <HTMLInputElement>strictSelect( item, 'input' )
-      inputEl.setAttribute( 'id', `/${ path }/${ index }` )
+      inputEl.setAttribute( 'name', `/${ path }/${ index }` )
     })
   }
 

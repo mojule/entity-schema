@@ -39,11 +39,11 @@ describe('forms', () => {
                 booleanField: false
             };
             const form = entity_model_to_form_1.entityModelToForm(document, schema_1.simpleTypesSchema, entity);
-            const stringFieldEl = dom_utils_1.strictSelect(form, `[id="${'/stringField'}"]`);
+            const stringFieldEl = dom_utils_1.strictSelect(form, `[name="${'/stringField'}"]`);
             stringFieldEl.value = 'bar';
-            const numberFieldEl = dom_utils_1.strictSelect(form, `[id="${'/numberField'}"]`);
+            const numberFieldEl = dom_utils_1.strictSelect(form, `[name="${'/numberField'}"]`);
             numberFieldEl.value = '-1';
-            const booleanFieldEl = dom_utils_1.strictSelect(form, `[id="${'/booleanField'}"]`);
+            const booleanFieldEl = dom_utils_1.strictSelect(form, `[name="${'/booleanField'}"]`);
             booleanFieldEl.checked = false;
             const result = schema_form_to_entity_model_1.schemaFormToEntityModel(form);
             assert.deepEqual(result, expect);
@@ -140,7 +140,7 @@ describe('forms', () => {
                 enumStringField: 'foo'
             };
             const form = entity_model_to_form_1.entityModelToForm(document, schema_1.simpleEnumSchema, entity);
-            const select = dom_utils_1.strictSelect(form, '[id="/enumStringField"]');
+            const select = dom_utils_1.strictSelect(form, '[name="/enumStringField"]');
             const options = Array.from(select.querySelectorAll('option'));
             options.forEach((option, i) => {
                 option.removeAttribute('selected');
@@ -181,7 +181,7 @@ describe('forms', () => {
             };
             const form = entity_model_to_form_1.entityModelToForm(document, schema_1.simpleOneOfSchema, entity);
             const radio = dom_utils_1.strictSelect(form, 'input[type="radio"][name="/oneOfField/?"][value="2"]');
-            const input = dom_utils_1.strictSelect(form, 'input[id="/oneOfField/?2/value"]');
+            const input = dom_utils_1.strictSelect(form, 'input[name="/oneOfField/?2/value"]');
             radio.click();
             input.click();
             const result = schema_form_to_entity_model_1.schemaFormToEntityModel(form);

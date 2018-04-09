@@ -50,13 +50,13 @@ describe( 'forms', () => {
 
       const form = entityModelToForm( document, simpleTypesSchema, entity )
 
-      const stringFieldEl = <HTMLInputElement>strictSelect( form, `[id="${ '/stringField' }"]` )
+      const stringFieldEl = <HTMLInputElement>strictSelect( form, `[name="${ '/stringField' }"]` )
       stringFieldEl.value = 'bar'
 
-      const numberFieldEl = <HTMLInputElement>strictSelect( form, `[id="${ '/numberField' }"]` )
+      const numberFieldEl = <HTMLInputElement>strictSelect( form, `[name="${ '/numberField' }"]` )
       numberFieldEl.value = '-1'
 
-      const booleanFieldEl = <HTMLInputElement>strictSelect( form, `[id="${ '/booleanField' }"]` )
+      const booleanFieldEl = <HTMLInputElement>strictSelect( form, `[name="${ '/booleanField' }"]` )
       booleanFieldEl.checked = false
 
       const result = schemaFormToEntityModel( form )
@@ -190,7 +190,7 @@ describe( 'forms', () => {
       }
 
       const form = entityModelToForm( document, simpleEnumSchema, entity )
-      const select = <HTMLSelectElement>strictSelect( form, '[id="/enumStringField"]' )
+      const select = <HTMLSelectElement>strictSelect( form, '[name="/enumStringField"]' )
       const options = <HTMLOptionElement[]>Array.from( select.querySelectorAll( 'option' ) )
 
       options.forEach( ( option, i ) => {
@@ -241,7 +241,7 @@ describe( 'forms', () => {
       const form = entityModelToForm( document, simpleOneOfSchema, entity )
 
       const radio = <HTMLInputElement>strictSelect( form, 'input[type="radio"][name="/oneOfField/?"][value="2"]' )
-      const input = <HTMLInputElement>strictSelect( form, 'input[id="/oneOfField/?2/value"]' )
+      const input = <HTMLInputElement>strictSelect( form, 'input[name="/oneOfField/?2/value"]' )
       radio.click()
       input.click()
 

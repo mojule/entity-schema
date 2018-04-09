@@ -46,7 +46,6 @@ export const schemaFormToEntityModel = ( schemaFormEl: SchemaFormElement ) => {
 
   editors.forEach( editor => {
     const { name, type } = editor
-    let { id } = editor
 
     if ( type === 'submit' ) return
 
@@ -63,9 +62,7 @@ export const schemaFormToEntityModel = ( schemaFormEl: SchemaFormElement ) => {
     } else if ( type === 'hidden' && editor.dataset.type === 'boolean' ) {
       value = value === 'true'
     } else if ( type === 'radio' ) {
-      if ( ( <HTMLInputElement>editor ).checked ) {
-        id = name
-      } else {
+      if ( !( <HTMLInputElement>editor ).checked ) {
         return
       }
     }
@@ -82,7 +79,7 @@ export const schemaFormToEntityModel = ( schemaFormEl: SchemaFormElement ) => {
     */
     if ( !editor.required && value === '' ) return
 
-    jsonPointerToValueMap[ id ] = value
+    jsonPointerToValueMap[ name ] = value
   } )
 
   const jsonPaths = Object.keys( jsonPointerToValueMap )

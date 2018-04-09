@@ -34,7 +34,6 @@ exports.schemaFormToEntityModel = (schemaFormEl) => {
     const jsonPointerToValueMap = {};
     editors.forEach(editor => {
         const { name, type } = editor;
-        let { id } = editor;
         if (type === 'submit')
             return;
         let value = editor.value;
@@ -51,10 +50,7 @@ exports.schemaFormToEntityModel = (schemaFormEl) => {
             value = value === 'true';
         }
         else if (type === 'radio') {
-            if (editor.checked) {
-                id = name;
-            }
-            else {
+            if (!editor.checked) {
                 return;
             }
         }
@@ -69,7 +65,7 @@ exports.schemaFormToEntityModel = (schemaFormEl) => {
         */
         if (!editor.required && value === '')
             return;
-        jsonPointerToValueMap[id] = value;
+        jsonPointerToValueMap[name] = value;
     });
     const jsonPaths = Object.keys(jsonPointerToValueMap);
     // ensure empty arrays

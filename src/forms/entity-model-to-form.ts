@@ -83,12 +83,12 @@ export const entityModelToForm = <TEntityModel>( document: Document, schema: IEn
       return
     }
 
-    const editor = <SchemaFieldEditor>strictSelect( schemaFormEl, `[id="${ jsonPointerPath }"]` )
+    const editor = <SchemaFieldEditor>strictSelect( schemaFormEl, `[name="${ jsonPointerPath }"]` )
 
     if ( editor.type === 'checkbox' ) {
       ( <HTMLInputElement>editor ).checked = value
     } else if ( editor.type === 'file' ) {
-      const pathEditor = <HTMLInputElement>strictSelect( schemaFormEl, `[id="${ editor.id }__path"]` )
+      const pathEditor = <HTMLInputElement>strictSelect( schemaFormEl, `[name="${ editor.name }__path"]` )
       pathEditor.value = value
     } else if( editor.localName === 'select' ){
       const optionEl = <HTMLOptionElement>strictSelect( editor, `[value="${ value }"]` )

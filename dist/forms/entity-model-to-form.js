@@ -62,12 +62,12 @@ exports.entityModelToForm = (document, schema, model) => {
             oneOfApi[jsonPointerPath].toggle();
             return;
         }
-        const editor = dom_utils_1.strictSelect(schemaFormEl, `[id="${jsonPointerPath}"]`);
+        const editor = dom_utils_1.strictSelect(schemaFormEl, `[name="${jsonPointerPath}"]`);
         if (editor.type === 'checkbox') {
             editor.checked = value;
         }
         else if (editor.type === 'file') {
-            const pathEditor = dom_utils_1.strictSelect(schemaFormEl, `[id="${editor.id}__path"]`);
+            const pathEditor = dom_utils_1.strictSelect(schemaFormEl, `[name="${editor.name}__path"]`);
             pathEditor.value = value;
         }
         else if (editor.localName === 'select') {

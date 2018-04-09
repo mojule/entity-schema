@@ -27,7 +27,7 @@ const arrayify = (arrayEl, h) => {
             const labelEl = dom_utils_1.strictSelect(item, 'label');
             labelEl.setAttribute('for', `/${path}/${index}`);
             const inputEl = dom_utils_1.strictSelect(item, 'input');
-            inputEl.setAttribute('id', `/${path}/${index}`);
+            inputEl.setAttribute('name', `/${path}/${index}`);
         });
     };
     const add = () => {

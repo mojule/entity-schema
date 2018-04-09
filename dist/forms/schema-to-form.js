@@ -47,8 +47,8 @@ exports.schemaToForm = (document, schema) => {
             const title = titles ? titles[i] : lodash_1.startCase(item);
             return option({ value: item }, title);
         });
-        const id = Id(pathSegs);
-        return select({ id }, ...selectOptions);
+        const name = Id(pathSegs);
+        return select({ name }, ...selectOptions);
     };
     const schemaInput = (model) => {
         const { schema, options } = model;
@@ -63,7 +63,7 @@ exports.schemaToForm = (document, schema) => {
                 'enum' :
                 'string';
         const schemaEl = schemaWrapper(model);
-        const id = Id(pathSegs);
+        const name = Id(pathSegs);
         let inputType = inputTypeMap[type];
         if (schema.readOnly) {
             inputType = 'hidden';
@@ -72,12 +72,12 @@ exports.schemaToForm = (document, schema) => {
             inputType = 'email';
         }
         const editor = inputType === 'hidden' ?
-            input({ id, type: inputType, data: { type } }) :
+            input({ name, type: inputType, data: { type } }) :
             editorType === 'multiline' ?
-                textarea({ id }) :
+                textarea({ name }) :
                 editorType === 'enum' ?
                     enumSelect(model) :
-                    input({ id, type: inputType, data: { type } });
+                    input({ name, type: inputType, data: { type } });
         if (inputType === 'text') {
             if (schema.minLength)
                 (editor).minLength = schema.minLength;
@@ -102,7 +102,7 @@ exports.schemaToForm = (document, schema) => {
         }
         if (isRequired)
             editor.setAttribute('required', '');
-        schemaEl.appendChild(documentFragment(label({ data: { title }, for: id }, title), editor, inputType === 'hidden' ? editor.value : ''));
+        schemaEl.appendChild(documentFragment(label({ data: { title }, for: name }, title), editor, inputType === 'hidden' ? editor.value : ''));
         return schemaEl;
     };
     const map = {
@@ -139,7 +139,7 @@ exports.schemaToForm = (document, schema) => {
                 const pathInput = dom_utils_1.strictSelect(inputWrapper, 'input');
                 const fileInput = pathInput.cloneNode(true);
                 pathLabel.htmlFor = pathLabel.htmlFor + '__path';
-                pathInput.id = pathInput.id + '__path';
+                pathInput.name = pathInput.name + '__path';
                 fileInput.type = 'file';
                 pathInput.parentNode.appendChild(fileInput);
             }
