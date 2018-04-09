@@ -26,8 +26,7 @@ const resolveOneOf = jsonPointerToValueMap => {
         });
     });
 };
-exports.schemaFormToEntityModel = (schemaFormEl) => {
-    const formEl = schemaFormEl.cloneNode(true);
+exports.schemaFormToEntityModel = (formEl) => {
     const editors = Array.from(formEl.querySelectorAll('input, textarea, select'));
     const arraySubSchemaEls = Array.from(formEl.querySelectorAll('[data-schema][data-type="array"]'));
     const arraySubschemaPaths = arraySubSchemaEls.map(el => `/${el.dataset.path}`);
