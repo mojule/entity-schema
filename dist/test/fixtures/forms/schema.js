@@ -40,6 +40,66 @@ exports.simpleArraySchema = {
     required: ['arrayStringField'],
     additionalProperties: false
 };
+exports.personSchema = {
+    id: 'http://example.com/schema/person',
+    title: 'Person',
+    type: 'object',
+    format: 'workingspec-entity',
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name',
+        }
+    },
+    required: ['name'],
+    additionalProperties: false
+};
+exports.personReferenceSchema = {
+    id: 'http://example.com/schema/person-reference',
+    title: 'Person Reference',
+    type: 'object',
+    format: 'workingspec-entity',
+    properties: {
+        entityId: {
+            title: 'Person',
+            type: 'string'
+        },
+        entityType: {
+            title: "Type",
+            type: "string",
+            enum: ["Person"],
+            readOnly: true,
+            default: "Person"
+        }
+    },
+    required: ['entityId', 'entityType'],
+    additionalProperties: false
+};
+exports.arrayOfEntitySchema = {
+    id: 'http://example.com/schema/array-of-entity',
+    title: 'Array of Entities',
+    type: 'object',
+    format: 'workingspec-entity',
+    properties: {
+        stringArray: {
+            type: 'array',
+            title: 'String Array',
+            items: {
+                type: 'string',
+                title: 'String Item'
+            }
+        },
+        personArray: {
+            type: 'array',
+            title: 'Person Array',
+            items: {
+                $ref: 'http://example.com/schema/person-reference'
+            }
+        }
+    },
+    required: ['arrayStringField'],
+    additionalProperties: false
+};
 exports.simpleEnumSchema = {
     id: 'http://example.com/schema/simple-enum',
     title: 'Simple Enum',

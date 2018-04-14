@@ -42,6 +42,69 @@ export const simpleArraySchema: IEntitySchema = {
   additionalProperties: false
 }
 
+export const personSchema: IEntitySchema = {
+  id: 'http://example.com/schema/person',
+  title: 'Person',
+  type: 'object',
+  format: 'workingspec-entity',
+  properties: {
+    name: {
+      type: 'string',
+      title: 'Name',
+    }
+  },
+  required: [ 'name' ],
+  additionalProperties: false  
+}
+
+export const personReferenceSchema: IEntitySchema = {
+  id: 'http://example.com/schema/person-reference',
+  title: 'Person Reference',
+  type: 'object',
+  format: 'workingspec-entity',
+  properties: {
+    entityId: {
+      title: 'Person',
+      type: 'string'
+    },
+    entityType: {
+      title: "Type",
+      type: "string",
+      enum: [ "Person" ],
+      readOnly: true,
+      default: "Person"
+    }
+  },
+  required: [ 'entityId', 'entityType' ],
+  additionalProperties: false  
+}
+
+export const arrayOfEntitySchema: IEntitySchema = {
+  id: 'http://example.com/schema/array-of-entity',
+  title: 'Array of Entities',
+  type: 'object',
+  format: 'workingspec-entity',
+  properties: {
+    stringArray: {
+      type: 'array',
+      title: 'String Array',
+      items: {
+        type: 'string',
+        title: 'String Item'
+      }
+    },
+    personArray: {
+      type: 'array',
+      title: 'Person Array',
+      items: {
+        $ref: 'http://example.com/schema/person-reference'
+      }
+    }
+  },
+  required: [ 'arrayStringField' ],
+  additionalProperties: false
+}
+
 export const simpleEnumSchema: IEntitySchema = {
   id: 'http://example.com/schema/simple-enum',
   title: 'Simple Enum',

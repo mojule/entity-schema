@@ -6,6 +6,7 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
+    "test-no-build": "mocha ./dist/test",
     "test": "tsc && mocha ./dist/test",
     "coverage": "tsc && nyc --reporter=html --reporter=text mocha ./dist/test"
   },

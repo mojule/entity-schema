@@ -34,7 +34,7 @@ export interface SchemaFormElement extends HTMLFormElement {
   [ OneOfSymbol ]: OneOfApi
 }
 
-export const schemaToForm = ( document: Document, schema: IObjectSchema ) => {
+export const schemaToForm = ( document: Document, schema: IObjectSchema, arrayify = true ) => {
   const uploadableProperties = uploadablePropertyNames( schema )
 
   const h = H( document )
@@ -227,9 +227,14 @@ export const schemaToForm = ( document: Document, schema: IObjectSchema ) => {
       if( schema.items ){
         const newPathSegs = ( <string[]>pathSegs ).concat(  [ '[]' ] )
         const newOptions = Object.assign( {}, options, { pathSegs: newPathSegs } )
-        const itemSchemaEl = mapper( schema.items, newOptions )
+        const itemSchemaEl = mapper( schema.items, newOptions )        
+        
+        const firstSchemaEl = 
+          ( 'schema' in itemSchemaEl.dataset ) ?
+          itemSchemaEl :
+          <HTMLElement>strictSelect( itemSchemaEl, '[data-schema]' )
 
-        itemSchemaEl.dataset.array = pathSegs.join( '/' )
+        firstSchemaEl.dataset.array = pathSegs.join( '/' )
 
         arrayList.appendChild( li( itemSchemaEl ) )
       }
@@ -315,7 +320,9 @@ export const schemaToForm = ( document: Document, schema: IObjectSchema ) => {
     mapper( schema, { pathSegs: [] } )
   )
 
-  schemaFormEl[ ArrayifySymbol ] = arrayifySchemaForm( schemaFormEl, h )
+  if( arrayify )
+    schemaFormEl[ ArrayifySymbol ] = arrayifySchemaForm( schemaFormEl, h )
+
   schemaFormEl[ OneOfSymbol ] = oneOfSchemaForm( schemaFormEl, h )
 
   return <SchemaFormElement>schemaFormEl

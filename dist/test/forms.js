@@ -64,6 +64,40 @@ describe('forms', () => {
             const result = roundTrip(entity, schema_1.simpleArraySchema);
             assert.deepEqual(entity, result);
         });
+        describe('array of entity', () => {
+            it('round trips', () => {
+                const people = {
+                    'bob': { name: 'bob' },
+                    'sue': { name: 'sue' }
+                };
+                const entity = {
+                    stringArray: ['foo', 'bar'],
+                    personArray: [
+                        { entityType: 'person', entityId: 'bob' },
+                        { entityType: 'person', entityId: 'sue' }
+                    ]
+                };
+                const schemas = __1.SchemaCollection([schema_1.personSchema, schema_1.personReferenceSchema, schema_1.arrayOfEntitySchema]);
+                const schema = schemas.normalize('Array of Entities');
+                const result = roundTrip(entity, schema);
+                assert.deepEqual(entity, result);
+                /*
+        
+                const form2 = schemaToForm( document, schema, false )
+                console.log( form2.outerHTML )
+                
+                const form = schemaToForm( document, schema )
+        
+                const stringApi = form[ ArrayifySymbol ][ '/stringArray' ]
+                const personApi = form[ ArrayifySymbol ][ '/personArray' ]
+        
+                stringApi.add()
+                personApi.add()
+        
+                console.log( form.outerHTML )
+                */
+            });
+        });
         describe('arrayify api', () => {
             const entity = {
                 arrayStringField: ['foo', 'bar', 'baz']

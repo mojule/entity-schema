@@ -17,7 +17,7 @@ const inputTypeMap = {
 exports.ArrayifySymbol = Symbol('arrayify');
 exports.OneOfSymbol = Symbol('oneOf');
 const Id = (pathSegs) => '/' + pathSegs.join('/');
-exports.schemaToForm = (document, schema) => {
+exports.schemaToForm = (document, schema, arrayify = true) => {
     const uploadableProperties = uploadable_properties_1.uploadablePropertyNames(schema);
     const h = H(document);
     const { div, label, input, documentFragment, fieldset, legend, ol, li, table, tr, th, td, form, textarea, select, option, p, span } = h;
@@ -156,7 +156,10 @@ exports.schemaToForm = (document, schema) => {
                 const newPathSegs = pathSegs.concat(['[]']);
                 const newOptions = Object.assign({}, options, { pathSegs: newPathSegs });
                 const itemSchemaEl = mapper(schema.items, newOptions);
-                itemSchemaEl.dataset.array = pathSegs.join('/');
+                const firstSchemaEl = ('schema' in itemSchemaEl.dataset) ?
+                    itemSchemaEl :
+                    dom_utils_1.strictSelect(itemSchemaEl, '[data-schema]');
+                firstSchemaEl.dataset.array = pathSegs.join('/');
                 arrayList.appendChild(li(itemSchemaEl));
             }
             const arrayFieldSet = fieldset(legend(schema.title || 'array'), arrayList);
@@ -209,7 +212,8 @@ exports.schemaToForm = (document, schema) => {
     const schemaFormEl = form(uploadableProperties.length ? {
         enctype: 'multipart/form-data'
     } : {}, mapper(schema, { pathSegs: [] }));
-    schemaFormEl[exports.ArrayifySymbol] = arrayify_schema_form_1.arrayifySchemaForm(schemaFormEl, h);
+    if (arrayify)
+        schemaFormEl[exports.ArrayifySymbol] = arrayify_schema_form_1.arrayifySchemaForm(schemaFormEl, h);
     schemaFormEl[exports.OneOfSymbol] = oneof_schema_form_1.oneOfSchemaForm(schemaFormEl, h);
     return schemaFormEl;
 };

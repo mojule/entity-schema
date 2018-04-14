@@ -5,9 +5,9 @@ import * as doc from '@mojule/document'
 import { entityModelToForm } from '../forms/entity-model-to-form'
 import { schemaFormToEntityModel } from '../forms/schema-form-to-entity-model'
 import { IEntitySchema } from '../predicates/entity-schema'
-import { simpleTypesSchema, simpleArraySchema, simpleEnumSchema, simpleOneOfSchema, simpleFileSchema } from './fixtures/forms/schema'
+import { simpleTypesSchema, simpleArraySchema, simpleEnumSchema, simpleOneOfSchema, simpleFileSchema, personSchema, personReferenceSchema, arrayOfEntitySchema } from './fixtures/forms/schema'
 import { strictSelect } from '@mojule/dom-utils'
-import { ArrayifySymbol, arrayifySchemaForm, predicateUtils, subschemaMap } from '..'
+import { ArrayifySymbol, arrayifySchemaForm, predicateUtils, subschemaMap, SchemaCollection, schemaToForm } from '..'
 import * as H from '@mojule/h'
 import { IH } from '@mojule/h/types'
 
@@ -84,6 +84,46 @@ describe( 'forms', () => {
       const result = roundTrip( entity, simpleArraySchema )
 
       assert.deepEqual( entity, result )
+    })
+
+    describe( 'array of entity', () => {
+      it( 'round trips', () => {
+        const people = {
+          'bob': { name: 'bob' },
+          'sue': { name: 'sue' }
+        }
+
+        const entity = {
+          stringArray: [ 'foo', 'bar' ],
+          personArray: [
+            { entityType: 'person', entityId: 'bob' },
+            { entityType: 'person', entityId: 'sue' }
+          ]
+        }
+
+        const schemas = SchemaCollection( [ personSchema, personReferenceSchema, arrayOfEntitySchema ] )
+        const schema = <IEntitySchema>schemas.normalize( 'Array of Entities' )
+
+        const result = roundTrip( entity, schema )
+
+        assert.deepEqual( entity, result )
+
+        /*
+
+        const form2 = schemaToForm( document, schema, false )
+        console.log( form2.outerHTML )
+        
+        const form = schemaToForm( document, schema )
+
+        const stringApi = form[ ArrayifySymbol ][ '/stringArray' ]
+        const personApi = form[ ArrayifySymbol ][ '/personArray' ]
+
+        stringApi.add()
+        personApi.add()
+
+        console.log( form.outerHTML )
+        */
+      })
     })
 
     describe( 'arrayify api', () => {

@@ -7,4 +7,4 @@ export interface SchemaFormElement extends HTMLFormElement {
     [ ArrayifySymbol ]: ArrayifyApi;
     [ OneOfSymbol ]: OneOfApi;
 }
-export declare const schemaToForm: (document: Document, schema: IObjectSchema) => SchemaFormElement;
+export declare const schemaToForm: (document: Document, schema: IObjectSchema, arrayify?: boolean) => SchemaFormElement;
