@@ -9,6 +9,7 @@ const schema_1 = require("./fixtures/forms/schema");
 const dom_utils_1 = require("@mojule/dom-utils");
 const __1 = require("..");
 const H = require("@mojule/h");
+const add_links_1 = require("../add-links");
 const document = doc;
 const h = H(document);
 const roundTrip = (entityModel, schema) => {
@@ -66,36 +67,47 @@ describe('forms', () => {
         });
         describe('array of entity', () => {
             it('round trips', () => {
-                const people = {
-                    'bob': { name: 'bob' },
-                    'sue': { name: 'sue' }
-                };
                 const entity = {
                     stringArray: ['foo', 'bar'],
+                    personArray: []
+                };
+                const expect = {
+                    stringArray: ['foo', 'bar'],
                     personArray: [
-                        { entityType: 'person', entityId: 'bob' },
-                        { entityType: 'person', entityId: 'sue' }
+                        { entityType: 'Person', entityId: '000000000000000000000001' },
+                        { entityType: 'Person', entityId: '000000000000000000000002' },
+                        { entityType: 'Person', entityId: '000000000000000000000003' },
+                    ]
+                };
+                const links = {
+                    Person: [
+                        {
+                            _id: '000000000000000000000001',
+                            name: 'Bob'
+                        },
+                        {
+                            _id: '000000000000000000000002',
+                            name: 'Sue'
+                        },
+                        {
+                            _id: '000000000000000000000003',
+                            name: 'Sally'
+                        }
                     ]
                 };
                 const schemas = __1.SchemaCollection([schema_1.personSchema, schema_1.personReferenceSchema, schema_1.arrayOfEntitySchema]);
                 const schema = schemas.normalize('Array of Entities');
-                const result = roundTrip(entity, schema);
-                assert.deepEqual(entity, result);
-                /*
-        
-                const form2 = schemaToForm( document, schema, false )
-                console.log( form2.outerHTML )
-                
-                const form = schemaToForm( document, schema )
-        
-                const stringApi = form[ ArrayifySymbol ][ '/stringArray' ]
-                const personApi = form[ ArrayifySymbol ][ '/personArray' ]
-        
-                stringApi.add()
-                personApi.add()
-        
-                console.log( form.outerHTML )
-                */
+                const linkedSchema = add_links_1.addLinks(schema, links);
+                const form = entity_model_to_form_1.entityModelToForm(document, linkedSchema, entity);
+                const api = form[__1.ArrayifySymbol]['/personArray'];
+                for (let i = 0; i < links.Person.length; i++) {
+                    const newEl = api.add();
+                    const select = dom_utils_1.strictSelect(newEl, 'select');
+                    select.selectedIndex = i;
+                    console.log(select.value);
+                }
+                const result = schema_form_to_entity_model_1.schemaFormToEntityModel(form);
+                assert.deepEqual(result, expect);
             });
         });
         describe('arrayify api', () => {

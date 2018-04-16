@@ -1,4 +1,6 @@
 import { IEntitySchema } from '../../../predicates/entity-schema'
+import { IEntityReferenceSchema } from '../../../predicates/entity-reference-schema';
+import { IAppSchema } from '../../../predicates/app-schema';
 
 export const simpleTypesSchema: IEntitySchema = {
   id: 'http://example.com/schema/simple-types',
@@ -54,18 +56,20 @@ export const personSchema: IEntitySchema = {
     }
   },
   required: [ 'name' ],
-  additionalProperties: false  
+  additionalProperties: false
 }
 
-export const personReferenceSchema: IEntitySchema = {
+export const personReferenceSchema: IEntityReferenceSchema & IAppSchema = {
   id: 'http://example.com/schema/person-reference',
   title: 'Person Reference',
+  description: 'A person reference',
   type: 'object',
-  format: 'workingspec-entity',
   properties: {
     entityId: {
       title: 'Person',
-      type: 'string'
+      type: 'string',
+      pattern: '^[0-9a-f]{24}$',
+      message: "Manufacturer must be a 24 character hex string. (0-9, a-f)"
     },
     entityType: {
       title: "Type",
@@ -76,7 +80,7 @@ export const personReferenceSchema: IEntitySchema = {
     }
   },
   required: [ 'entityId', 'entityType' ],
-  additionalProperties: false  
+  additionalProperties: false
 }
 
 export const arrayOfEntitySchema: IEntitySchema = {

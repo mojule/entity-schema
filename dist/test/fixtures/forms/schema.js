@@ -57,12 +57,14 @@ exports.personSchema = {
 exports.personReferenceSchema = {
     id: 'http://example.com/schema/person-reference',
     title: 'Person Reference',
+    description: 'A person reference',
     type: 'object',
-    format: 'workingspec-entity',
     properties: {
         entityId: {
             title: 'Person',
-            type: 'string'
+            type: 'string',
+            pattern: '^[0-9a-f]{24}$',
+            message: "Manufacturer must be a 24 character hex string. (0-9, a-f)"
         },
         entityType: {
             title: "Type",

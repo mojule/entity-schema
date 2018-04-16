@@ -10,6 +10,8 @@ import { strictSelect } from '@mojule/dom-utils'
 import { ArrayifySymbol, arrayifySchemaForm, predicateUtils, subschemaMap, SchemaCollection, schemaToForm } from '..'
 import * as H from '@mojule/h'
 import { IH } from '@mojule/h/types'
+import { ILinkMap, addLinks } from '../add-links';
+import { flatten } from '@mojule/json-pointer'
 
 const document: Document = doc
 const h: IH = H( document )
@@ -88,41 +90,54 @@ describe( 'forms', () => {
 
     describe( 'array of entity', () => {
       it( 'round trips', () => {
-        const people = {
-          'bob': { name: 'bob' },
-          'sue': { name: 'sue' }
-        }
-
         const entity = {
           stringArray: [ 'foo', 'bar' ],
+          personArray: []
+        }
+
+        const expect = {
+          stringArray: [ 'foo', 'bar' ],
           personArray: [
-            { entityType: 'person', entityId: 'bob' },
-            { entityType: 'person', entityId: 'sue' }
+            { entityType: 'Person', entityId: '000000000000000000000001' },
+            { entityType: 'Person', entityId: '000000000000000000000002' },
+            { entityType: 'Person', entityId: '000000000000000000000003' },
+          ]
+        }
+
+        const links: ILinkMap = {
+          Person: [
+            {
+              _id: '000000000000000000000001',
+              name: 'Bob'
+            },
+            {
+              _id: '000000000000000000000002',
+              name: 'Sue'
+            },
+            {
+              _id: '000000000000000000000003',
+              name: 'Sally'
+            }
           ]
         }
 
         const schemas = SchemaCollection( [ personSchema, personReferenceSchema, arrayOfEntitySchema ] )
         const schema = <IEntitySchema>schemas.normalize( 'Array of Entities' )
+        const linkedSchema = addLinks( schema, links )
 
-        const result = roundTrip( entity, schema )
+        const form = entityModelToForm( document, linkedSchema, entity )
+        const api = form[ ArrayifySymbol ][ '/personArray' ]
 
-        assert.deepEqual( entity, result )
+        for( let i = 0; i < links.Person.length; i++ ){
+          const newEl = api.add()
+          const select = <HTMLSelectElement>strictSelect( newEl, 'select' )
+          select.selectedIndex = i
+          console.log( select.value )
+        }
 
-        /*
+        const result = schemaFormToEntityModel( form )
 
-        const form2 = schemaToForm( document, schema, false )
-        console.log( form2.outerHTML )
-        
-        const form = schemaToForm( document, schema )
-
-        const stringApi = form[ ArrayifySymbol ][ '/stringArray' ]
-        const personApi = form[ ArrayifySymbol ][ '/personArray' ]
-
-        stringApi.add()
-        personApi.add()
-
-        console.log( form.outerHTML )
-        */
+        assert.deepEqual( result, expect )
       })
     })
 

@@ -6,6 +6,7 @@ const schema_to_form_1 = require("./schema-to-form");
 const filter_entity_by_schema_1 = require("../filter-entity-by-schema");
 const subschema_map_1 = require("../subschema-map");
 const dom_utils_1 = require("@mojule/dom-utils");
+const arrays_in_path_1 = require("../utils/arrays-in-path");
 exports.entityModelToForm = (document, schema, model) => {
     const schemaFormEl = schema_to_form_1.schemaToForm(document, schema);
     model = filter_entity_by_schema_1.filterEntityBySchema(model, schema);
@@ -37,23 +38,19 @@ exports.entityModelToForm = (document, schema, model) => {
     });
     const arrayifyApi = schemaFormEl[schema_to_form_1.ArrayifySymbol];
     const oneOfApi = schemaFormEl[schema_to_form_1.OneOfSymbol];
+    const arrayInfo = arrays_in_path_1.arrayPointerInfo(jsonPointerMap);
+    Object.keys(arrayInfo).forEach(arrayPointerPath => {
+        const length = arrayInfo[arrayPointerPath];
+        for (let i = 0; i < length; i++) {
+            arrayifyApi[arrayPointerPath].add();
+        }
+    });
     Object.keys(jsonPointerMap).forEach(jsonPointerPath => {
         const value = jsonPointerMap[jsonPointerPath];
         // an empty array - nothing to populate - if it has any children, they will
         // also exists with json pointer paths, so fine to skip it here.
         if (is_1.is.array(value))
             return;
-        // if the path ends with digits, it's parent schema is an array
-        if (/\d+$/.test(jsonPointerPath)) {
-            // get the parent schema path by removing digits from the end
-            const arrayPath = jsonPointerPath.replace(/\/\d+$/, '');
-            /*
-              add a new blank schema editor for the array item - the flattened json
-              pointer map should be in array order, so the index of the form editor
-              created below will match this newly added item
-            */
-            arrayifyApi[arrayPath].add();
-        }
         if (jsonPointerPath.endsWith('?')) {
             const radios = Array.from(schemaFormEl.querySelectorAll(`input[name="${jsonPointerPath}"]`));
             radios.forEach(radio => {

@@ -6,6 +6,7 @@ import { filterEntityBySchema } from '../filter-entity-by-schema'
 import { subschemaMap } from '../subschema-map'
 import { strictSelect } from '@mojule/dom-utils';
 import { SchemaFieldEditor } from './types';
+import { arrayPointerInfo } from '../utils/arrays-in-path';
 
 export const entityModelToForm = <TEntityModel>( document: Document, schema: IEntitySchema, model: TEntityModel ) => {
   const schemaFormEl = schemaToForm( document, schema )
@@ -50,6 +51,15 @@ export const entityModelToForm = <TEntityModel>( document: Document, schema: IEn
 
   const arrayifyApi = schemaFormEl[ ArrayifySymbol ]
   const oneOfApi = schemaFormEl[ OneOfSymbol ]
+  const arrayInfo = arrayPointerInfo( jsonPointerMap )
+
+  Object.keys( arrayInfo ).forEach( arrayPointerPath => {
+    const length = arrayInfo[ arrayPointerPath ]
+
+    for( let i = 0; i < length; i++ ){
+      arrayifyApi[ arrayPointerPath ].add()
+    }
+  })
 
   Object.keys( jsonPointerMap ).forEach( jsonPointerPath => {
     const value = jsonPointerMap[ jsonPointerPath ]
@@ -57,19 +67,6 @@ export const entityModelToForm = <TEntityModel>( document: Document, schema: IEn
     // an empty array - nothing to populate - if it has any children, they will
     // also exists with json pointer paths, so fine to skip it here.
     if ( is.array( value ) ) return
-
-    // if the path ends with digits, it's parent schema is an array
-    if ( /\d+$/.test( jsonPointerPath ) ) {
-      // get the parent schema path by removing digits from the end
-      const arrayPath = jsonPointerPath.replace( /\/\d+$/, '' )
-
-      /*
-        add a new blank schema editor for the array item - the flattened json
-        pointer map should be in array order, so the index of the form editor
-        created below will match this newly added item
-      */
-      arrayifyApi[ arrayPath ].add()
-    }
 
     if ( jsonPointerPath.endsWith( '?' ) ) {
       const radios = <HTMLInputElement[]>Array.from( schemaFormEl.querySelectorAll( `input[name="${ jsonPointerPath }"]` ) )
