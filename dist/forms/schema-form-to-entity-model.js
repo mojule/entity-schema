@@ -31,6 +31,7 @@ exports.schemaFormToEntityModel = (formEl) => {
     const arraySubSchemaEls = Array.from(formEl.querySelectorAll('[data-schema][data-type="array"]'));
     const arraySubschemaPaths = arraySubSchemaEls.map(el => `/${el.dataset.path}`);
     const jsonPointerToValueMap = {};
+    const _files = {};
     editors.forEach(editor => {
         const { name, type } = editor;
         if (type === 'submit')
@@ -39,7 +40,8 @@ exports.schemaFormToEntityModel = (formEl) => {
         if (type === 'file') {
             const input = editor;
             if (input.files && input.files[0]) {
-                value = input.files[0];
+                _files[name] = input.files[0];
+                return;
             }
         }
         else if (type === 'checkbox') {
@@ -74,6 +76,9 @@ exports.schemaFormToEntityModel = (formEl) => {
         }
     });
     resolveOneOf(jsonPointerToValueMap);
-    return json_pointer_1.expand(jsonPointerToValueMap);
+    const model = json_pointer_1.expand(jsonPointerToValueMap);
+    if (Object.keys(_files).length > 0)
+        Object.assign(model, { _files });
+    return model;
 };
 //# sourceMappingURL=schema-form-to-entity-model.js.map

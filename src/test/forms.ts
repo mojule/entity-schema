@@ -12,6 +12,7 @@ import * as H from '@mojule/h'
 import { IH } from '@mojule/h/types'
 import { ILinkMap, addLinks } from '../add-links';
 import { flatten } from '@mojule/json-pointer'
+import { createFile, addFileList } from './fixtures/forms/addFileList';
 
 const document: Document = doc
 const h: IH = H( document )
@@ -132,7 +133,6 @@ describe( 'forms', () => {
           const newEl = api.add()
           const select = <HTMLSelectElement>strictSelect( newEl, 'select' )
           select.selectedIndex = i
-          console.log( select.value )
         }
 
         const result = schemaFormToEntityModel( form )
@@ -313,13 +313,31 @@ describe( 'forms', () => {
       }
 
       const expect = {
-        fileField: '',
-        fileField__path: '/example.png'
+        fileField: '/example.png'
       }
 
       const result = roundTrip( entity, simpleFileSchema )
 
       assert.deepEqual( result, expect )
+    })
+
+    it( 'sets file', () => {
+      const entity = {
+        fileField: '/example.png'
+      }
+
+      const form = entityModelToForm( document, simpleFileSchema, entity )
+
+      const fileInput = strictSelect( form, 'input[type="file"]' )
+      const file = createFile( Buffer.from( [ 65, 65, 65 ] ), 'test.txt', { lastModified: 0, type: 'text/plain' } )
+      addFileList( fileInput, [ file ] )
+
+      const model = schemaFormToEntityModel( form )
+
+      assert.strictEqual( model.fileField, entity.fileField )
+      assert( '_files' in model )
+      assert( '/fileField' in model._files )
+      assert( 'type' in model._files[ '/fileField' ] )
     })
   })
 })

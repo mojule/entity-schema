@@ -204,12 +204,10 @@ export const schemaToForm = ( document: Document, schema: IObjectSchema, arrayif
         const pathInput = <HTMLInputElement>strictSelect( inputWrapper, 'input' )
         const fileInput = <HTMLInputElement>pathInput.cloneNode( true )
 
-        pathLabel.htmlFor = pathLabel.htmlFor + '__path'
-        pathInput.name = pathInput.name + '__path'
-
         fileInput.type = 'file'
 
         pathInput.parentNode!.appendChild( fileInput )
+        pathInput.parentNode!.appendChild( pathInput )
       }
 
       return inputWrapper
@@ -227,9 +225,9 @@ export const schemaToForm = ( document: Document, schema: IObjectSchema, arrayif
       if( schema.items ){
         const newPathSegs = ( <string[]>pathSegs ).concat(  [ '[]' ] )
         const newOptions = Object.assign( {}, options, { pathSegs: newPathSegs } )
-        const itemSchemaEl = mapper( schema.items, newOptions )        
-        
-        const firstSchemaEl = 
+        const itemSchemaEl = mapper( schema.items, newOptions )
+
+        const firstSchemaEl =
           ( 'schema' in itemSchemaEl.dataset ) ?
           itemSchemaEl :
           <HTMLElement>strictSelect( itemSchemaEl, '[data-schema]' )

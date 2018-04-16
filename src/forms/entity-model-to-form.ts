@@ -85,7 +85,7 @@ export const entityModelToForm = <TEntityModel>( document: Document, schema: IEn
     if ( editor.type === 'checkbox' ) {
       ( <HTMLInputElement>editor ).checked = value
     } else if ( editor.type === 'file' ) {
-      const pathEditor = <HTMLInputElement>strictSelect( schemaFormEl, `[name="${ editor.name }__path"]` )
+      const pathEditor = <HTMLInputElement>strictSelect( schemaFormEl, `[type="text"][name="${ editor.name }"]` )
       pathEditor.value = value
     } else if( editor.localName === 'select' ){
       const optionEl = <HTMLOptionElement>strictSelect( editor, `[value="${ value }"]` )

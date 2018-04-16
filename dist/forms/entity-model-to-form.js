@@ -64,7 +64,7 @@ exports.entityModelToForm = (document, schema, model) => {
             editor.checked = value;
         }
         else if (editor.type === 'file') {
-            const pathEditor = dom_utils_1.strictSelect(schemaFormEl, `[name="${editor.name}__path"]`);
+            const pathEditor = dom_utils_1.strictSelect(schemaFormEl, `[type="text"][name="${editor.name}"]`);
             pathEditor.value = value;
         }
         else if (editor.localName === 'select') {

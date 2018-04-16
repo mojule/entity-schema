@@ -10,6 +10,7 @@ const dom_utils_1 = require("@mojule/dom-utils");
 const __1 = require("..");
 const H = require("@mojule/h");
 const add_links_1 = require("../add-links");
+const addFileList_1 = require("./fixtures/forms/addFileList");
 const document = doc;
 const h = H(document);
 const roundTrip = (entityModel, schema) => {
@@ -104,7 +105,6 @@ describe('forms', () => {
                     const newEl = api.add();
                     const select = dom_utils_1.strictSelect(newEl, 'select');
                     select.selectedIndex = i;
-                    console.log(select.value);
                 }
                 const result = schema_form_to_entity_model_1.schemaFormToEntityModel(form);
                 assert.deepEqual(result, expect);
@@ -240,11 +240,24 @@ describe('forms', () => {
                 fileField: '/example.png'
             };
             const expect = {
-                fileField: '',
-                fileField__path: '/example.png'
+                fileField: '/example.png'
             };
             const result = roundTrip(entity, schema_1.simpleFileSchema);
             assert.deepEqual(result, expect);
+        });
+        it('sets file', () => {
+            const entity = {
+                fileField: '/example.png'
+            };
+            const form = entity_model_to_form_1.entityModelToForm(document, schema_1.simpleFileSchema, entity);
+            const fileInput = dom_utils_1.strictSelect(form, 'input[type="file"]');
+            const file = addFileList_1.createFile(Buffer.from([65, 65, 65]), 'test.txt', { lastModified: 0, type: 'text/plain' });
+            addFileList_1.addFileList(fileInput, [file]);
+            const model = schema_form_to_entity_model_1.schemaFormToEntityModel(form);
+            assert.strictEqual(model.fileField, entity.fileField);
+            assert('_files' in model);
+            assert('/fileField' in model._files);
+            assert('type' in model._files['/fileField']);
         });
     });
 });

@@ -43,6 +43,8 @@ export const schemaFormToEntityModel = ( formEl: SchemaFormElement ) => {
 
   const jsonPointerToValueMap = {}
 
+  const _files = {}
+
   editors.forEach( editor => {
     const { name, type } = editor
 
@@ -54,7 +56,9 @@ export const schemaFormToEntityModel = ( formEl: SchemaFormElement ) => {
       const input = <HTMLInputElement>editor
 
       if ( input.files && input.files[ 0 ] ) {
-        value = input.files[ 0 ]
+        _files[ name ] = input.files[ 0 ]
+
+        return
       }
     } else if ( type === 'checkbox' ) {
       value = ( <HTMLInputElement>editor ).checked
@@ -92,5 +96,10 @@ export const schemaFormToEntityModel = ( formEl: SchemaFormElement ) => {
 
   resolveOneOf( jsonPointerToValueMap )
 
-  return expand( jsonPointerToValueMap )
+  const model = expand( jsonPointerToValueMap )
+
+  if( Object.keys( _files ).length > 0 )
+    Object.assign( model, { _files } )
+
+  return model
 }

@@ -138,10 +138,9 @@ exports.schemaToForm = (document, schema, arrayify = true) => {
                 const pathLabel = dom_utils_1.strictSelect(inputWrapper, 'label');
                 const pathInput = dom_utils_1.strictSelect(inputWrapper, 'input');
                 const fileInput = pathInput.cloneNode(true);
-                pathLabel.htmlFor = pathLabel.htmlFor + '__path';
-                pathInput.name = pathInput.name + '__path';
                 fileInput.type = 'file';
                 pathInput.parentNode.appendChild(fileInput);
+                pathInput.parentNode.appendChild(pathInput);
             }
             return inputWrapper;
         },
