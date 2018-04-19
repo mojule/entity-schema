@@ -1,6 +1,6 @@
 import { rootRoutes } from './root'
-import { schemaRoutes } from './schema'
-import { entityRoutes } from './entity'
+import { schemaRoutes } from './schema-routes'
+import { entityRoutes } from './entity-routes'
 import { ErrorPage } from '../templates'
 import { IClientRouterMap } from './client-router';
 

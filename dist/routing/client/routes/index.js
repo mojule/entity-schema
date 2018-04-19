@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const root_1 = require("./root");
-const schema_1 = require("./schema");
-const entity_1 = require("./entity");
+const schema_routes_1 = require("./schema-routes");
+const entity_routes_1 = require("./entity-routes");
 const templates_1 = require("../templates");
 const unmatchedRoutes = {
     '/(.*)': (req, res) => {
@@ -10,5 +10,5 @@ const unmatchedRoutes = {
         res.send(templates_1.ErrorPage(err));
     }
 };
-exports.routes = Object.assign({}, root_1.rootRoutes, schema_1.schemaRoutes, entity_1.entityRoutes, unmatchedRoutes);
+exports.routes = Object.assign({}, root_1.rootRoutes, schema_routes_1.schemaRoutes, entity_routes_1.entityRoutes, unmatchedRoutes);
 //# sourceMappingURL=index.js.map

@@ -1,12 +1,12 @@
 import { flatten, pointers, get } from '@mojule/json-pointer'
 
 // map of propertyName to uri
-export interface IFetchJsonMap {
+export interface FetchJsonMap {
   [ propertyName: string ]: string
 }
 
 // map of propertyName to result
-export interface IFetchJsonResult {
+export interface FetchJsonResult {
   [ propertyName: string ]: any
 }
 
@@ -24,8 +24,8 @@ const jsonOrError = async ( res: Response ) => {
 
 export const fetchJson = uri => fetch( uri ).then( jsonOrError )
 
-export const fetchJsonMultiple = ( map: IFetchJsonMap ) => {
-  const result: IFetchJsonResult = {}
+export const fetchJsonMultiple = ( map: FetchJsonMap ) => {
+  const result: FetchJsonResult = {}
   const propertyNames = Object.keys( map )
 
   return Promise.all( propertyNames.map( propertyName => {
