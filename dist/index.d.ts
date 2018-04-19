@@ -18,4 +18,7 @@ import { predicates, predicateUtils } from './predicates';
 import { oneOfSchemaForm } from './forms/oneof-schema-form';
 import { entityModelToForm } from './forms/entity-model-to-form';
 import { schemaFormToEntityModel } from './forms/schema-form-to-entity-model';
-export { SchemaCollection, addLinks, addUniques, arrayifySchemaForm, filterEntityBySchema, interfaceSchemaMapper, linkTitlesForSchema, loadSchemas, NormalizeSchema, SchemaMap, schemaToForm, schemaToMongooseSchema, schemaWalk, subschemaMap, uniquePropertyNames, uploadablePropertyNames, predicates, ArrayifySymbol, oneOfSchemaForm, OneOfSymbol, entityModelToForm, schemaFormToEntityModel, predicateUtils };
+import { mongooseModels } from './mongoose/mongoose-models';
+import { EntityRoutes } from './routing/server/entity-routes';
+import { SchemaRoutes } from './routing/server/schema-routes';
+export { SchemaCollection, addLinks, addUniques, arrayifySchemaForm, filterEntityBySchema, interfaceSchemaMapper, linkTitlesForSchema, loadSchemas, NormalizeSchema, SchemaMap, schemaToForm, schemaToMongooseSchema, schemaWalk, subschemaMap, uniquePropertyNames, uploadablePropertyNames, predicates, ArrayifySymbol, oneOfSchemaForm, OneOfSymbol, entityModelToForm, schemaFormToEntityModel, predicateUtils, mongooseModels, EntityRoutes, SchemaRoutes };
