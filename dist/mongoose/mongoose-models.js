@@ -5,7 +5,7 @@ const schema_collection_1 = require("../schema-collection");
 const pascal_case_1 = require("../utils/pascal-case");
 exports.mongooseModels = (schemaMap) => {
     const appSchemas = schema_collection_1.SchemaCollection(schemaMap);
-    return appSchemas.entityTitles.reduce((models, title) => {
+    const createCtor = (title) => {
         const parentProperty = appSchemas.parentProperty(title);
         const schema = appSchemas.mongooseSchema(title);
         const ctorName = pascal_case_1.pascalCase(title);
@@ -41,7 +41,11 @@ exports.mongooseModels = (schemaMap) => {
                 }, {});
             });
         };
-        const Ctor = mongoose.model(ctorName, schema);
+        return mongoose.model(ctorName, schema);
+    };
+    return appSchemas.entityTitles.reduce((models, title) => {
+        const ctorName = pascal_case_1.pascalCase(title);
+        const Ctor = mongoose.models[ctorName] || createCtor(title);
         models[ctorName] = Ctor;
         return models;
     }, {});

@@ -8,7 +8,7 @@ import { IExistingValuesMap } from '../add-uniques'
 export const mongooseModels = <TMongooseModels>( schemaMap: IAppSchema[] ) => {
   const appSchemas = SchemaCollection( schemaMap )
 
-  return <TMongooseModels>appSchemas.entityTitles.reduce( ( models, title ) => {
+  const createCtor = ( title: string ) => {
     const parentProperty = appSchemas.parentProperty( title )
     const schema = appSchemas.mongooseSchema( title )
     const ctorName = pascalCase( title )
@@ -58,7 +58,12 @@ export const mongooseModels = <TMongooseModels>( schemaMap: IAppSchema[] ) => {
         } )
     }
 
-    const Ctor = mongoose.model( ctorName, schema )
+    return mongoose.model( ctorName, schema )
+  }
+
+  return <TMongooseModels>appSchemas.entityTitles.reduce( ( models, title ) => {
+    const ctorName = pascalCase( title )
+    const Ctor = mongoose.models[ ctorName ] || createCtor( title )
 
     models[ ctorName ] = Ctor
 
