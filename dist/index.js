@@ -49,4 +49,6 @@ const entity_routes_1 = require("./routing/server/entity-routes");
 exports.EntityRoutes = entity_routes_1.EntityRoutes;
 const schema_routes_1 = require("./routing/server/schema-routes");
 exports.SchemaRoutes = schema_routes_1.SchemaRoutes;
+const generate_typescript_1 = require("./typescript/generate-typescript");
+exports.generateTypescript = generate_typescript_1.generateTypescript;
 //# sourceMappingURL=index.js.map
