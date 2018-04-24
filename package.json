@@ -1,6 +1,6 @@
 {
   "name": "@mojule/entity-schema",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "Subset of JSON Schema for defining entities",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -28,6 +28,7 @@
     "@mojule/json-pointer": "^0.2.3",
     "@mojule/mapper": "^0.1.1",
     "body-parser": "^1.18.2",
+    "json-schema-to-typescript": "^5.4.0",
     "lodash.camelcase": "^4.3.0",
     "lodash.escaperegexp": "^4.1.2",
     "lodash.upperfirst": "^4.3.1",
