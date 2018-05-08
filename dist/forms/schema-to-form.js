@@ -71,6 +71,9 @@ exports.schemaToForm = (document, schema, arrayify = true) => {
         if (format === 'email') {
             inputType = 'email';
         }
+        if (format === 'password') {
+            inputType = 'password';
+        }
         const editor = inputType === 'hidden' ?
             input({ name, type: inputType, data: { type } }) :
             editorType === 'multiline' ?

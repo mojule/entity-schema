@@ -111,6 +111,10 @@ export const schemaToForm = ( document: Document, schema: IObjectSchema, arrayif
       inputType = 'email'
     }
 
+    if( format === 'password' ){
+      inputType = 'password'
+    }
+
     const editor =
       inputType === 'hidden' ?
       input( { name, type: inputType, data: { type } } ) :
