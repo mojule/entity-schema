@@ -1,4 +1,3 @@
-import { getDocumentTemplates } from '../utils/document-templates'
 import * as h from '../utils/h'
 import { AdminTemplateDeps } from './types'
 
@@ -20,11 +19,7 @@ import {
   TitlesAnchorNavTemplate, TitlesAnchorNavModel
 } from './titles-anchor-nav'
 
-const documentTemplates = getDocumentTemplates( document )
-
-const deps: AdminTemplateDeps = {
-  documentTemplates, h
-}
+const deps: AdminTemplateDeps = { h }
 
 export const ActionList = ActionListTemplate( deps )
 export const AnchorLinkItem = AnchorLinkItemTemplate( deps )

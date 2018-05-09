@@ -1,16 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const anchor_link_item_1 = require("./anchor-link-item");
-const dom_utils_1 = require("@mojule/dom-utils");
 exports.AppPageTemplate = (deps) => {
-    const { documentTemplates } = deps;
-    const { page } = documentTemplates;
+    const { h } = deps;
+    const { documentFragment, div, nav, ul } = h;
     const AnchorLinkItem = anchor_link_item_1.AnchorLinkItemTemplate(deps);
     const AppPage = (model = {}, ...childNodes) => {
         const { currentPath = '' } = model;
-        const dom = page();
-        const main = dom_utils_1.strictSelect(dom, 'main');
-        const navList = dom_utils_1.strictSelect(dom, 'nav ul');
+        const navList = nav(ul());
+        const main = div();
+        const dom = documentFragment(navList, main);
         childNodes.forEach(childNode => {
             main.appendChild(childNode);
         });

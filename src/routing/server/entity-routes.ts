@@ -113,6 +113,8 @@ export const EntityRoutes = ( schemaMap: IAppSchema[] ): IRouteData => {
         const { body } = req
         const files = <Express.Multer.File[]>req.files
 
+        if( !files ) return
+
         uploadablePropertyNames.forEach( propertyName => {
           const file = files.find( f => f.fieldname === '/' + propertyName )
 
@@ -128,9 +130,9 @@ export const EntityRoutes = ( schemaMap: IAppSchema[] ): IRouteData => {
     const postHandler = async ( req: Request, res: Response ) => {
       const { body } = req
 
-      addFiles( req )
-
       try {
+        addFiles( req )
+
         const parentId = await getParentId( body )
         const uniqueValuesMap = await Model.uniqueValuesMap( parentId )
         const schema = addUniques( entitySchema, uniqueValuesMap )

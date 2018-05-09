@@ -80,6 +80,8 @@ exports.EntityRoutes = (schemaMap) => {
             if (hasUploadableProperties) {
                 const { body } = req;
                 const files = req.files;
+                if (!files)
+                    return;
                 uploadablePropertyNames.forEach(propertyName => {
                     const file = files.find(f => f.fieldname === '/' + propertyName);
                     if (file) {
@@ -91,8 +93,8 @@ exports.EntityRoutes = (schemaMap) => {
         };
         const postHandler = async (req, res) => {
             const { body } = req;
-            addFiles(req);
             try {
+                addFiles(req);
                 const parentId = await getParentId(body);
                 const uniqueValuesMap = await Model.uniqueValuesMap(parentId);
                 const schema = add_uniques_1.addUniques(entitySchema, uniqueValuesMap);

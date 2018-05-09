@@ -7,8 +7,8 @@ export interface AppPageModel {
 }
 
 export const AppPageTemplate = ( deps: AdminTemplateDeps ) => {
-  const { documentTemplates } = deps
-  const { page } = documentTemplates
+  const { h } = deps
+  const { documentFragment, div, nav, ul } = h
   const AnchorLinkItem = AnchorLinkItemTemplate( deps )
 
   const AppPage = ( model: AppPageModel = {}, ...childNodes : Node[] ) => {
@@ -16,9 +16,11 @@ export const AppPageTemplate = ( deps: AdminTemplateDeps ) => {
       currentPath = ''
     } = model
 
-    const dom = page()
-    const main = strictSelect( dom, 'main' )
-    const navList = strictSelect( dom, 'nav ul' )
+    const navList = nav( ul() )
+    const main = div()
+    const dom = documentFragment(
+      navList, main
+    )
 
     childNodes.forEach( childNode => {
       main.appendChild( childNode )
