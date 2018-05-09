@@ -42,7 +42,7 @@ const excludeOwnProperties = (model, uniqueValuesMap) => {
     return map;
 };
 const selectBodyParser = (schema) => (req, res, next) => {
-    if (req.headers['content-type'] === 'application/json') {
+    if (req.headers['content-type'].startsWith('application/json')) {
         jsonParser(req, res, next);
         return;
     }
