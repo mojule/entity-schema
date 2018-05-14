@@ -230,6 +230,29 @@ exports.EntityRoutes = (schemaMap) => {
                     }
                 }
             },
+            [`${routeName}/filter`]: {
+                // get all entities matching params
+                get: async (req, res) => {
+                    try {
+                        const normal = {};
+                        const nested = {};
+                        Object.keys(req.query).forEach(key => {
+                            if (key.startsWith('/')) {
+                                nested[key] = req.query[key];
+                            }
+                            else {
+                                normal[key] = req.query[key];
+                            }
+                        });
+                        const query = Object.assign({}, normal, json_pointer_1.expand(nested));
+                        const docs = await Model.find(query);
+                        res.json(docs);
+                    }
+                    catch (err) {
+                        json_errors_1.serverError(res, err);
+                    }
+                }
+            },
             [`${routeName}/:propertyName`]: {
                 // get all possible values for the unique named property
                 get: async (req, res) => {

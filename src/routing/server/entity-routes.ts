@@ -295,6 +295,30 @@ export const EntityRoutes = ( schemaMap: IAppSchema[] ): IRouteData => {
           }
         }
       },
+      [ `${ routeName }/filter` ]: {
+        // get all entities matching params
+        get: async ( req: Request, res: Response ) => {
+          try {
+            const normal: any = {}
+            const nested: any = {}
+
+            Object.keys( req.query ).forEach( key => {
+              if( key.startsWith( '/' ) ){
+                nested[ key ] = req.query[ key ]
+              } else {
+                normal[ key ] = req.query[ key ]
+              }
+            })
+
+            const query = Object.assign( {}, normal, expand( nested ) )
+            const docs = await Model.find( query )
+
+            res.json( docs )
+          } catch ( err ) {
+            serverError( res, err )
+          }
+        }
+      },
       [ `${ routeName }/:propertyName` ]: {
         // get all possible values for the unique named property
         get: async ( req: Request, res: Response ) => {
