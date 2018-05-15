@@ -147,7 +147,9 @@ describe('Schema', () => {
                     arrayProp: {},
                     nullProp: true
                 });
-                const invalidErr = valid.validateSync();
+                const validErr = valid.validateSync();
+                assert(!validErr);
+                const invalidErr = invalid.validateSync();
                 assert(invalidErr && invalidErr.name === 'ValidationError');
             });
         });

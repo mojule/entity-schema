@@ -212,7 +212,10 @@ describe( 'Schema', () => {
           nullProp: true
         })
 
-        const invalidErr = <any>valid.validateSync()
+        const validErr = <any>valid.validateSync()
+        assert( !validErr )
+
+        const invalidErr = <any>invalid.validateSync()
         assert( invalidErr && invalidErr.name === 'ValidationError' )
       })
     })
