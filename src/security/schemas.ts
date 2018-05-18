@@ -1,3 +1,3 @@
-import * as user from '../../app-schema/security/entities/user.schema.json'
+import { userSchema } from './app-schema/user-schema'
 
-export const securitySchemas = [ user ]
+export const securitySchemas = [ userSchema ]

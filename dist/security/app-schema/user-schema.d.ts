@@ -1,4 +1,4 @@
-export declare const securitySchemas: {
+export declare const userSchema: {
     id: string;
     title: string;
     description: string;
@@ -49,4 +49,4 @@ export declare const securitySchemas: {
     };
     additionalProperties: boolean;
     required: string[];
-}[];
+};
