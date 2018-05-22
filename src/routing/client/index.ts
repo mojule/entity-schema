@@ -13,7 +13,11 @@ document.addEventListener( 'DOMContentLoaded', () => {
     client.appendChild( node )
   }
 
-  const router = ClientRouter( routes, send )
+  const redirect = ( path: string ) => {
+    window.location.hash = '#' + path
+  }
+
+  const router = ClientRouter( routes, send, redirect )
 
   const navigate = () => {
     const path = hashToPath( location.hash )

@@ -1,4 +1,4 @@
-import { fetchJson, postJson, putJson, fetchJsonMultiple, postFormData, putFormData } from '../utils/fetch-json'
+import { fetchJson, postJson, putJson, fetchJsonMultiple, postFormData, putFormData, postDelete } from '../utils/fetch-json'
 import { documentFragment, h2, h3, h4, button, input } from '../utils/h'
 import { objectToDom } from '../utils/object-to-dom'
 import { startCase, kebabCase } from 'lodash'
@@ -87,7 +87,7 @@ export const entityRoutes : IClientRouterMap = {
         try {
           const newEntity = await poster
 
-          window.location.hash = `#/entity/${ title }/${ newEntity._id }`
+          res.redirect( `/entity/${ title }/${ newEntity._id }` )
         } catch( err ){
           res.send( ErrorPage( err ) )
         }
@@ -140,7 +140,8 @@ export const entityRoutes : IClientRouterMap = {
 
         try {
           const updatedEntity = await putter
-          window.location.hash = `#/entity/${ title }/${ updatedEntity._id }`
+
+          res.redirect( `/entity/${ title }/${ updatedEntity._id }` )
         } catch( err ){
           res.send( ErrorPage( err ) )
         }
@@ -154,6 +155,18 @@ export const entityRoutes : IClientRouterMap = {
 
       res.send( AppPage( { currentPath: '/entity' }, content ) )
     } catch( err ){
+      res.send( ErrorPage( err ) )
+    }
+  },
+  '/entity/:title/:id/delete': async ( req, res ) => {
+    const title: string = req.params.title
+    const id: string = req.params.id
+
+    try {
+      const deleted = await postDelete( `/api/v1/${ title }/${ id }` )
+
+      res.redirect( `/entity/${ title }` )
+    } catch ( err ) {
       res.send( ErrorPage( err ) )
     }
   },
@@ -200,10 +213,16 @@ export const entityRoutes : IClientRouterMap = {
         content.appendChild(
           documentFragment(
             h4( `${ startCase( title ) } ${ id }` ),
-            ActionList([{
-              title: 'Edit',
-              path: `/entity/${ title }/${ id }/edit`
-            }]),
+            ActionList([
+              {
+                title: 'Edit',
+                path: `/entity/${ title }/${ id }/edit`
+              },
+              {
+                title: 'Delete',
+                path: `/entity/${ title }/${ id }/delete`
+              }
+            ]),
             objectToDom( entity )
           )
         )

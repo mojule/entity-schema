@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const pathToRegexp = require("path-to-regexp");
-exports.ClientRouter = (routeMap, send) => {
+exports.ClientRouter = (routeMap, send, redirect) => {
     const routes = Object.keys(routeMap);
     const routeData = routes.reduce((map, route) => {
         const keys = [];
@@ -22,7 +22,7 @@ exports.ClientRouter = (routeMap, send) => {
             return map;
         }, {});
         const req = { path, params };
-        const res = { send };
+        const res = { send, redirect };
         return routeMap[route](req, res);
     };
     return router;

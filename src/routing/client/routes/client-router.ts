@@ -9,13 +9,14 @@ export interface IClientRouteRequest {
 
 export interface IClientRouteResponse {
   send: ( node: Node ) => void
+  redirect: ( path: string ) => void
 }
 
 export interface IClientRouterMap {
   [ route: string ]: ClientRequestHandler
 }
 
-export const ClientRouter = ( routeMap: IClientRouterMap, send: ( node: Node ) => void ) => {
+export const ClientRouter = ( routeMap: IClientRouterMap, send: ( node: Node ) => void, redirect: ( path: string ) => void ) => {
   const routes = Object.keys( routeMap )
 
   const routeData = routes.reduce( ( map, route ) => {
@@ -46,7 +47,7 @@ export const ClientRouter = ( routeMap: IClientRouterMap, send: ( node: Node ) =
     }, {} )
 
     const req = { path, params }
-    const res = { send }
+    const res = { send, redirect }
 
     return routeMap[ route ]( req, res )
   }

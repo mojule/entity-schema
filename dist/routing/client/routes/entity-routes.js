@@ -61,7 +61,7 @@ exports.entityRoutes = {
                     fetch_json_1.postJson(uri, model);
                 try {
                     const newEntity = await poster;
-                    window.location.hash = `#/entity/${title}/${newEntity._id}`;
+                    res.redirect(`/entity/${title}/${newEntity._id}`);
                 }
                 catch (err) {
                     res.send(templates_1.ErrorPage(err));
@@ -99,7 +99,7 @@ exports.entityRoutes = {
                     fetch_json_1.putJson(uri, model);
                 try {
                     const updatedEntity = await putter;
-                    window.location.hash = `#/entity/${title}/${updatedEntity._id}`;
+                    res.redirect(`/entity/${title}/${updatedEntity._id}`);
                 }
                 catch (err) {
                     res.send(templates_1.ErrorPage(err));
@@ -108,6 +108,17 @@ exports.entityRoutes = {
             entityForm.addEventListener('submit', putHandler);
             entityForm.appendChild(h_1.input({ type: 'submit', id: 'submit-button', value: `Update ${lodash_1.startCase(title)}` }));
             res.send(templates_1.AppPage({ currentPath: '/entity' }, content));
+        }
+        catch (err) {
+            res.send(templates_1.ErrorPage(err));
+        }
+    },
+    '/entity/:title/:id/delete': async (req, res) => {
+        const title = req.params.title;
+        const id = req.params.id;
+        try {
+            const deleted = await fetch_json_1.postDelete(`/api/v1/${title}/${id}`);
+            res.redirect(`/entity/${title}`);
         }
         catch (err) {
             res.send(templates_1.ErrorPage(err));
@@ -136,10 +147,16 @@ exports.entityRoutes = {
             }
             if (id) {
                 const entity = await fetch_json_1.fetchJson(`/api/v1/${title}/${id}`);
-                content.appendChild(h_1.documentFragment(h_1.h4(`${lodash_1.startCase(title)} ${id}`), templates_1.ActionList([{
+                content.appendChild(h_1.documentFragment(h_1.h4(`${lodash_1.startCase(title)} ${id}`), templates_1.ActionList([
+                    {
                         title: 'Edit',
                         path: `/entity/${title}/${id}/edit`
-                    }]), object_to_dom_1.objectToDom(entity)));
+                    },
+                    {
+                        title: 'Delete',
+                        path: `/entity/${title}/${id}/delete`
+                    }
+                ]), object_to_dom_1.objectToDom(entity)));
             }
             res.send(templates_1.AppPage({ currentPath: '/entity' }, content));
         }

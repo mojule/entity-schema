@@ -1,5 +1,6 @@
 import { Request, Response, RequestHandler, NextFunction } from 'express-serve-static-core'
 import * as mongoose from 'mongoose'
+import { Model, Document } from 'mongoose'
 import { kebabCase, camelCase } from 'lodash'
 import * as tv4 from 'tv4'
 import { serverError, userError, notFoundError, NotFoundError, jsonError } from './json-errors'
@@ -90,7 +91,7 @@ const addMetaData = ( metadata: any ) => ( req: Request, res: Response, next: Ne
 }
 
 export const EntityRoutes = ( schemaMap: IAppSchema[] ): IRouteData => {
-  const createRouteData = ( title: string, uniqueValuePropertyNames: string[], Model ): IRouteData => {
+  const createRouteData = ( title: string, uniqueValuePropertyNames: string[], Model: Model<Document> ): IRouteData => {
     const uploadablePropertyNames = schemas.uploadablePropertyNames( title )
     const hasUploadableProperties = !!uploadablePropertyNames.length
     const entitySchema = <IEntitySchema>schemas.normalize( title )
@@ -134,7 +135,7 @@ export const EntityRoutes = ( schemaMap: IAppSchema[] ): IRouteData => {
         addFiles( req )
 
         const parentId = await getParentId( body )
-        const uniqueValuesMap = await Model.uniqueValuesMap( parentId )
+        const uniqueValuesMap = await ( <any> Model ).uniqueValuesMap( parentId )
         const schema = addUniques( entitySchema, uniqueValuesMap )
         const validate = tv4.validateMultiple( body, <tv4.JsonSchema>schema )
 
@@ -194,7 +195,7 @@ export const EntityRoutes = ( schemaMap: IAppSchema[] ): IRouteData => {
 
         const parentId = await getParentId( id )
 
-        let uniqueMap = await Model.uniqueValuesMap( parentId )
+        let uniqueMap = await ( <any> Model ).uniqueValuesMap( parentId )
 
         uniqueMap = excludeOwnProperties( doc, uniqueMap )
 
@@ -281,7 +282,23 @@ export const EntityRoutes = ( schemaMap: IAppSchema[] ): IRouteData => {
           }
         },
         // update an existing entity
-        put: putHandlers
+        put: putHandlers,
+        delete: async( req: Request, res: Response ) => {
+          const id: string = req.params.id
+
+          try {
+            const doc = await Model.findById( id )
+
+            if ( doc === null )
+              throw new NotFoundError( `No ${ title } found for ID ${ id }` )
+
+            const removed = await doc.remove()
+
+            res.json( removed.toJSON() )
+          } catch( err ){
+            jsonError( res, err )
+          }
+        }
       },
       [ `${ routeName }/all` ]: {
         // get all entities
@@ -331,7 +348,7 @@ export const EntityRoutes = ( schemaMap: IAppSchema[] ): IRouteData => {
           }
 
           try {
-            const values = await Model.valuesForUniqueProperty( propertyName )
+            const values = await ( <any>Model ).valuesForUniqueProperty( propertyName )
 
             res.json( values )
           } catch ( err ) {
@@ -342,7 +359,7 @@ export const EntityRoutes = ( schemaMap: IAppSchema[] ): IRouteData => {
     }
   }
 
-  const models = mongooseModels( schemaMap )
+  const models = mongooseModels<Model<Document>>( schemaMap )
   const schemas = SchemaCollection( schemaMap )
   const { entityTitles } = schemas
 

@@ -20,6 +20,13 @@ exports.fetchJsonMultiple = (map) => {
         });
     })).then(() => result);
 };
+exports.postDelete = (uri) => fetch(uri, {
+    method: 'DELETE',
+    headers: new Headers({
+        'Content-Type': 'application/json'
+    })
+})
+    .then(jsonOrError);
 const sendJson = (uri, model, method = 'POST') => fetch(uri, {
     method,
     body: JSON.stringify(model),

@@ -216,7 +216,20 @@ exports.EntityRoutes = (schemaMap) => {
                     }
                 },
                 // update an existing entity
-                put: putHandlers
+                put: putHandlers,
+                delete: async (req, res) => {
+                    const id = req.params.id;
+                    try {
+                        const doc = await Model.findById(id);
+                        if (doc === null)
+                            throw new json_errors_1.NotFoundError(`No ${title} found for ID ${id}`);
+                        const removed = await doc.remove();
+                        res.json(removed.toJSON());
+                    }
+                    catch (err) {
+                        json_errors_1.jsonError(res, err);
+                    }
+                }
             },
             [`${routeName}/all`]: {
                 // get all entities

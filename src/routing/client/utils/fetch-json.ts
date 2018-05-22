@@ -37,6 +37,15 @@ export const fetchJsonMultiple = ( map: FetchJsonMap ) => {
   } ) ).then( () => result )
 }
 
+export const postDelete = ( uri: string ) =>
+  fetch( uri, {
+    method: 'DELETE',
+    headers: new Headers( {
+      'Content-Type': 'application/json'
+    } )
+  } )
+  .then( jsonOrError )
+
 const sendJson = ( uri: string, model: any, method: 'POST' | 'PUT' = 'POST' ) =>
   fetch( uri, {
     method,
