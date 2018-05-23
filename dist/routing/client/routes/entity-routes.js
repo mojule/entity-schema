@@ -11,6 +11,7 @@ const schema_to_form_1 = require("../../../forms/schema-to-form");
 const schema_form_to_entity_model_1 = require("../../../forms/schema-form-to-entity-model");
 const uploadable_properties_1 = require("../../../uploadable-properties");
 const entity_model_to_form_1 = require("../../../forms/entity-model-to-form");
+const dom_utils_1 = require("@mojule/dom-utils");
 const schemaWithLinks = async (schema) => {
     const linkTitles = link_titles_for_schema_1.linkTitlesForSchema(schema);
     const fetchJsonMap = linkTitles.reduce((map, title) => {
@@ -32,6 +33,12 @@ const getSchema = async (title) => {
     const normalizedSchema = await fetch_json_1.fetchJson(`/schema/${title}/normalized`);
     const schema = await schemaWithLinks(normalizedSchema);
     return schema;
+};
+const getCredentials = () => {
+    const clientDiv = dom_utils_1.strictSelect(document, '.client');
+    const { user, password } = clientDiv.dataset;
+    if (user && password)
+        return 'Basic ' + new Buffer(`${user}:${password}`).toString('base64');
 };
 exports.entityRoutes = {
     '/entity/:title/create': async (req, res) => {
@@ -57,8 +64,8 @@ exports.entityRoutes = {
                 const hasUploadable = uploadableProperties.length > 0;
                 const uri = `/api/v1/${title}`;
                 const poster = hasUploadable ?
-                    fetch_json_1.postFormData(uri, model) :
-                    fetch_json_1.postJson(uri, model);
+                    fetch_json_1.postFormData(uri, model, 'POST', getCredentials()) :
+                    fetch_json_1.postJson(uri, model, 'POST', getCredentials());
                 try {
                     const newEntity = await poster;
                     res.redirect(`/entity/${title}/${newEntity._id}`);
@@ -95,8 +102,8 @@ exports.entityRoutes = {
                 const hasUploadable = !!uploadableProperties.length;
                 const uri = `/api/v1/${title}/${id}`;
                 const putter = hasUploadable ?
-                    fetch_json_1.putFormData(uri, model) :
-                    fetch_json_1.putJson(uri, model);
+                    fetch_json_1.putFormData(uri, model, getCredentials()) :
+                    fetch_json_1.putJson(uri, model, getCredentials());
                 try {
                     const updatedEntity = await putter;
                     res.redirect(`/entity/${title}/${updatedEntity._id}`);
@@ -117,7 +124,7 @@ exports.entityRoutes = {
         const title = req.params.title;
         const id = req.params.id;
         try {
-            const deleted = await fetch_json_1.postDelete(`/api/v1/${title}/${id}`);
+            const deleted = await fetch_json_1.postDelete(`/api/v1/${title}/${id}`, getCredentials());
             res.redirect(`/entity/${title}`);
         }
         catch (err) {

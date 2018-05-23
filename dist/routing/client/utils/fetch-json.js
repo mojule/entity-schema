@@ -20,24 +20,21 @@ exports.fetchJsonMultiple = (map) => {
         });
     })).then(() => result);
 };
-exports.postDelete = (uri) => fetch(uri, {
-    method: 'DELETE',
-    headers: new Headers({
+exports.postDelete = (uri, authorize) => sendJson(uri, undefined, 'DELETE', authorize);
+const sendJson = (uri, model, method = 'POST', authorize) => {
+    const body = model ? JSON.stringify(model) : model;
+    const headers = {
         'Content-Type': 'application/json'
-    })
-})
-    .then(jsonOrError);
-const sendJson = (uri, model, method = 'POST') => fetch(uri, {
-    method,
-    body: JSON.stringify(model),
-    headers: new Headers({
-        'Content-Type': 'application/json'
-    })
-})
-    .then(jsonOrError);
+    };
+    if (authorize) {
+        headers['Authorization'] = authorize;
+    }
+    return fetch(uri, { method, body, headers: new Headers(headers) })
+        .then(jsonOrError);
+};
 exports.postJson = sendJson;
-exports.putJson = (uri, model) => sendJson(uri, model, 'PUT');
-const sendFormData = (uri, model, method = 'POST') => {
+exports.putJson = (uri, model, authorize) => sendJson(uri, model, 'PUT', authorize);
+const sendFormData = (uri, model, method = 'POST', authorize) => {
     const formData = new FormData();
     const { _files } = model;
     delete model['_files'];
@@ -50,12 +47,18 @@ const sendFormData = (uri, model, method = 'POST') => {
             formData.append(pointer, _files[pointer]);
         });
     }
-    return fetch(uri, {
+    const options = {
         method,
         body: formData
-    })
+    };
+    if (authorize) {
+        options.headers = new Headers({
+            Authorization: authorize
+        });
+    }
+    return fetch(uri, options)
         .then(jsonOrError);
 };
 exports.postFormData = sendFormData;
-exports.putFormData = (uri, model) => sendFormData(uri, model, 'PUT');
+exports.putFormData = (uri, model, authorize) => sendFormData(uri, model, 'PUT', authorize);
 //# sourceMappingURL=fetch-json.js.map

@@ -37,31 +37,29 @@ export const fetchJsonMultiple = ( map: FetchJsonMap ) => {
   } ) ).then( () => result )
 }
 
-export const postDelete = ( uri: string ) =>
-  fetch( uri, {
-    method: 'DELETE',
-    headers: new Headers( {
-      'Content-Type': 'application/json'
-    } )
-  } )
-  .then( jsonOrError )
+export const postDelete = ( uri: string, authorize?: string ) => sendJson( uri, undefined, 'DELETE', authorize )
 
-const sendJson = ( uri: string, model: any, method: 'POST' | 'PUT' = 'POST' ) =>
-  fetch( uri, {
-    method,
-    body: JSON.stringify( model ),
-    headers: new Headers( {
-      'Content-Type': 'application/json'
-    } )
-  } )
+const sendJson = ( uri: string, model: any, method: 'POST' | 'PUT' | 'DELETE' = 'POST', authorize?: string ) => {
+  const body = model ? JSON.stringify( model ) : model
+
+  const headers = {
+    'Content-Type': 'application/json'
+  }
+
+  if ( authorize ) {
+    headers[ 'Authorization' ] = authorize
+  }
+
+  return fetch( uri, { method, body, headers: new Headers( headers ) } )
     .then( jsonOrError )
+}
 
 export const postJson = sendJson
 
-export const putJson = ( uri: string, model: any ) =>
-  sendJson( uri, model, 'PUT' )
+export const putJson = ( uri: string, model: any, authorize?: string ) =>
+  sendJson( uri, model, 'PUT', authorize )
 
-const sendFormData = ( uri: string, model: any, method: 'POST' | 'PUT' = 'POST' ) => {
+const sendFormData = ( uri: string, model: any, method: 'POST' | 'PUT' = 'POST', authorize?: string ) => {
   const formData = new FormData()
 
   const { _files } = model
@@ -80,14 +78,22 @@ const sendFormData = ( uri: string, model: any, method: 'POST' | 'PUT' = 'POST' 
     } )
   }
 
-  return fetch( uri, {
+  const options: any = {
     method,
     body: formData
-  } )
+  }
+
+  if ( authorize ) {
+    options.headers = new Headers( {
+      Authorization: authorize
+    } )
+  }
+
+  return fetch( uri, options )
     .then( jsonOrError )
 }
 
 export const postFormData = sendFormData
 
-export const putFormData = ( uri: string, model: any ) =>
-  sendFormData( uri, model, 'PUT' )
+export const putFormData = ( uri: string, model: any, authorize?: string ) =>
+  sendFormData( uri, model, 'PUT', authorize )
