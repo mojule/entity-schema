@@ -8,6 +8,14 @@ export interface User {
   roles: Role[]
 }
 
+export interface ApiKey {
+  user: {
+    entityId: string
+    entityType: 'User'
+  }
+  secret: string
+}
+
 export interface RoleMap {
   [ userType: string ]: Role
 }
@@ -19,6 +27,10 @@ export const Roles: RoleMap = {
   public: 'public'
 }
 
-export interface UserDocument extends Document, User {}
+export interface UserDocument extends Document, User { }
+
+export interface ApiKeyDocument extends Document, ApiKey { }
 
 export type MongoUser = Model<UserDocument>
+
+export type MongoApiKey = Model<ApiKeyDocument>

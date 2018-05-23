@@ -1,8 +1,12 @@
 import { MongooseDocument, Model } from 'mongoose'
-import { UserDocument, MongoUser, User, Roles } from './types'
+
+import {
+  UserDocument, MongoUser, User, Roles, MongoApiKey, ApiKeyDocument
+} from './types'
+
 import * as bcrypt from 'bcrypt'
 
-export const PassportSecurity = ( User: MongoUser ) => {
+export const PassportSecurity = ( User: MongoUser, ApiKey: MongoApiKey ) => {
   const strategy = ( email, password, done ) => {
     User.findOne( { email }, ( err, user: UserDocument ) => {
       if ( err ) return done( err )
@@ -15,6 +19,24 @@ export const PassportSecurity = ( User: MongoUser ) => {
         return done( null, user )
       } )
     } )
+  }
+
+  const apiKeyStrategy = ( id, secret, done ) => {
+    ApiKey.findOne( { 'user.userId': id }, ( err, apiKey: ApiKeyDocument ) => {
+      if ( err ) return done( err )
+      if ( apiKey === null ) return done( null, false )
+
+      bcrypt.compare( secret, apiKey.secret, ( err, result ) => {
+        if ( err ) return done( err )
+        if ( !result ) return done( null, false )
+
+        User.findById( apiKey.user.entityId, ( err, user: UserDocument ) => {
+          if ( err ) return done( err )
+
+          return done( null, user )
+        })
+      } )
+    })
   }
 
   const serializeUser = ( user: UserDocument, cb ) => {
@@ -36,5 +58,5 @@ export const PassportSecurity = ( User: MongoUser ) => {
     } )
   }
 
-  return { strategy, serializeUser, deserializeUser }
+  return { strategy, apiKeyStrategy, serializeUser, deserializeUser }
 }
