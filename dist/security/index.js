@@ -19,7 +19,7 @@ exports.PassportSecurity = (User, ApiKey) => {
         });
     };
     const apiKeyStrategy = (id, secret, done) => {
-        ApiKey.findOne({ 'user.userId': id }, (err, apiKey) => {
+        ApiKey.findOne({ 'user.entityId': id }, (err, apiKey) => {
             if (err)
                 return done(err);
             if (apiKey === null)

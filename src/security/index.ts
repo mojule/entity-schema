@@ -22,7 +22,7 @@ export const PassportSecurity = ( User: MongoUser, ApiKey: MongoApiKey ) => {
   }
 
   const apiKeyStrategy = ( id, secret, done ) => {
-    ApiKey.findOne( { 'user.userId': id }, ( err, apiKey: ApiKeyDocument ) => {
+    ApiKey.findOne( { 'user.entityId': id }, ( err, apiKey: ApiKeyDocument ) => {
       if ( err ) return done( err )
       if ( apiKey === null ) return done( null, false )
 
