@@ -6,10 +6,20 @@ export interface User {
     password: string;
     roles: Role[];
 }
+export interface ApiKey {
+    user: {
+        entityId: string;
+        entityType: 'User';
+    };
+    secret: string;
+}
 export interface RoleMap {
     [userType: string]: Role;
 }
 export declare const Roles: RoleMap;
 export interface UserDocument extends Document, User {
 }
+export interface ApiKeyDocument extends Document, ApiKey {
+}
 export declare type MongoUser = Model<UserDocument>;
+export declare type MongoApiKey = Model<ApiKeyDocument>;

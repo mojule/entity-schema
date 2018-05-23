@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const types_1 = require("./types");
 const bcrypt = require("bcrypt");
-exports.PassportSecurity = (User) => {
+exports.PassportSecurity = (User, ApiKey) => {
     const strategy = (email, password, done) => {
         User.findOne({ email }, (err, user) => {
             if (err)
@@ -15,6 +15,25 @@ exports.PassportSecurity = (User) => {
                 if (!result)
                     return done(null, false);
                 return done(null, user);
+            });
+        });
+    };
+    const apiKeyStrategy = (id, secret, done) => {
+        ApiKey.findOne({ 'user.userId': id }, (err, apiKey) => {
+            if (err)
+                return done(err);
+            if (apiKey === null)
+                return done(null, false);
+            bcrypt.compare(secret, apiKey.secret, (err, result) => {
+                if (err)
+                    return done(err);
+                if (!result)
+                    return done(null, false);
+                User.findById(apiKey.user.entityId, (err, user) => {
+                    if (err)
+                        return done(err);
+                    return done(null, user);
+                });
             });
         });
     };
@@ -33,6 +52,6 @@ exports.PassportSecurity = (User) => {
             cb(null, { email, roles });
         });
     };
-    return { strategy, serializeUser, deserializeUser };
+    return { strategy, apiKeyStrategy, serializeUser, deserializeUser };
 };
 //# sourceMappingURL=index.js.map

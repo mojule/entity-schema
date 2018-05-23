@@ -45,12 +45,12 @@ const getSchema = async ( title: string ): Promise<IEntitySchema> => {
   return schema
 }
 
-const getCredentials = () => {
+const getApiKey = () => {
   const clientDiv = <HTMLDivElement>strictSelect( document, '.client' )
-  const { user, password } = clientDiv.dataset
+  const { apiKey } = clientDiv.dataset
 
-  if( user && password )
-    return 'Basic ' + new Buffer( `${ user }:${ password }` ).toString( 'base64' )
+  if ( apiKey )
+    return 'Basic ' + apiKey
 }
 
 export const entityRoutes: IClientRouterMap = {
@@ -90,8 +90,8 @@ export const entityRoutes: IClientRouterMap = {
 
         const uri = `/api/v1/${ title }`
         const poster = hasUploadable ?
-          postFormData( uri, model, 'POST', getCredentials() ) :
-          postJson( uri, model, 'POST', getCredentials() )
+          postFormData( uri, model, 'POST', getApiKey() ) :
+          postJson( uri, model, 'POST', getApiKey() )
 
         try {
           const newEntity = await poster
@@ -144,8 +144,8 @@ export const entityRoutes: IClientRouterMap = {
 
         const uri = `/api/v1/${ title }/${ id }`
         const putter = hasUploadable ?
-          putFormData( uri, model, getCredentials() ) :
-          putJson( uri, model, getCredentials() )
+          putFormData( uri, model, getApiKey() ) :
+          putJson( uri, model, getApiKey() )
 
         try {
           const updatedEntity = await putter
@@ -172,7 +172,7 @@ export const entityRoutes: IClientRouterMap = {
     const id: string = req.params.id
 
     try {
-      const deleted = await postDelete( `/api/v1/${ title }/${ id }`, getCredentials() )
+      const deleted = await postDelete( `/api/v1/${ title }/${ id }`, getApiKey() )
 
       res.redirect( `/entity/${ title }` )
     } catch ( err ) {
