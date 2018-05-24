@@ -5,12 +5,14 @@ import { JSONSchema4 } from 'json-schema';
 import { Schema } from 'mongoose';
 import { IAppSchema } from './predicates/app-schema';
 import { IEntitySchema } from './predicates/entity-schema';
+import { Role } from './security/types';
 export declare const SchemaCollection: (schemas: IAppSchema[]) => {
     readonly titles: string[];
     readonly entityTitles: string[];
     readonly enumTitles: string[];
     readonly validator: tv4.TV4;
     readonly entities: IEntitySchema[];
+    titlesForRoles: (userRoles: Role[]) => string[];
     get: (title: string) => IAppSchema;
     normalize: (title: string) => IAppSchema;
     interfaceSchema: (title: string) => JSONSchema4;
@@ -20,4 +22,5 @@ export declare const SchemaCollection: (schemas: IAppSchema[]) => {
     filterEntity: <TEntityModel>(title: string, entity: TEntityModel) => TEntityModel;
     parent: (title: string) => string | undefined;
     parentProperty: (title: string) => string | undefined;
+    filterForRoles: (title: string, userRoles: Role[], normalize?: boolean) => {} | IEntitySchema;
 };

@@ -12,6 +12,9 @@ import { filterEntityBySchema } from './filter-entity-by-schema'
 import { IAppSchema } from './predicates/app-schema'
 import { IEntitySchema } from './predicates/entity-schema'
 import { uploadablePropertyNames } from './uploadable-properties'
+import { Role } from './security/types';
+import { FilterSchemaForRoles } from './filter-schema-for-roles';
+import { is } from '@mojule/is';
 
 const SchemaMapResolver = ( schemaMap: ISchemaMap ) =>
   ( id: string ): JSONSchema4 => schemaMap[ id ]
@@ -44,6 +47,10 @@ const validateSchemas = ( schemas : IAppSchema[] ) => {
     throw Error( 'Expected title property to be unique within schemas' )
 }
 
+interface RoleFilters {
+  [ title: string ]: ( userRoles: Role[] ) => IEntitySchema | {}
+}
+
 export const SchemaCollection = ( schemas : IAppSchema[] ) => {
   validateSchemas( schemas )
 
@@ -58,6 +65,9 @@ export const SchemaCollection = ( schemas : IAppSchema[] ) => {
   const entityTitles : string[] = []
   const enumTitles: string[] = []
 
+  const roleFilters: RoleFilters = {}
+  const roleFiltersNormalized: RoleFilters = {}
+
   schemas.forEach( schema => {
     const { title } = schema
 
@@ -65,7 +75,7 @@ export const SchemaCollection = ( schemas : IAppSchema[] ) => {
     titleMap[ title ] = schema
 
     if( predicates.entitySchema( schema ) ){
-      entitySchemas.push( <IEntitySchema>schema )
+      entitySchemas.push( schema )
       entityTitles.push( title )
     }
 
@@ -105,6 +115,13 @@ export const SchemaCollection = ( schemas : IAppSchema[] ) => {
     },
     get entities() {
       return entitySchemas.slice()
+    },
+    titlesForRoles: ( userRoles: Role[] ) => {
+      return titles.filter( title => {
+        const filtered = api.filterForRoles( title, userRoles )
+
+        return !is.empty( filtered )
+      } )
     },
     get: ( title: string ) => {
       assertTitle( title )
@@ -184,6 +201,25 @@ export const SchemaCollection = ( schemas : IAppSchema[] ) => {
       const schema = <IEntitySchema>api.normalize( title )
 
       if( schema.wsParentProperty ) return schema.wsParentProperty
+    },
+    filterForRoles: ( title: string, userRoles: Role[], normalize = false ) : IEntitySchema | {} => {
+      assertTitle( title )
+
+      if( normalize ){
+        if ( !( title in roleFiltersNormalized ) ) {
+          const schema = api.normalize( title )
+          roleFiltersNormalized[ title ] = FilterSchemaForRoles( schema )
+        }
+
+        return roleFiltersNormalized[ title ]( userRoles )
+      }
+
+      if( !( title in roleFilters ) ){
+        const schema = titleMap[ title ]
+        roleFilters[ title ] = FilterSchemaForRoles( schema )
+      }
+
+      return roleFilters[ title ]( userRoles )
     }
   }
 

@@ -1,4 +1,4 @@
-import { IWsSchema, isWsSchema } from "./ws-schema";
+import { IWsSchema, isWsSchema } from './ws-schema'
 import { is } from '@mojule/is'
 
 export interface IEnumSchema extends IWsSchema {

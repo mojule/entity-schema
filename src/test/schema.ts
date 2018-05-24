@@ -21,7 +21,8 @@ import { IExistingValuesMap } from '../add-uniques'
 import { ILinkMap } from '../add-links'
 
 import {
-  SchemaCollection, loadSchemas, SchemaMap, subschemaMap, predicates, addUniques, linkTitlesForSchema, addLinks
+  SchemaCollection, loadSchemas, SchemaMap, subschemaMap, predicates,
+  addUniques, linkTitlesForSchema, addLinks
 } from '..'
 
 describe( 'Schema', () => {
