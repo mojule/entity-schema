@@ -1,4 +1,4 @@
-import { IWsSchema } from "./ws-schema";
+import { IWsSchema } from './ws-schema';
 export interface IEnumSchema extends IWsSchema {
     type: 'string';
     enum: string[];

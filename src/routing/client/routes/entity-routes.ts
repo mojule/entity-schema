@@ -13,7 +13,7 @@ import { uploadablePropertyNames } from '../../../uploadable-properties'
 import { entityModelToForm } from '../../../forms/entity-model-to-form'
 import { strictSelect } from '@mojule/dom-utils';
 
-const schemaWithLinks = async schema => {
+const schemaWithLinks = async ( schema, authorize?: string ) => {
   const linkTitles = linkTitlesForSchema( schema )
 
   const fetchJsonMap = linkTitles.reduce( ( map, title ) => {
@@ -21,7 +21,7 @@ const schemaWithLinks = async schema => {
     return map
   }, {} )
 
-  const linkedEntities = await fetchJsonMultiple( fetchJsonMap )
+  const linkedEntities = await fetchJsonMultiple( fetchJsonMap, authorize )
 
   const linkMap = Object.keys( linkedEntities ).reduce( ( map, title ) => {
     const entities = linkedEntities[ title ]
@@ -38,9 +38,9 @@ const schemaWithLinks = async schema => {
   return addLinks( schema, linkMap )
 }
 
-const getSchema = async ( title: string ): Promise<IEntitySchema> => {
-  const normalizedSchema: IEntitySchema = await fetchJson( `/schema/${ title }/normalized` )
-  const schema: IEntitySchema = await schemaWithLinks( normalizedSchema )
+const getSchema = async ( title: string, authorize?: string ): Promise<IEntitySchema> => {
+  const normalizedSchema: IEntitySchema = await fetchJson( `/schema/${ title }/normalized`, authorize )
+  const schema: IEntitySchema = await schemaWithLinks( normalizedSchema, authorize )
 
   return schema
 }
@@ -58,8 +58,8 @@ export const entityRoutes: IClientRouterMap = {
     const title: string = req.params.title
 
     try {
-      const titles: string[] = await fetchJson( '/api/v1' )
-      const schema = await getSchema( title )
+      const titles: string[] = await fetchJson( '/api/v1', getApiKey() )
+      const schema = await getSchema( title, getApiKey() )
 
       const entityNav = TitlesAnchorNav( {
         routePrefix: '/entity',
@@ -118,9 +118,9 @@ export const entityRoutes: IClientRouterMap = {
     const id: string = req.params.id
 
     try {
-      const titles: string[] = await fetchJson( '/api/v1' )
-      const schema = await getSchema( title )
-      const entity = await fetchJson( `/api/v1/${ title }/${ id }` )
+      const titles: string[] = await fetchJson( '/api/v1', getApiKey() )
+      const schema = await getSchema( title, getApiKey() )
+      const entity = await fetchJson( `/api/v1/${ title }/${ id }`, getApiKey() )
 
       const entityForm = entityModelToForm( document, schema, entity )
 
@@ -184,7 +184,7 @@ export const entityRoutes: IClientRouterMap = {
     const id: string | undefined = req.params.id
 
     try {
-      const titles = await fetchJson( '/api/v1' )
+      const titles = await fetchJson( '/api/v1', getApiKey() )
 
       const content = documentFragment(
         h2( 'Entities' ),
@@ -196,7 +196,7 @@ export const entityRoutes: IClientRouterMap = {
       )
 
       if ( title ) {
-        const ids: string[] = await fetchJson( `/api/v1/${ title }` )
+        const ids: string[] = await fetchJson( `/api/v1/${ title }`, getApiKey() )
 
         content.appendChild(
           documentFragment(
@@ -217,7 +217,7 @@ export const entityRoutes: IClientRouterMap = {
       }
 
       if ( id ) {
-        const entity = await fetchJson( `/api/v1/${ title }/${ id }` )
+        const entity = await fetchJson( `/api/v1/${ title }/${ id }`, getApiKey() )
 
         content.appendChild(
           documentFragment(

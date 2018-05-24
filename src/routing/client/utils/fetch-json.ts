@@ -22,16 +22,25 @@ const jsonOrError = async ( res: Response ) => {
   throw Error( `Error ${ res.status } fetching JSON\n${ res.statusText }\n${ message }` )
 }
 
-export const fetchJson = uri => fetch( uri ).then( jsonOrError )
+export const fetchJson = ( uri: string, authorize?: string ) => {
+  if( authorize ){
+    return fetch( uri, {
+      headers: new Headers({
+        Authorization: authorize
+      })
+    } ).then( jsonOrError )
+  }
+  return fetch( uri ).then( jsonOrError )
+}
 
-export const fetchJsonMultiple = ( map: FetchJsonMap ) => {
+export const fetchJsonMultiple = ( map: FetchJsonMap, authorize?: string ) => {
   const result: FetchJsonResult = {}
   const propertyNames = Object.keys( map )
 
   return Promise.all( propertyNames.map( propertyName => {
     const uri = map[ propertyName ]
 
-    return fetchJson( uri ).then( obj => {
+    return fetchJson( uri, authorize ).then( obj => {
       result[ propertyName ] = obj
     } )
   } ) ).then( () => result )

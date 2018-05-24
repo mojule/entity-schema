@@ -12,13 +12,13 @@ const schema_form_to_entity_model_1 = require("../../../forms/schema-form-to-ent
 const uploadable_properties_1 = require("../../../uploadable-properties");
 const entity_model_to_form_1 = require("../../../forms/entity-model-to-form");
 const dom_utils_1 = require("@mojule/dom-utils");
-const schemaWithLinks = async (schema) => {
+const schemaWithLinks = async (schema, authorize) => {
     const linkTitles = link_titles_for_schema_1.linkTitlesForSchema(schema);
     const fetchJsonMap = linkTitles.reduce((map, title) => {
         map[title] = `/api/v1/${lodash_1.kebabCase(title)}/all`;
         return map;
     }, {});
-    const linkedEntities = await fetch_json_1.fetchJsonMultiple(fetchJsonMap);
+    const linkedEntities = await fetch_json_1.fetchJsonMultiple(fetchJsonMap, authorize);
     const linkMap = Object.keys(linkedEntities).reduce((map, title) => {
         const entities = linkedEntities[title];
         map[title] = entities.map(entity => {
@@ -29,9 +29,9 @@ const schemaWithLinks = async (schema) => {
     }, {});
     return add_links_1.addLinks(schema, linkMap);
 };
-const getSchema = async (title) => {
-    const normalizedSchema = await fetch_json_1.fetchJson(`/schema/${title}/normalized`);
-    const schema = await schemaWithLinks(normalizedSchema);
+const getSchema = async (title, authorize) => {
+    const normalizedSchema = await fetch_json_1.fetchJson(`/schema/${title}/normalized`, authorize);
+    const schema = await schemaWithLinks(normalizedSchema, authorize);
     return schema;
 };
 const getApiKey = () => {
@@ -44,8 +44,8 @@ exports.entityRoutes = {
     '/entity/:title/create': async (req, res) => {
         const title = req.params.title;
         try {
-            const titles = await fetch_json_1.fetchJson('/api/v1');
-            const schema = await getSchema(title);
+            const titles = await fetch_json_1.fetchJson('/api/v1', getApiKey());
+            const schema = await getSchema(title, getApiKey());
             const entityNav = templates_1.TitlesAnchorNav({
                 routePrefix: '/entity',
                 titles,
@@ -86,9 +86,9 @@ exports.entityRoutes = {
         const title = req.params.title;
         const id = req.params.id;
         try {
-            const titles = await fetch_json_1.fetchJson('/api/v1');
-            const schema = await getSchema(title);
-            const entity = await fetch_json_1.fetchJson(`/api/v1/${title}/${id}`);
+            const titles = await fetch_json_1.fetchJson('/api/v1', getApiKey());
+            const schema = await getSchema(title, getApiKey());
+            const entity = await fetch_json_1.fetchJson(`/api/v1/${title}/${id}`, getApiKey());
             const entityForm = entity_model_to_form_1.entityModelToForm(document, schema, entity);
             const content = h_1.documentFragment(h_1.h2('Entities'), templates_1.TitlesAnchorNav({
                 routePrefix: '/entity',
@@ -135,14 +135,14 @@ exports.entityRoutes = {
         const title = req.params.title;
         const id = req.params.id;
         try {
-            const titles = await fetch_json_1.fetchJson('/api/v1');
+            const titles = await fetch_json_1.fetchJson('/api/v1', getApiKey());
             const content = h_1.documentFragment(h_1.h2('Entities'), templates_1.TitlesAnchorNav({
                 routePrefix: '/entity',
                 titles,
                 currentTitle: title
             }));
             if (title) {
-                const ids = await fetch_json_1.fetchJson(`/api/v1/${title}`);
+                const ids = await fetch_json_1.fetchJson(`/api/v1/${title}`, getApiKey());
                 content.appendChild(h_1.documentFragment(templates_1.ActionList([{
                         path: `/entity/${title}/create`,
                         title: `Create new ${lodash_1.startCase(title)}`
@@ -153,7 +153,7 @@ exports.entityRoutes = {
                 })));
             }
             if (id) {
-                const entity = await fetch_json_1.fetchJson(`/api/v1/${title}/${id}`);
+                const entity = await fetch_json_1.fetchJson(`/api/v1/${title}/${id}`, getApiKey());
                 content.appendChild(h_1.documentFragment(h_1.h4(`${lodash_1.startCase(title)} ${id}`), templates_1.ActionList([
                     {
                         title: 'Edit',

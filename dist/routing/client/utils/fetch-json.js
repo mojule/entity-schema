@@ -9,13 +9,22 @@ const jsonOrError = async (res) => {
     const message = result ? JSON.stringify(result, null, 2) : '';
     throw Error(`Error ${res.status} fetching JSON\n${res.statusText}\n${message}`);
 };
-exports.fetchJson = uri => fetch(uri).then(jsonOrError);
-exports.fetchJsonMultiple = (map) => {
+exports.fetchJson = (uri, authorize) => {
+    if (authorize) {
+        return fetch(uri, {
+            headers: new Headers({
+                Authorization: authorize
+            })
+        }).then(jsonOrError);
+    }
+    return fetch(uri).then(jsonOrError);
+};
+exports.fetchJsonMultiple = (map, authorize) => {
     const result = {};
     const propertyNames = Object.keys(map);
     return Promise.all(propertyNames.map(propertyName => {
         const uri = map[propertyName];
-        return exports.fetchJson(uri).then(obj => {
+        return exports.fetchJson(uri, authorize).then(obj => {
             result[propertyName] = obj;
         });
     })).then(() => result);

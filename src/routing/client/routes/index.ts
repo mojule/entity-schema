@@ -1,8 +1,8 @@
-import { rootRoutes } from './root'
+import { rootRoutes } from './root-routes'
 import { schemaRoutes } from './schema-routes'
 import { entityRoutes } from './entity-routes'
 import { ErrorPage } from '../templates'
-import { IClientRouterMap } from './client-router';
+import { IClientRouterMap } from './client-router'
 
 const unmatchedRoutes : IClientRouterMap = {
   '/(.*)': ( req, res ) => {

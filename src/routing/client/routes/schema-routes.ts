@@ -5,6 +5,7 @@ import { documentFragment, h2, h3 } from '../utils/h'
 import { objectToDom } from '../utils/object-to-dom'
 import { IClientRouterMap } from './client-router'
 import { IAppSchema } from '../../../predicates/app-schema'
+import { strictSelect } from '@mojule/dom-utils'
 
 const linkifySchemaDom = ( schemaDom: HTMLElement ) => {
   const $refs = schemaDom.querySelectorAll( 'td[data-name="$ref"]' )
@@ -25,19 +26,27 @@ const linkifySchemaDom = ( schemaDom: HTMLElement ) => {
   }
 }
 
+const getApiKey = () => {
+  const clientDiv = <HTMLDivElement>strictSelect( document, '.client' )
+  const { apiKey } = clientDiv.dataset
+
+  if ( apiKey )
+    return 'Basic ' + apiKey
+}
+
 export const schemaRoutes: IClientRouterMap = {
   '/schema/:title?/:mode?': async ( req, res ) => {
     const title : string | undefined = req.params.title
     const mode : 'normalized' | undefined = req.params.mode
 
     try {
-      const titles = await fetchJson( '/schema' )
+      const titles = await fetchJson( '/schema', getApiKey() )
 
       const schema : IAppSchema | undefined =
         title ?
         mode === 'normalized' ?
-        await fetchJson( `/schema/${ title }/normalized` ) :
-        await fetchJson( `/schema/${ title }` ) :
+        await fetchJson( `/schema/${ title }/normalized`, getApiKey() ) :
+        await fetchJson( `/schema/${ title }`, getApiKey() ) :
         undefined
 
       const schemaNav = TitlesAnchorNav({
