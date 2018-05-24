@@ -43,7 +43,7 @@ export const SchemaRoutes = ( schemaMap: IAppSchema[] ): IRouteData => {
               return
             }
 
-            res.json(  )
+            res.json( schema )
           } catch ( err ) {
             serverError( res, err )
           }

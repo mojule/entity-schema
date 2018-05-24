@@ -34,7 +34,7 @@ exports.SchemaRoutes = (schemaMap) => {
                             json_errors_1.notFoundError(res, Error(`${routePath} not found`));
                             return;
                         }
-                        res.json();
+                        res.json(schema);
                     }
                     catch (err) {
                         json_errors_1.serverError(res, err);
