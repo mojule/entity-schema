@@ -266,7 +266,7 @@ exports.EntityRoutes = (schemaCollection) => {
                         const doc = await Model.findById(id);
                         if (doc === null)
                             throw new json_errors_1.NotFoundError(`No ${title} found for ID ${id}`);
-                        const schema = schemas.normalize(title);
+                        const schema = userSchemas.normalize(title);
                         const filteredResult = filter_entity_by_schema_1.filterEntityBySchema(doc.toJSON(), schema);
                         filteredResult._id = doc._id;
                         res.json(filteredResult);
@@ -289,7 +289,7 @@ exports.EntityRoutes = (schemaCollection) => {
                         if (doc === null)
                             throw new json_errors_1.NotFoundError(`No ${title} found for ID ${id}`);
                         const removed = await doc.remove();
-                        const schema = schemas.normalize(title);
+                        const schema = userSchemas.normalize(title);
                         const filteredResult = filter_entity_by_schema_1.filterEntityBySchema(removed.toJSON(), schema);
                         filteredResult._id = doc._id;
                         res.json(filteredResult);
@@ -309,7 +309,7 @@ exports.EntityRoutes = (schemaCollection) => {
                             return;
                         }
                         const docs = await Model.find({});
-                        const schema = schemas.normalize(title);
+                        const schema = userSchemas.normalize(title);
                         const filtered = docs.map(doc => {
                             const filteredResult = filter_entity_by_schema_1.filterEntityBySchema(doc.toJSON(), schema);
                             filteredResult._id = doc._id;
@@ -343,7 +343,7 @@ exports.EntityRoutes = (schemaCollection) => {
                         });
                         const query = Object.assign({}, normal, json_pointer_1.expand(nested));
                         const docs = await Model.find(query);
-                        const schema = schemas.normalize(title);
+                        const schema = userSchemas.normalize(title);
                         const filtered = docs.map(doc => {
                             const filteredResult = filter_entity_by_schema_1.filterEntityBySchema(doc.toJSON(), schema);
                             filteredResult._id = doc._id;

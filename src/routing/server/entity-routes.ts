@@ -359,7 +359,7 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[] ): IRouteData => {
             if ( doc === null )
               throw new NotFoundError( `No ${ title } found for ID ${ id }` )
 
-            const schema = <IEntitySchema>schemas.normalize( title )
+            const schema = <IEntitySchema>userSchemas.normalize( title )
             const filteredResult = filterEntityBySchema( doc.toJSON(), schema )
 
             filteredResult._id = doc._id
@@ -389,7 +389,7 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[] ): IRouteData => {
               throw new NotFoundError( `No ${ title } found for ID ${ id }` )
 
             const removed = await doc.remove()
-            const schema = <IEntitySchema>schemas.normalize( title )
+            const schema = <IEntitySchema>userSchemas.normalize( title )
             const filteredResult = filterEntityBySchema( removed.toJSON(), schema )
 
             filteredResult._id = doc._id
@@ -413,7 +413,7 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[] ): IRouteData => {
             }
 
             const docs = await Model.find( {} )
-            const schema = <IEntitySchema>schemas.normalize( title )
+            const schema = <IEntitySchema>userSchemas.normalize( title )
 
             const filtered = docs.map( doc => {
               const filteredResult = filterEntityBySchema( doc.toJSON(), schema )
@@ -455,7 +455,7 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[] ): IRouteData => {
             const query = Object.assign( {}, normal, expand( nested ) )
 
             const docs = await Model.find( query )
-            const schema = <IEntitySchema>schemas.normalize( title )
+            const schema = <IEntitySchema>userSchemas.normalize( title )
 
             const filtered = docs.map( doc => {
               const filteredResult = filterEntityBySchema( doc.toJSON(), schema )
