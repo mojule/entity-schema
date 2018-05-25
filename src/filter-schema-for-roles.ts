@@ -1,9 +1,9 @@
 import {
   flatten, pointerValueArray, globPointerValues, get,
-  pointerValueArrayToPointerMap, expand
+  pointerValueArrayToPointerMap, expand, PointerValue
 } from '@mojule/json-pointer'
 
-import { Role, Roles } from './security/types'
+import { Role, Roles, EntityAccess, EntityAccesses } from './security/types'
 import { IAppSchema } from './predicates/app-schema'
 
 const getParentPath = ( path: string, search: string ) => {
@@ -15,10 +15,9 @@ const getParentPath = ( path: string, search: string ) => {
   return segs.slice( 0, searchIndex ).join( '/' )
 }
 
-export const FilterSchemaForRoles = ( schema: IAppSchema ) => {
-  const flat = flatten( schema )
-  const pvas = pointerValueArray( flat )
-  const securityGlob = '**/wsSecurity/**'
+const securityGlob = '**/wsSecurity/**'
+
+const getSecurePaths = ( pvas: PointerValue[] ) => {
   const securityPvs = globPointerValues( pvas, securityGlob )
   const securePointerNames = new Set<string>()
 
@@ -30,12 +29,30 @@ export const FilterSchemaForRoles = ( schema: IAppSchema ) => {
 
   const securePaths = Array.from( securePointerNames )
 
+  return securePaths
+}
+
+export const FilterSchemaForRoles = ( schema: IAppSchema ) => {
+  const flat = flatten( schema )
+  const pvas = pointerValueArray( flat )
+  const securePaths = getSecurePaths( pvas )
+
   const securityMap = securePaths.reduce( ( map, pointer ) => {
     map[ pointer ] = get( schema, pointer + '/wsSecurity' )
     return map
   }, <any>{} )
 
-  const filterSchemaForRoles = ( userRoles: Role[] ): IAppSchema | {} => {
+  const filterSchemaForRoles = ( userRoles: Role[], accesses: EntityAccess[] = [ EntityAccesses.read ] ): IAppSchema | {} => {
+    const hasAccess = ( propertyPath: string ) => {
+      return accesses.every( access => {
+        const expectedRoles = securityMap[ propertyPath ][ access ]
+
+        if ( !expectedRoles ) throw Error( `Could not find access at ${ propertyPath }/${ access }` )
+
+        return expectedRoles.some( expectedRole => userRoles.includes( expectedRole ) )
+      } )
+    }
+
     const filteredPvs = pvas.filter( pv => {
       if ( !userRoles.includes( Roles.admin ) && pv.pointer.includes( '/ws' ) ) return false
 
@@ -45,9 +62,7 @@ export const FilterSchemaForRoles = ( schema: IAppSchema ) => {
         const propertyPath = parent + '/properties/' + pv.value
 
         if ( propertyPath in securityMap ) {
-          const expectedRoles = securityMap[ propertyPath ].read
-
-          return expectedRoles.some( expectedRole => userRoles.includes( expectedRole ) )
+          return hasAccess( propertyPath )
         }
       }
 
@@ -57,9 +72,7 @@ export const FilterSchemaForRoles = ( schema: IAppSchema ) => {
         return true
       }
 
-      const expectedRoles = securityMap[ securePath ].read
-
-      return expectedRoles.some( expectedRole => userRoles.includes( expectedRole ) )
+      return hasAccess( securePath )
     } )
 
     const pointerMap = pointerValueArrayToPointerMap( filteredPvs )

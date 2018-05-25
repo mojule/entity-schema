@@ -4,6 +4,7 @@ const user_schema_1 = require("../security/app-schema/user-schema");
 const json_pointer_1 = require("@mojule/json-pointer");
 const types_1 = require("../security/types");
 const subschema_map_remove_leafs_1 = require("../subschema-map-remove-leafs");
+const SchemaMapper = require("@mojule/schema-mapper");
 const userSubSchemaMap = subschema_map_remove_leafs_1.subschemaMapRemoveLeafNodes(user_schema_1.userSchema);
 const flat = json_pointer_1.flatten(user_schema_1.userSchema);
 console.log('flat', JSON.stringify(flat, null, 2));
@@ -80,4 +81,7 @@ const schemaForAdmin = filterSchemaForRoles(user_schema_1.userSchema, [types_1.R
 const schemaForCurrentUser = filterSchemaForRoles(user_schema_1.userSchema, [types_1.Roles.currentUser]);
 const schemaForUser = filterSchemaForRoles(user_schema_1.userSchema, [types_1.Roles.user]);
 console.log(JSON.stringify({ schemaForAdmin, schemaForCurrentUser, schemaForUser }, null, 2));
+const { from, to } = SchemaMapper({ omitDefault: false });
+const userDefaults = from(user_schema_1.userSchema);
+console.log(JSON.stringify(userDefaults, null, 2));
 //# sourceMappingURL=index.js.map

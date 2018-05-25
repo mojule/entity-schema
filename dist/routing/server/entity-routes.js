@@ -13,6 +13,11 @@ const pascal_case_1 = require("../../utils/pascal-case");
 const mongoose_models_1 = require("../../mongoose/mongoose-models");
 const add_uniques_1 = require("../../add-uniques");
 const filter_entity_by_schema_1 = require("../../filter-entity-by-schema");
+const get_user_1 = require("../../utils/get-user");
+const SchemaMapper = require("@mojule/schema-mapper");
+const types_1 = require("../../security/types");
+const deep_assign_1 = require("../../utils/deep-assign");
+const { from: entityFromSchema } = SchemaMapper({ omitDefault: false });
 const jsonParser = bodyParser.json();
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -33,7 +38,11 @@ const storage = multer.diskStorage({
     }
 });
 const upload = multer({ storage });
-const appSchemaPath = './app-schema';
+/*
+  when you check that a property value is unique within a collection, you don't
+  want it to fail because the existing entity has that property, so remove self
+  from the collection before checking
+*/
 const excludeOwnProperties = (model, uniqueValuesMap) => {
     const map = {};
     Object.keys(uniqueValuesMap).forEach(propertyName => {
@@ -41,11 +50,18 @@ const excludeOwnProperties = (model, uniqueValuesMap) => {
     });
     return map;
 };
-const selectBodyParser = (schema) => (req, res, next) => {
+/*
+  middleware for deciding how to parse the http body
+
+  if the http body is json, use jsonParse, otherwise parse the req.body as if
+  it were a multipart form
+*/
+const selectBodyParser = (req, res, next) => {
     if (req.headers['content-type'].startsWith('application/json')) {
         jsonParser(req, res, next);
         return;
     }
+    // add a check here that it's form multipart
     const { body } = req;
     const pointerPaths = Object.keys(body).filter(key => key.startsWith('/'));
     const flatModel = pointerPaths.reduce((obj, pointer) => {
@@ -61,14 +77,13 @@ const addMetaData = (metadata) => (req, res, next) => {
     Object.assign(req, { _wsMetadata: metadata });
     next();
 };
-exports.EntityRoutes = (schemaMap) => {
-    const createRouteData = (title, uniqueValuePropertyNames, Model) => {
-        const uploadablePropertyNames = schemas.uploadablePropertyNames(title);
-        const hasUploadableProperties = !!uploadablePropertyNames.length;
-        const entitySchema = schemas.normalize(title);
-        const parentProperty = schemas.parentProperty(title);
-        const routeName = lodash_1.kebabCase(title);
-        const getParentId = async (body) => {
+exports.EntityRoutes = (schemaCollection) => {
+    const models = mongoose_models_1.mongooseModels(schemaCollection);
+    const schemas = schema_collection_1.SchemaCollection(schemaCollection);
+    const { entityTitles } = schemas;
+    const createRouteData = (title, Model) => {
+        const routePath = lodash_1.kebabCase(title);
+        const getParentId = (body, parentProperty) => {
             if (parentProperty) {
                 if (body[parentProperty] && body[parentProperty].entityId) {
                     return body[parentProperty].entityId;
@@ -76,8 +91,8 @@ exports.EntityRoutes = (schemaMap) => {
                 throw Error(`Expected post body to have ${parentProperty}.entityId`);
             }
         };
-        const addFiles = (req) => {
-            if (hasUploadableProperties) {
+        const addFiles = (req, uploadablePropertyNames) => {
+            if (uploadablePropertyNames.length) {
                 const { body } = req;
                 const files = req.files;
                 if (!files)
@@ -92,12 +107,23 @@ exports.EntityRoutes = (schemaMap) => {
             }
         };
         const postHandler = async (req, res) => {
-            const { body } = req;
+            let { body } = req;
             try {
-                addFiles(req);
-                const parentId = await getParentId(body);
+                const userSchemas = get_user_1.getUserSchemas(req, schemaCollection, [types_1.PropertyAccesses.create]);
+                if (!userSchemas.titles.includes(title)) {
+                    json_errors_1.notFoundError(res, Error(`${routePath} not found`));
+                    return;
+                }
+                const uploadablePropertyNames = userSchemas.uploadablePropertyNames(title);
+                const parentProperty = userSchemas.parentProperty(title);
+                addFiles(req, uploadablePropertyNames);
+                const parentId = getParentId(body, parentProperty);
                 const uniqueValuesMap = await Model.uniqueValuesMap(parentId);
+                const entitySchema = userSchemas.normalize(title);
                 const schema = add_uniques_1.addUniques(entitySchema, uniqueValuesMap);
+                const systemSchema = schemas.normalize(title);
+                const defaultValues = entityFromSchema(systemSchema);
+                body = deep_assign_1.deepAssign({}, defaultValues, body);
                 const validate = tv4.validateMultiple(body, schema);
                 if (validate.valid) {
                     let model;
@@ -109,7 +135,9 @@ exports.EntityRoutes = (schemaMap) => {
                         model = new Model(body);
                     }
                     const product = await model.save();
-                    res.status(201).json(product.toJSON());
+                    const filtered = filter_entity_by_schema_1.filterEntityBySchema(product.toJSON(), schema);
+                    filtered._id = product._id;
+                    res.status(201).json(filtered);
                 }
                 else {
                     res.status(400).json(validate.errors);
@@ -119,56 +147,74 @@ exports.EntityRoutes = (schemaMap) => {
                 json_errors_1.userError(res, err);
             }
         };
-        const uploadIfHasFile = (req, res, next) => {
-            if (hasUploadableProperties) {
+        const uploadIfHasFile = (req, res, next, accesses) => {
+            const userSchemas = get_user_1.getUserSchemas(req, schemaCollection, accesses);
+            const uploadablePropertyNames = userSchemas.uploadablePropertyNames(title);
+            if (uploadablePropertyNames.length) {
                 upload.any()(req, res, next);
                 return;
             }
             next();
         };
-        const fileHandlers = (finalHandler) => [
+        const fileHandlers = (finalHandler, accesses) => [
             addMetaData({
                 title, Model
             }),
-            uploadIfHasFile,
-            selectBodyParser(entitySchema),
+            (req, res, next) => uploadIfHasFile(req, res, next, accesses),
+            selectBodyParser,
             finalHandler
         ];
-        const postHandlers = fileHandlers(postHandler);
+        const postHandlers = fileHandlers(postHandler, [types_1.EntityAccesses.create]);
         const putHandler = async (req, res) => {
             const id = req.params.id;
             try {
+                const userSchemas = get_user_1.getUserSchemas(req, schemaCollection, [types_1.EntityAccesses.update]);
+                if (!userSchemas.titles.includes(title)) {
+                    json_errors_1.notFoundError(res, Error(`${routePath} not found`));
+                    return;
+                }
                 const doc = await Model.findById(id);
                 if (doc === null)
                     throw new json_errors_1.NotFoundError(`No ${title} found for ID ${id}`);
                 let { body } = req;
-                addFiles(req);
-                const parentId = await getParentId(id);
+                const uploadablePropertyNames = userSchemas.uploadablePropertyNames(title);
+                addFiles(req, uploadablePropertyNames);
+                const parentProperty = userSchemas.parentProperty(title);
+                const parentId = getParentId(id, parentProperty);
                 let uniqueMap = await Model.uniqueValuesMap(parentId);
                 uniqueMap = excludeOwnProperties(doc, uniqueMap);
+                const entitySchema = userSchemas.normalize(title);
                 const schema = add_uniques_1.addUniques(entitySchema, uniqueMap);
                 const filteredBody = filter_entity_by_schema_1.filterEntityBySchema(body, schema);
                 Object.assign(doc, filteredBody);
                 const docAsJson = doc.toJSON();
-                const filtered = filter_entity_by_schema_1.filterEntityBySchema(docAsJson, schema);
-                const validate = tv4.validateMultiple(filtered, schema);
+                const systemSchema = schemas.normalize(title);
+                const filtered = filter_entity_by_schema_1.filterEntityBySchema(docAsJson, systemSchema);
+                const validate = tv4.validateMultiple(filtered, systemSchema);
                 if (!validate.valid) {
                     res.status(400).json(validate.errors);
                     return;
                 }
                 const product = await doc.save();
-                res.json(product.toJSON());
+                const filteredResult = filter_entity_by_schema_1.filterEntityBySchema(product.toJSON(), schema);
+                filteredResult._id = product._id;
+                res.status(201).json(filteredResult);
             }
             catch (err) {
                 json_errors_1.jsonError(res, err);
             }
         };
-        const putHandlers = fileHandlers(putHandler);
+        const putHandlers = fileHandlers(putHandler, [types_1.EntityAccesses.update]);
         return {
-            [routeName]: {
+            [routePath]: {
                 // get list of available ids
                 get: async (req, res) => {
                     try {
+                        const userSchemas = get_user_1.getUserSchemas(req, schemaCollection, [types_1.EntityAccesses.read]);
+                        if (!userSchemas.titles.includes(title)) {
+                            json_errors_1.notFoundError(res, Error(`${routePath} not found`));
+                            return;
+                        }
                         const documents = await Model.find({}, '_id');
                         const result = documents.map(r => r._id);
                         res.json(result);
@@ -180,17 +226,23 @@ exports.EntityRoutes = (schemaMap) => {
                 // create a new entity instance
                 post: postHandlers
             },
-            [`${routeName}/:propertyName/:propertyValue`]: {
+            [`${routePath}/:propertyName/:propertyValue`]: {
                 // get a model by a field guaranteed to be unique
                 get: async (req, res) => {
                     const propertyName = req.params.propertyName;
                     const propertyValue = req.params.propertyValue;
-                    if (!uniqueValuePropertyNames.includes(propertyName)) {
-                        const error = Error(`No unique property ${propertyName} found`);
-                        json_errors_1.userError(res, error);
-                        return;
-                    }
                     try {
+                        const userSchemas = get_user_1.getUserSchemas(req, schemaCollection, [types_1.EntityAccesses.read]);
+                        if (!userSchemas.titles.includes(title)) {
+                            json_errors_1.notFoundError(res, Error(`${routePath} not found`));
+                            return;
+                        }
+                        const uniqueValuePropertyNames = userSchemas.uniquePropertyNames(title);
+                        if (!uniqueValuePropertyNames.includes(propertyName)) {
+                            const error = Error(`No unique property ${propertyName} found`);
+                            json_errors_1.userError(res, error);
+                            return;
+                        }
                         const doc = await Model.findOne({ [propertyName]: propertyValue });
                         if (doc === null)
                             throw new json_errors_1.NotFoundError(`No match found for ${propertyName} = ${propertyValue}`);
@@ -201,15 +253,23 @@ exports.EntityRoutes = (schemaMap) => {
                     }
                 }
             },
-            [`${routeName}/:id([0-9a-f]{24})`]: {
+            [`${routePath}/:id([0-9a-f]{24})`]: {
                 // get an entity by id
                 get: async (req, res) => {
                     const id = req.params.id;
                     try {
+                        const userSchemas = get_user_1.getUserSchemas(req, schemaCollection, [types_1.EntityAccesses.read]);
+                        if (!userSchemas.titles.includes(title)) {
+                            json_errors_1.notFoundError(res, Error(`${routePath} not found`));
+                            return;
+                        }
                         const doc = await Model.findById(id);
                         if (doc === null)
                             throw new json_errors_1.NotFoundError(`No ${title} found for ID ${id}`);
-                        res.json(doc.toJSON());
+                        const schema = schemas.normalize(title);
+                        const filteredResult = filter_entity_by_schema_1.filterEntityBySchema(doc.toJSON(), schema);
+                        filteredResult._id = doc._id;
+                        res.json(filteredResult);
                     }
                     catch (err) {
                         json_errors_1.jsonError(res, err);
@@ -220,33 +280,57 @@ exports.EntityRoutes = (schemaMap) => {
                 delete: async (req, res) => {
                     const id = req.params.id;
                     try {
+                        const userSchemas = get_user_1.getUserSchemas(req, schemaCollection, [types_1.EntityAccesses.delete]);
+                        if (!userSchemas.titles.includes(title)) {
+                            json_errors_1.notFoundError(res, Error(`${routePath} not found`));
+                            return;
+                        }
                         const doc = await Model.findById(id);
                         if (doc === null)
                             throw new json_errors_1.NotFoundError(`No ${title} found for ID ${id}`);
                         const removed = await doc.remove();
-                        res.json(removed.toJSON());
+                        const schema = schemas.normalize(title);
+                        const filteredResult = filter_entity_by_schema_1.filterEntityBySchema(removed.toJSON(), schema);
+                        filteredResult._id = doc._id;
+                        res.json(filteredResult);
                     }
                     catch (err) {
                         json_errors_1.jsonError(res, err);
                     }
                 }
             },
-            [`${routeName}/all`]: {
+            [`${routePath}/all`]: {
                 // get all entities
                 get: async (req, res) => {
                     try {
+                        const userSchemas = get_user_1.getUserSchemas(req, schemaCollection, [types_1.EntityAccesses.read]);
+                        if (!userSchemas.titles.includes(title)) {
+                            json_errors_1.notFoundError(res, Error(`${routePath} not found`));
+                            return;
+                        }
                         const docs = await Model.find({});
-                        res.json(docs);
+                        const schema = schemas.normalize(title);
+                        const filtered = docs.map(doc => {
+                            const filteredResult = filter_entity_by_schema_1.filterEntityBySchema(doc.toJSON(), schema);
+                            filteredResult._id = doc._id;
+                            return filteredResult;
+                        });
+                        res.json(filtered);
                     }
                     catch (err) {
                         json_errors_1.serverError(res, err);
                     }
                 }
             },
-            [`${routeName}/filter`]: {
+            [`${routePath}/filter`]: {
                 // get all entities matching params
                 get: async (req, res) => {
                     try {
+                        const userSchemas = get_user_1.getUserSchemas(req, schemaCollection, [types_1.EntityAccesses.read]);
+                        if (!userSchemas.titles.includes(title)) {
+                            json_errors_1.notFoundError(res, Error(`${routePath} not found`));
+                            return;
+                        }
                         const normal = {};
                         const nested = {};
                         Object.keys(req.query).forEach(key => {
@@ -259,22 +343,34 @@ exports.EntityRoutes = (schemaMap) => {
                         });
                         const query = Object.assign({}, normal, json_pointer_1.expand(nested));
                         const docs = await Model.find(query);
-                        res.json(docs);
+                        const schema = schemas.normalize(title);
+                        const filtered = docs.map(doc => {
+                            const filteredResult = filter_entity_by_schema_1.filterEntityBySchema(doc.toJSON(), schema);
+                            filteredResult._id = doc._id;
+                            return filteredResult;
+                        });
+                        res.json(filtered);
                     }
                     catch (err) {
                         json_errors_1.serverError(res, err);
                     }
                 }
             },
-            [`${routeName}/:propertyName`]: {
+            [`${routePath}/:propertyName`]: {
                 // get all possible values for the unique named property
                 get: async (req, res) => {
                     const propertyName = req.params.propertyName;
-                    if (!uniqueValuePropertyNames.includes(propertyName)) {
-                        json_errors_1.notFoundError(res, Error(`No unique property ${propertyName} found`));
-                        return;
-                    }
                     try {
+                        const userSchemas = get_user_1.getUserSchemas(req, schemaCollection, [types_1.EntityAccesses.read]);
+                        if (!userSchemas.titles.includes(title)) {
+                            json_errors_1.notFoundError(res, Error(`${routePath} not found`));
+                            return;
+                        }
+                        const uniqueValuePropertyNames = userSchemas.uniquePropertyNames(title);
+                        if (!uniqueValuePropertyNames.includes(propertyName)) {
+                            json_errors_1.notFoundError(res, Error(`No unique property ${propertyName} found`));
+                            return;
+                        }
                         const values = await Model.valuesForUniqueProperty(propertyName);
                         res.json(values);
                     }
@@ -285,21 +381,19 @@ exports.EntityRoutes = (schemaMap) => {
             },
         };
     };
-    const models = mongoose_models_1.mongooseModels(schemaMap);
-    const schemas = schema_collection_1.SchemaCollection(schemaMap);
-    const { entityTitles } = schemas;
     const rootRoutes = {
         '.': {
             get: (req, res) => {
+                const userSchemas = get_user_1.getUserSchemas(req, schemaCollection, [types_1.EntityAccesses.read]);
+                const { entityTitles } = userSchemas;
                 res.json(entityTitles.map(lodash_1.kebabCase));
             }
         }
     };
     return entityTitles.reduce((routeData, title) => {
         const ctorName = pascal_case_1.pascalCase(title);
-        const uniqueValuePropertyNames = schemas.uniquePropertyNames(title);
         const Model = models[ctorName];
-        const currentRouteData = createRouteData(title, uniqueValuePropertyNames, Model);
+        const currentRouteData = createRouteData(title, Model);
         Object.assign(routeData, currentRouteData);
         return routeData;
     }, rootRoutes);

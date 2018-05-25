@@ -1,55 +1,5 @@
-export declare const securitySchemas: ({
-    id: string;
-    title: string;
-    description: string;
-    type: string;
-    format: string;
-    properties: {
-        email: {
-            title: string;
-            description: string;
-            type: string;
-            format: string;
-        };
-        password: {
-            title: string;
-            description: string;
-            type: string;
-            format: string;
-            wsSecurity: {
-                create: string[];
-                read: string[];
-                update: string[];
-            };
-        };
-        roles: {
-            title: string;
-            description: string;
-            type: string;
-            items: {
-                title: string;
-                description: string;
-                type: string;
-            };
-            readOnly: boolean;
-            default: string[];
-            wsSecurity: {
-                create: string[];
-                read: string[];
-                update: string[];
-                delete: string[];
-            };
-        };
-    };
-    wsSecurity: {
-        create: string[];
-        read: string[];
-        update: string[];
-        delete: string[];
-    };
-    additionalProperties: boolean;
-    required: string[];
-} | {
+import { IEntitySchema } from '../predicates/entity-schema';
+export declare const securitySchemas: (IEntitySchema | {
     id: string;
     title: string;
     description: string;

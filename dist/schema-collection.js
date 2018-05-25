@@ -10,6 +10,7 @@ const interface_schema_mapper_1 = require("./interface-schema-mapper");
 const unique_properties_1 = require("./unique-properties");
 const filter_entity_by_schema_1 = require("./filter-entity-by-schema");
 const uploadable_properties_1 = require("./uploadable-properties");
+const types_1 = require("./security/types");
 const filter_schema_for_roles_1 = require("./filter-schema-for-roles");
 const is_1 = require("@mojule/is");
 const SchemaMapResolver = (schemaMap) => (id) => schemaMap[id];
@@ -34,7 +35,13 @@ const validateSchemas = (schemas) => {
     if (!unique_values_1.uniqueValues(schemas, 'title'))
         throw Error('Expected title property to be unique within schemas');
 };
-exports.SchemaCollection = (schemas) => {
+exports.SchemaCollection = (schemas, userRoles, accesses = [types_1.EntityAccesses.read]) => {
+    if (Array.isArray(userRoles)) {
+        schemas = schemas.map(schema => {
+            const filterForRoles = filter_schema_for_roles_1.FilterSchemaForRoles(schema);
+            return filterForRoles(userRoles, accesses);
+        }).filter(schema => !is_1.is.empty(schema));
+    }
     validateSchemas(schemas);
     const map = schema_map_1.SchemaMap(schemas);
     const resolver = SchemaMapResolver(map);
@@ -45,8 +52,6 @@ exports.SchemaCollection = (schemas) => {
     const entitySchemas = [];
     const entityTitles = [];
     const enumTitles = [];
-    const roleFilters = {};
-    const roleFiltersNormalized = {};
     schemas.forEach(schema => {
         const { title } = schema;
         titles.push(title);
@@ -87,11 +92,8 @@ exports.SchemaCollection = (schemas) => {
         get entities() {
             return entitySchemas.slice();
         },
-        titlesForRoles: (userRoles) => {
-            return titles.filter(title => {
-                const filtered = api.filterForRoles(title, userRoles);
-                return !is_1.is.empty(filtered);
-            });
+        get map() {
+            return JSON.parse(JSON.stringify(map));
         },
         get: (title) => {
             assertTitle(title);
@@ -105,6 +107,8 @@ exports.SchemaCollection = (schemas) => {
             normalizedSchemaCache.set(title, normalizedSchema);
             return normalizedSchema;
         },
+        // modifies a schema to be compatible with the schema-to-interface code
+        // eg changes title to ISomeSchema etc
         interfaceSchema: (title) => {
             assertTitle(title);
             if (interfaceSchemaCache.has(title))
@@ -149,21 +153,6 @@ exports.SchemaCollection = (schemas) => {
             const schema = api.normalize(title);
             if (schema.wsParentProperty)
                 return schema.wsParentProperty;
-        },
-        filterForRoles: (title, userRoles, normalize = false) => {
-            assertTitle(title);
-            if (normalize) {
-                if (!(title in roleFiltersNormalized)) {
-                    const schema = api.normalize(title);
-                    roleFiltersNormalized[title] = filter_schema_for_roles_1.FilterSchemaForRoles(schema);
-                }
-                return roleFiltersNormalized[title](userRoles);
-            }
-            if (!(title in roleFilters)) {
-                const schema = titleMap[title];
-                roleFilters[title] = filter_schema_for_roles_1.FilterSchemaForRoles(schema);
-            }
-            return roleFilters[title](userRoles);
         }
     };
     return api;

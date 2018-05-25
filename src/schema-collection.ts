@@ -12,7 +12,7 @@ import { filterEntityBySchema } from './filter-entity-by-schema'
 import { IAppSchema } from './predicates/app-schema'
 import { IEntitySchema } from './predicates/entity-schema'
 import { uploadablePropertyNames } from './uploadable-properties'
-import { Role } from './security/types';
+import { Role, EntityAccess, EntityAccesses } from './security/types';
 import { FilterSchemaForRoles } from './filter-schema-for-roles';
 import { is } from '@mojule/is';
 
@@ -51,7 +51,17 @@ interface RoleFilters {
   [ title: string ]: ( userRoles: Role[] ) => IEntitySchema | {}
 }
 
-export const SchemaCollection = ( schemas : IAppSchema[] ) => {
+export const SchemaCollection = ( schemas: IAppSchema[], userRoles?: Role[], accesses: EntityAccess[] = [ EntityAccesses.read ] ) => {
+  if( Array.isArray( userRoles ) ){
+    schemas = <IAppSchema[]>schemas.map(
+      schema => {
+        const filterForRoles = FilterSchemaForRoles( schema )
+
+        return filterForRoles( userRoles, accesses )
+      }
+    ).filter( schema => !is.empty( schema ) )
+  }
+
   validateSchemas( schemas )
 
   const map = SchemaMap( schemas )
@@ -64,9 +74,6 @@ export const SchemaCollection = ( schemas : IAppSchema[] ) => {
   const entitySchemas : IEntitySchema[] = []
   const entityTitles : string[] = []
   const enumTitles: string[] = []
-
-  const roleFilters: RoleFilters = {}
-  const roleFiltersNormalized: RoleFilters = {}
 
   schemas.forEach( schema => {
     const { title } = schema
@@ -116,12 +123,8 @@ export const SchemaCollection = ( schemas : IAppSchema[] ) => {
     get entities() {
       return entitySchemas.slice()
     },
-    titlesForRoles: ( userRoles: Role[] ) => {
-      return titles.filter( title => {
-        const filtered = api.filterForRoles( title, userRoles )
-
-        return !is.empty( filtered )
-      } )
+    get map() {
+      return JSON.parse( JSON.stringify( map ) )
     },
     get: ( title: string ) => {
       assertTitle( title )
@@ -140,6 +143,8 @@ export const SchemaCollection = ( schemas : IAppSchema[] ) => {
 
       return normalizedSchema
     },
+    // modifies a schema to be compatible with the schema-to-interface code
+    // eg changes title to ISomeSchema etc
     interfaceSchema: ( title: string ) => {
       assertTitle( title )
 
@@ -201,25 +206,6 @@ export const SchemaCollection = ( schemas : IAppSchema[] ) => {
       const schema = <IEntitySchema>api.normalize( title )
 
       if( schema.wsParentProperty ) return schema.wsParentProperty
-    },
-    filterForRoles: ( title: string, userRoles: Role[], normalize = false ) : IEntitySchema | {} => {
-      assertTitle( title )
-
-      if( normalize ){
-        if ( !( title in roleFiltersNormalized ) ) {
-          const schema = api.normalize( title )
-          roleFiltersNormalized[ title ] = FilterSchemaForRoles( schema )
-        }
-
-        return roleFiltersNormalized[ title ]( userRoles )
-      }
-
-      if( !( title in roleFilters ) ){
-        const schema = titleMap[ title ]
-        roleFilters[ title ] = FilterSchemaForRoles( schema )
-      }
-
-      return roleFilters[ title ]( userRoles )
     }
   }
 

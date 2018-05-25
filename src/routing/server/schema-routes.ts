@@ -5,10 +5,11 @@ import { serverError, notFoundError } from './json-errors'
 import { IAppSchema } from '../../predicates/app-schema'
 import { IRouteData } from './types'
 import { SchemaCollection } from '../../schema-collection'
-import { Roles } from '../../security/types';
-import { is } from '@mojule/is';
+import { Roles, PropertyAccesses } from '../../security/types'
+import { is } from '@mojule/is'
+import { getUser, getUserSchemas } from '../../utils/get-user';
 
-export const SchemaRoutes = ( schemaMap: IAppSchema[] ): IRouteData => {
+export const SchemaRoutes = ( schemaCollection: IAppSchema[] ): IRouteData => {
   const schemaRoute = title => {
     const routePath = kebabCase( title )
 
@@ -16,14 +17,15 @@ export const SchemaRoutes = ( schemaMap: IAppSchema[] ): IRouteData => {
       [ routePath ]: {
         get: ( req: Request, res: Response ) => {
           try {
-            const user = req.user || { roles: [ Roles.public ] }
-            const schema = schemas.filterForRoles( title, user.roles )
+            const userSchemas = getUserSchemas( req, schemaCollection, [ PropertyAccesses.read ] )
 
-            if( is.empty( schema ) ){
+            if ( !userSchemas.titles.includes( title ) ) {
               notFoundError( res, Error( `${ routePath } not found` ) )
 
               return
             }
+
+            const schema = userSchemas.get( title )
 
             res.json( schema )
           } catch ( err ) {
@@ -34,14 +36,15 @@ export const SchemaRoutes = ( schemaMap: IAppSchema[] ): IRouteData => {
       [ `${ routePath }/normalized` ]: {
         get: ( req: Request, res: Response ) => {
           try {
-            const user = req.user || { roles: [ Roles.public ] }
-            const schema = schemas.filterForRoles( title, user.roles, true )
+            const userSchemas = getUserSchemas( req, schemaCollection, [ PropertyAccesses.read ] )
 
-            if ( is.empty( schema ) ) {
+            if ( !userSchemas.titles.includes( title ) ) {
               notFoundError( res, Error( `${ routePath } not found` ) )
 
               return
             }
+
+            const schema = userSchemas.normalize( title )
 
             res.json( schema )
           } catch ( err ) {
@@ -52,36 +55,26 @@ export const SchemaRoutes = ( schemaMap: IAppSchema[] ): IRouteData => {
     }
   }
 
-  const schemas = SchemaCollection( schemaMap )
-  const { titles } = schemas
-
   const rootRoute: IRouteData = {
     '.': {
       get: ( req: Request, res: Response ) => {
-        const user = req.user || { roles: [ Roles.public ] }
-        const titles = schemas.titlesForRoles( user.roles )
+        const userSchemas = getUserSchemas( req, schemaCollection, [ PropertyAccesses.read ] )
+        const { titles } = userSchemas
 
         res.json( titles.map( kebabCase ) )
       }
     },
     'map': {
       get: ( req: Request, res: Response ) => {
-        const user = req.user || { roles: [ Roles.public ] }
-        const titles = schemas.titlesForRoles( user.roles )
-        const schemaMapForRoles = titles.reduce( ( map, title ) => {
-          const schema = <any>schemas.filterForRoles( title, user.roles )
+        const userSchemas = getUserSchemas( req, schemaCollection, [ PropertyAccesses.read ] )
 
-          if( is.empty( schema ) ) return map
-
-          map[ schema.id ] = schema
-
-          return map
-        }, {})
-
-        res.json( schemaMapForRoles )
+        res.json( userSchemas.map )
       }
     }
   }
+
+  const schemas = SchemaCollection( schemaCollection )
+  const { titles } = schemas
 
   return titles.reduce( ( routeData, title ) => {
     const currentRouteData = schemaRoute( title )

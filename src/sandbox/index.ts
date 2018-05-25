@@ -4,6 +4,7 @@ import { userSchema } from '../security/app-schema/user-schema'
 import { flatten, glob, pointerValueArray, globPointerValues, get, pointerValueArrayToPointerMap, expand } from '@mojule/json-pointer'
 import { Role, Roles } from '../security/types'
 import { subschemaMapRemoveLeafNodes } from '../subschema-map-remove-leafs'
+import * as SchemaMapper from '@mojule/schema-mapper'
 
 const userSubSchemaMap = subschemaMapRemoveLeafNodes( <IEntitySchema>userSchema )
 
@@ -115,3 +116,9 @@ const schemaForCurrentUser = filterSchemaForRoles( userSchema, [ Roles.currentUs
 const schemaForUser = filterSchemaForRoles( userSchema, [ Roles.user ] )
 
 console.log( JSON.stringify( { schemaForAdmin, schemaForCurrentUser, schemaForUser } , null, 2 ) )
+
+const { from, to } = SchemaMapper( { omitDefault: false })
+
+const userDefaults = from( userSchema )
+
+console.log( JSON.stringify( userDefaults, null, 2 ) )

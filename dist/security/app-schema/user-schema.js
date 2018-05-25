@@ -1,6 +1,6 @@
 "use strict";
-// TODO - get this back into JSON and think of a more robust way to export it
 Object.defineProperty(exports, "__esModule", { value: true });
+// TODO - get this back into JSON and think of a more robust way to export it
 exports.userSchema = {
     id: 'http://workingspec.com/schema/user',
     title: 'User',
@@ -39,8 +39,7 @@ exports.userSchema = {
             wsSecurity: {
                 create: ['admin'],
                 read: ['admin'],
-                update: ['admin'],
-                delete: ['admin']
+                update: ['admin']
             }
         }
     },

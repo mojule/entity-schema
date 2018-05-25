@@ -24,6 +24,9 @@ import {
   SchemaCollection, loadSchemas, SchemaMap, subschemaMap, predicates,
   addUniques, linkTitlesForSchema, addLinks
 } from '..'
+import { userSchema } from '../security/app-schema/user-schema';
+import { Roles } from '../security/types';
+import { FilterSchemaForRoles } from '../filter-schema-for-roles';
 
 describe( 'Schema', () => {
   it( 'loadSchemas', () => {
@@ -559,5 +562,48 @@ describe( 'Schema', () => {
 
       assert.throws( () => addLinks( schema, badLinkMap ) )
     })
+  })
+
+  describe( 'Filter Schema for Roles', () => {
+    const adminRole = [ Roles.admin ]
+    const currentUserRole = [ Roles.currentUser ]
+    const userRole = [ Roles.user ]
+    const filterSchemaForRoles = FilterSchemaForRoles( userSchema )
+
+    it( 'filters for admin', () => {
+      const schema = filterSchemaForRoles( adminRole )
+
+      assert.deepEqual( schema, userSchema )
+    })
+
+    it( 'filters for currentUser', () => {
+      const schema = filterSchemaForRoles( currentUserRole )
+
+      const expect: IEntitySchema = {
+        id: 'http://workingspec.com/schema/user',
+        title: 'User',
+        description: 'Person with access to the system',
+        type: 'object',
+        format: 'workingspec-entity',
+        properties: {
+          email: {
+            title: 'Email',
+            description: 'The user\'s email address',
+            type: 'string',
+            format: 'email'
+          }
+        },
+        additionalProperties: false,
+        required: [ 'email' ]
+      }
+
+      assert.deepEqual( schema, expect )
+    })
+
+    it( 'filters for user', () => {
+      const schema = filterSchemaForRoles( userRole )
+
+      assert.strictEqual( JSON.stringify( schema ), '{}' )
+    } )
   })
 })

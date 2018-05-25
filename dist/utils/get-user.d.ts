@@ -1,16 +1,19 @@
+/// <reference types="passport" />
 /// <reference types="tv4" />
 /// <reference types="mongoose" />
-import * as tv4 from 'tv4';
+import { Request } from 'express-serve-static-core';
+import { IAppSchema } from '../predicates/app-schema';
+import { EntityAccess } from '../security/types';
+import { IEntitySchema } from '../predicates/entity-schema';
 import { JSONSchema4 } from 'json-schema';
 import { Schema } from 'mongoose';
-import { IAppSchema } from './predicates/app-schema';
-import { IEntitySchema } from './predicates/entity-schema';
-import { Role, EntityAccess } from './security/types';
-export declare const SchemaCollection: (schemas: IAppSchema[], userRoles?: Role[] | undefined, accesses?: EntityAccess[]) => {
+import { TV4 } from 'tv4';
+export declare const getUser: (req: Request) => Express.User;
+export declare const getUserSchemas: (req: Request, schemas: IAppSchema[], accesses: EntityAccess[]) => {
     readonly titles: string[];
     readonly entityTitles: string[];
     readonly enumTitles: string[];
-    readonly validator: tv4.TV4;
+    readonly validator: TV4;
     readonly entities: IEntitySchema[];
     readonly map: any;
     get: (title: string) => IAppSchema;

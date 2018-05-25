@@ -1,6 +1,8 @@
+import { IEntitySchema } from '../../predicates/entity-schema'
+
 // TODO - get this back into JSON and think of a more robust way to export it
 
-export const userSchema = {
+export const userSchema: IEntitySchema = {
   id: 'http://workingspec.com/schema/user',
   title: 'User',
   description: 'Person with access to the system',
@@ -38,8 +40,7 @@ export const userSchema = {
       wsSecurity: {
         create: [ 'admin' ],
         read: [ 'admin' ],
-        update: [ 'admin' ],
-        delete: [ 'admin' ]
+        update: [ 'admin' ]
       }
     }
   },
