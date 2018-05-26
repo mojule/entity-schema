@@ -15,11 +15,16 @@ exports.apiKeySchema = {
             title: 'Secret',
             description: 'The API Key Secret',
             type: 'string',
-            format: 'password',
-            wsSecurity: {
-                create: ['admin'],
-                read: ['admin'],
-                update: ['admin']
+            format: 'password'
+        },
+        tags: {
+            title: 'Tags',
+            description: 'Tags to help categorize this API key',
+            type: 'array',
+            items: {
+                title: 'Tag',
+                description: "Tag for categorizing API key",
+                type: 'string'
             }
         }
     },

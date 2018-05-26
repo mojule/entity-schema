@@ -1,7 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const types_1 = require("./types");
+const uuid = require("uuid");
 const bcrypt = require("bcrypt");
+const pify = require("pify");
+const hash = pify(bcrypt.hash);
 exports.PassportSecurity = (User, ApiKey) => {
     const strategy = (email, password, done) => {
         User.findOne({ email }, (err, user) => {
@@ -19,17 +22,17 @@ exports.PassportSecurity = (User, ApiKey) => {
         });
     };
     const apiKeyStrategy = (id, secret, done) => {
-        ApiKey.findOne({ 'user.entityId': id }, (err, apiKey) => {
+        ApiKey.findById(id, (err, apiKeyDocument) => {
             if (err)
                 return done(err);
-            if (apiKey === null)
+            if (apiKeyDocument === null)
                 return done(null, false);
-            bcrypt.compare(secret, apiKey.secret, (err, result) => {
+            bcrypt.compare(secret, apiKeyDocument.secret, (err, result) => {
                 if (err)
                     return done(err);
                 if (!result)
                     return done(null, false);
-                User.findById(apiKey.user.entityId, (err, user) => {
+                User.findById(apiKeyDocument.user.entityId, (err, user) => {
                     if (err)
                         return done(err);
                     return done(null, user);
@@ -40,8 +43,8 @@ exports.PassportSecurity = (User, ApiKey) => {
     const serializeUser = (user, cb) => {
         cb(null, user._id.toString());
     };
-    const deserializeUser = (id, cb) => {
-        User.findById(id, (err, user) => {
+    const deserializeUser = (_id, cb) => {
+        User.findById(_id, (err, user) => {
             if (err)
                 return cb(err);
             if (user === null)
@@ -49,9 +52,48 @@ exports.PassportSecurity = (User, ApiKey) => {
             const userModel = user.toJSON();
             const { email, roles } = userModel;
             roles.push(types_1.Roles.currentUser);
-            cb(null, { email, roles });
+            cb(null, { _id, email, roles });
         });
     };
-    return { strategy, apiKeyStrategy, serializeUser, deserializeUser };
+    const createApiKey = async (user, tags) => {
+        const secret = uuid.v4();
+        const apiKeyModel = {
+            user: {
+                entityId: user._id.toString(),
+                entityType: 'User'
+            },
+            secret,
+            tags
+        };
+        const apiKeyDocument = new ApiKey(apiKeyModel);
+        const apiKey = Buffer.from(`${apiKeyDocument._id.toString()}:${secret}`).toString('base64');
+        apiKeyDocument.secret = await hash(secret, 10);
+        await apiKeyDocument.save();
+        return {
+            apiKey,
+            apiKeyId: apiKeyDocument._id.toString()
+        };
+    };
+    const getSessionApiKey = async (req) => {
+        const { session } = req;
+        if (session.apiKey)
+            return session.apiKey;
+        if (!req.user)
+            throw Error('No user!');
+        const { user } = req;
+        const sessionApis = await ApiKey.find({
+            'user.entityId': user._id.toString(),
+            tags: 'session'
+        });
+        await Promise.all(sessionApis.map(sessionApi => sessionApi.remove()));
+        const apiKey = await createSessionApiKey(user);
+        session.apiKey = apiKey.apiKey;
+        return session.apiKey;
+    };
+    const createSessionApiKey = async (user) => createApiKey(user, ['session']);
+    return {
+        strategy, apiKeyStrategy, serializeUser, deserializeUser, createApiKey,
+        createSessionApiKey, getSessionApiKey
+    };
 };
 //# sourceMappingURL=index.js.map

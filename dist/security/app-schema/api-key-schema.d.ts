@@ -13,10 +13,15 @@ export declare const apiKeySchema: {
             description: string;
             type: string;
             format: string;
-            wsSecurity: {
-                create: string[];
-                read: string[];
-                update: string[];
+        };
+        tags: {
+            title: string;
+            description: string;
+            type: string;
+            items: {
+                title: string;
+                description: string;
+                type: string;
             };
         };
     };

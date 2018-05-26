@@ -1,6 +1,6 @@
 {
   "name": "@mojule/entity-schema",
-  "version": "0.5.17",
+  "version": "0.5.21",
   "description": "Subset of JSON Schema for defining entities",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -39,7 +39,9 @@
     "@types/multer": "^1.3.6",
     "@types/node": "^10.1.2",
     "@types/passport": "^0.4.5",
+    "@types/pify": "^3.0.2",
     "@types/tv4": "^1.2.29",
+    "@types/uuid": "^3.4.3",
     "bcrypt": "^2.0.1",
     "body-parser": "^1.18.3",
     "json-schema-to-typescript": "^5.5.0",
@@ -50,7 +52,9 @@
     "mongoose-validator": "^2.0.2",
     "multer": "^1.3.0",
     "path-to-regexp": "^2.2.1",
-    "tv4": "^1.3.0"
+    "pify": "^3.0.0",
+    "tv4": "^1.3.0",
+    "uuid": "^3.2.1"
   },
   "devDependencies": {
     "@mojule/document": "^0.2.0",
