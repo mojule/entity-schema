@@ -7,6 +7,11 @@ export const apiKeySchema = {
   type: 'object',
   format: 'workingspec-entity',
   properties: {
+    name: {
+      title: 'Name',
+      description: 'Name of this API Key',
+      type: 'string'
+    },
     user: {
       $ref: "http://workingspec.com/schema/user-reference"
     },

@@ -7,12 +7,14 @@ export type PropertyAccess = 'create' | 'read' | 'update'
 export type EntityAccess = PropertyAccess | 'delete'
 
 export interface User {
+  name: string
   email: string
   password: string
   roles: Role[]
 }
 
 export interface ApiKey {
+  name: string
   user: {
     entityId: string
     entityType: 'User'

@@ -55,11 +55,11 @@ export const PassportSecurity = ( User: MongoUser, ApiKey: MongoApiKey ) => {
 
       const userModel: User = user.toJSON()
 
-      const { email, roles } = userModel
+      const { name, email, roles } = userModel
 
       roles.push( Roles.currentUser )
 
-      cb( null, { _id, email, roles } )
+      cb( null, { _id, name, email, roles } )
     } )
   }
 
@@ -67,6 +67,7 @@ export const PassportSecurity = ( User: MongoUser, ApiKey: MongoApiKey ) => {
     const secret = uuid.v4()
 
     const apiKeyModel = {
+      name: 'API Key for ' + user.name,
       user: {
         entityId: user._id.toString(),
         entityType: 'User'

@@ -112,6 +112,8 @@ instead
 
 Additional properties should be false
 
+An entity should have a name:string property
+
 ```json
 {
   "id": "http://example.com/schema/foo",

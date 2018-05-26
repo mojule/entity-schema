@@ -9,6 +9,11 @@ export const userSchema: IEntitySchema = {
   type: 'object',
   format: 'workingspec-entity',
   properties: {
+    name: {
+      title: 'Name',
+      description: 'The user\'s name',
+      type: 'string'
+    },
     email: {
       title: 'Email',
       description: 'The user\'s email address',
@@ -51,5 +56,5 @@ export const userSchema: IEntitySchema = {
     delete: [ 'admin' ]
   },
   additionalProperties: false,
-  required: [ 'email', 'password', 'roles' ]
+  required: [ 'name', 'email', 'password', 'roles' ]
 }
