@@ -12,6 +12,7 @@ const schema_form_to_entity_model_1 = require("../../../forms/schema-form-to-ent
 const uploadable_properties_1 = require("../../../uploadable-properties");
 const entity_model_to_form_1 = require("../../../forms/entity-model-to-form");
 const dom_utils_1 = require("@mojule/dom-utils");
+const is_1 = require("@mojule/is");
 const schemaWithLinks = async (schema, authorize) => {
     const linkTitles = link_titles_for_schema_1.linkTitlesForSchema(schema);
     const fetchJsonMap = linkTitles.reduce((map, title) => {
@@ -39,6 +40,15 @@ const getApiKey = () => {
     const { apiKey } = clientDiv.dataset;
     if (apiKey)
         return 'Basic ' + apiKey;
+};
+let message = null;
+// destructive! allows for one-time messages
+const getMessage = () => {
+    if (is_1.is.string(message)) {
+        const result = message;
+        message = null;
+        return result;
+    }
 };
 exports.entityRoutes = {
     '/entity/:title/create': async (req, res) => {
@@ -68,6 +78,9 @@ exports.entityRoutes = {
                     fetch_json_1.postJson(uri, model, 'POST', getApiKey());
                 try {
                     const newEntity = await poster;
+                    if (newEntity._meta) {
+                        message = newEntity._meta.message;
+                    }
                     res.redirect(`/entity/${title}/${newEntity._id}`);
                 }
                 catch (err) {
@@ -154,7 +167,10 @@ exports.entityRoutes = {
             }
             if (id) {
                 const entity = await fetch_json_1.fetchJson(`/api/v1/${title}/${id}`, getApiKey());
-                content.appendChild(h_1.documentFragment(h_1.h4(`${lodash_1.startCase(title)} ${id}`), templates_1.ActionList([
+                const message = getMessage();
+                content.appendChild(h_1.documentFragment((message ?
+                    h_1.documentFragment(h_1.h3('Message'), h_1.p(message)) :
+                    ''), h_1.h4(`${lodash_1.startCase(title)} ${id}`), templates_1.ActionList([
                     {
                         title: 'Edit',
                         path: `/entity/${title}/${id}/edit`

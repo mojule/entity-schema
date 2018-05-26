@@ -1,5 +1,5 @@
 import { fetchJson, postJson, putJson, fetchJsonMultiple, postFormData, putFormData, postDelete } from '../utils/fetch-json'
-import { documentFragment, h2, h3, h4, button, input } from '../utils/h'
+import { documentFragment, h2, h3, h4, button, input, p } from '../utils/h'
 import { objectToDom } from '../utils/object-to-dom'
 import { startCase, kebabCase } from 'lodash'
 import { TitlesAnchorNav, ErrorPage, AppPage, ActionList } from '../templates'
@@ -12,6 +12,7 @@ import { schemaFormToEntityModel } from '../../../forms/schema-form-to-entity-mo
 import { uploadablePropertyNames } from '../../../uploadable-properties'
 import { entityModelToForm } from '../../../forms/entity-model-to-form'
 import { strictSelect } from '@mojule/dom-utils';
+import { is } from '@mojule/is';
 
 const schemaWithLinks = async ( schema, authorize?: string ) => {
   const linkTitles = linkTitlesForSchema( schema )
@@ -51,6 +52,19 @@ const getApiKey = () => {
 
   if ( apiKey )
     return 'Basic ' + apiKey
+}
+
+let message: string | null = null
+
+// destructive! allows for one-time messages
+const getMessage = () => {
+  if( is.string( message ) ){
+    const result = <string>message
+
+    message = null
+
+    return result
+  }
 }
 
 export const entityRoutes: IClientRouterMap = {
@@ -95,6 +109,10 @@ export const entityRoutes: IClientRouterMap = {
 
         try {
           const newEntity = await poster
+
+          if( newEntity._meta ){
+            message = newEntity._meta.message
+          }
 
           res.redirect( `/entity/${ title }/${ newEntity._id }` )
         } catch ( err ) {
@@ -218,9 +236,18 @@ export const entityRoutes: IClientRouterMap = {
 
       if ( id ) {
         const entity = await fetchJson( `/api/v1/${ title }/${ id }`, getApiKey() )
+        const message = getMessage()
 
         content.appendChild(
           documentFragment(
+            (
+              message ?
+              documentFragment(
+                h3( 'Message' ),
+                p( message )
+              ) :
+              ''
+            ),
             h4( `${ startCase( title ) } ${ id }` ),
             ActionList( [
               {

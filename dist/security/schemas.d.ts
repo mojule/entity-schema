@@ -28,6 +28,11 @@ export declare const securitySchemas: (IEntitySchema | {
     type: string;
     format: string;
     properties: {
+        name: {
+            title: string;
+            description: string;
+            type: string;
+        };
         user: {
             $ref: string;
         };
@@ -35,7 +40,8 @@ export declare const securitySchemas: (IEntitySchema | {
             title: string;
             description: string;
             type: string;
-            format: string;
+            default: string;
+            readOnly: boolean;
         };
         tags: {
             title: string;

@@ -586,6 +586,11 @@ describe( 'Schema', () => {
         type: 'object',
         format: 'workingspec-entity',
         properties: {
+          name: {
+            title: 'Name',
+            description: 'The user\'s name',
+            type: 'string'
+          },
           email: {
             title: 'Email',
             description: 'The user\'s email address',
@@ -594,7 +599,7 @@ describe( 'Schema', () => {
           }
         },
         additionalProperties: false,
-        required: [ 'email' ]
+        required: [ 'name', 'email' ]
       }
 
       assert.deepEqual( schema, expect )

@@ -8,6 +8,11 @@ exports.userSchema = {
     type: 'object',
     format: 'workingspec-entity',
     properties: {
+        name: {
+            title: 'Name',
+            description: 'The user\'s name',
+            type: 'string'
+        },
         email: {
             title: 'Email',
             description: 'The user\'s email address',
@@ -50,6 +55,6 @@ exports.userSchema = {
         delete: ['admin']
     },
     additionalProperties: false,
-    required: ['email', 'password', 'roles']
+    required: ['name', 'email', 'password', 'roles']
 };
 //# sourceMappingURL=user-schema.js.map

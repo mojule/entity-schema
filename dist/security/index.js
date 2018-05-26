@@ -50,14 +50,15 @@ exports.PassportSecurity = (User, ApiKey) => {
             if (user === null)
                 return cb(Error('User was null'));
             const userModel = user.toJSON();
-            const { email, roles } = userModel;
+            const { name, email, roles } = userModel;
             roles.push(types_1.Roles.currentUser);
-            cb(null, { _id, email, roles });
+            cb(null, { _id, name, email, roles });
         });
     };
     const createApiKey = async (user, tags) => {
         const secret = uuid.v4();
         const apiKeyModel = {
+            name: 'API Key for ' + user.name,
             user: {
                 entityId: user._id.toString(),
                 entityType: 'User'

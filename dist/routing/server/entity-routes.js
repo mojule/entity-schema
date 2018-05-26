@@ -17,6 +17,7 @@ const get_user_1 = require("../../utils/get-user");
 const SchemaMapper = require("@mojule/schema-mapper");
 const types_1 = require("../../security/types");
 const deep_assign_1 = require("../../utils/deep-assign");
+const model_resolvers_1 = require("../../model-resolvers");
 const { from: entityFromSchema } = SchemaMapper({ omitDefault: false });
 const jsonParser = bodyParser.json();
 const storage = multer.diskStorage({
@@ -77,7 +78,10 @@ const addMetaData = (metadata) => (req, res, next) => {
     Object.assign(req, { _wsMetadata: metadata });
     next();
 };
-exports.EntityRoutes = (schemaCollection) => {
+exports.EntityRoutes = (schemaCollection, resolvers = model_resolvers_1.modelResolvers) => {
+    if (resolvers !== model_resolvers_1.modelResolvers) {
+        resolvers = Object.assign({}, model_resolvers_1.modelResolvers, resolvers);
+    }
     const models = mongoose_models_1.mongooseModels(schemaCollection);
     const schemas = schema_collection_1.SchemaCollection(schemaCollection);
     const { entityTitles } = schemas;
@@ -134,9 +138,17 @@ exports.EntityRoutes = (schemaCollection) => {
                     else {
                         model = new Model(body);
                     }
+                    let meta;
+                    if (title in resolvers) {
+                        const resolved = await resolvers[title](types_1.EntityAccesses.create, model, body, req, res);
+                        model = resolved.document;
+                        meta = resolved.meta;
+                    }
                     const product = await model.save();
                     const filtered = filter_entity_by_schema_1.filterEntityBySchema(product.toJSON(), schema);
                     filtered._id = product._id;
+                    if (meta)
+                        filtered._meta = meta;
                     res.status(201).json(filtered);
                 }
                 else {

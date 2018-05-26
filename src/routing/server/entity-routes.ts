@@ -23,6 +23,8 @@ import { getUserSchemas } from '../../utils/get-user'
 import * as SchemaMapper from '@mojule/schema-mapper'
 import { PropertyAccesses, EntityAccess, EntityAccesses } from '../../security/types';
 import { deepAssign } from '../../utils/deep-assign'
+import { ModelResolverMap } from '../../model-resolvers/types';
+import { modelResolvers } from '../../model-resolvers';
 
 const { from: entityFromSchema } = SchemaMapper( { omitDefault: false } )
 
@@ -107,7 +109,11 @@ const addMetaData = ( metadata: any ) => ( req: Request, res: Response, next: Ne
   next()
 }
 
-export const EntityRoutes = ( schemaCollection: IAppSchema[] ): IRouteData => {
+export const EntityRoutes = ( schemaCollection: IAppSchema[], resolvers: ModelResolverMap = modelResolvers ): IRouteData => {
+  if( resolvers !== modelResolvers ) {
+    resolvers = Object.assign( {}, modelResolvers, resolvers )
+  }
+
   const models = mongooseModels<Model<Document>>( schemaCollection )
   const schemas = SchemaCollection( schemaCollection )
   const { entityTitles } = schemas
@@ -183,10 +189,20 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[] ): IRouteData => {
             model = <any>new Model( body )
           }
 
+          let meta
+          if( title in resolvers ){
+            const resolved = await resolvers[ title ]( EntityAccesses.create, model, body, req, res )
+            model = resolved.document
+            meta = resolved.meta
+          }
+
           const product = await ( <any>model ).save()
           const filtered = filterEntityBySchema( product.toJSON(), schema )
 
           filtered._id = product._id
+
+          if( meta )
+            filtered._meta = meta
 
           res.status( 201 ).json( filtered )
         } else {

@@ -7,7 +7,7 @@ import {
 import * as uuid from 'uuid'
 import * as bcrypt from 'bcrypt'
 import * as pify from 'pify'
-import { Request } from 'express-serve-static-core';
+import { Request } from 'express-serve-static-core'
 
 const hash = pify( bcrypt.hash )
 

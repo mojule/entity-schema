@@ -19,7 +19,8 @@ export const apiKeySchema = {
       title: 'Secret',
       description: 'The API Key Secret',
       type: 'string',
-      format: 'password'
+      default: '',
+      readOnly: true
     },
     tags: {
       title: 'Tags',
