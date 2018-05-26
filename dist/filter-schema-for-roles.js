@@ -30,8 +30,11 @@ exports.FilterSchemaForRoles = (schema) => {
         return map;
     }, {});
     const filterSchemaForRoles = (userRoles, accesses = [types_1.EntityAccesses.read]) => {
-        const hasAccess = (propertyPath) => {
+        const hasAccess = (propertyPath, isProperty = false) => {
             return accesses.every(access => {
+                // no delete access exists on properties
+                if (access === types_1.EntityAccesses.delete && isProperty)
+                    return true;
                 const expectedRoles = securityMap[propertyPath][access];
                 if (!expectedRoles)
                     throw Error(`Could not find access at ${propertyPath}/${access}`);
@@ -45,7 +48,7 @@ exports.FilterSchemaForRoles = (schema) => {
                 const parent = getParentPath(pv.pointer, 'required');
                 const propertyPath = parent + '/properties/' + pv.value;
                 if (propertyPath in securityMap) {
-                    return hasAccess(propertyPath);
+                    return hasAccess(propertyPath, true);
                 }
             }
             const securePath = securePaths.find(sp => pv.pointer.startsWith(sp));

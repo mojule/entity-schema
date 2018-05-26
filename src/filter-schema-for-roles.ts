@@ -43,8 +43,11 @@ export const FilterSchemaForRoles = ( schema: IAppSchema ) => {
   }, <any>{} )
 
   const filterSchemaForRoles = ( userRoles: Role[], accesses: EntityAccess[] = [ EntityAccesses.read ] ): IAppSchema | {} => {
-    const hasAccess = ( propertyPath: string ) => {
+    const hasAccess = ( propertyPath: string, isProperty = false ) => {
       return accesses.every( access => {
+        // no delete access exists on properties
+        if ( access === EntityAccesses.delete && isProperty ) return true
+
         const expectedRoles = securityMap[ propertyPath ][ access ]
 
         if ( !expectedRoles ) throw Error( `Could not find access at ${ propertyPath }/${ access }` )
@@ -62,7 +65,7 @@ export const FilterSchemaForRoles = ( schema: IAppSchema ) => {
         const propertyPath = parent + '/properties/' + pv.value
 
         if ( propertyPath in securityMap ) {
-          return hasAccess( propertyPath )
+          return hasAccess( propertyPath, true )
         }
       }
 

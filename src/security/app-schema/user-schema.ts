@@ -28,7 +28,8 @@ export const userSchema: IEntitySchema = {
       wsSecurity: {
         create: [ 'admin', 'public' ],
         read: [ 'admin' ],
-        update: [ 'admin', 'currentUser' ]
+        update: [ 'admin', 'currentUser' ],
+        delete: [ 'admin' ]
       }
     },
     roles: {
@@ -45,7 +46,8 @@ export const userSchema: IEntitySchema = {
       wsSecurity: {
         create: [ 'admin' ],
         read: [ 'admin' ],
-        update: [ 'admin' ]
+        update: [ 'admin' ],
+        delete: [ 'admin' ]
       }
     }
   },

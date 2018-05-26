@@ -27,7 +27,8 @@ exports.userSchema = {
             wsSecurity: {
                 create: ['admin', 'public'],
                 read: ['admin'],
-                update: ['admin', 'currentUser']
+                update: ['admin', 'currentUser'],
+                delete: ['admin']
             }
         },
         roles: {
@@ -44,7 +45,8 @@ exports.userSchema = {
             wsSecurity: {
                 create: ['admin'],
                 read: ['admin'],
-                update: ['admin']
+                update: ['admin'],
+                delete: ['admin']
             }
         }
     },

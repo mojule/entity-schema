@@ -1,6 +1,6 @@
 {
   "name": "@mojule/entity-schema",
-  "version": "0.5.26",
+  "version": "0.5.28",
   "description": "Subset of JSON Schema for defining entities",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
