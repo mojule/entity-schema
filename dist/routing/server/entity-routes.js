@@ -19,6 +19,7 @@ const deep_assign_1 = require("../../utils/deep-assign");
 const model_resolvers_1 = require("../../model-resolvers");
 const file_resolvers_1 = require("../../file-resolvers");
 const entity_storage_1 = require("../../file-resolvers/entity-storage");
+const get_multipart_values_1 = require("../../utils/get-multipart-values");
 const { from: entityFromSchema } = SchemaMapper({ omitDefault: false });
 const jsonParser = bodyParser.json();
 /*
@@ -39,13 +40,13 @@ const excludeOwnProperties = (model, uniqueValuesMap) => {
   if the http body is json, use jsonParse, otherwise parse the req.body as if
   it were a multipart form
 */
-const selectBodyParser = (req, res, next) => {
+const selectBodyParser = async (req, res, next) => {
     if (req.headers['content-type'].startsWith('application/json')) {
         jsonParser(req, res, next);
         return;
     }
     // add a check here that it's form multipart
-    const { body } = req;
+    const body = await get_multipart_values_1.getMultipartFields(req);
     const pointerPaths = Object.keys(body).filter(key => key.startsWith('/'));
     const flatModel = pointerPaths.reduce((obj, pointer) => {
         obj[pointer] = JSON.parse(body[pointer]);
