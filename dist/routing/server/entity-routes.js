@@ -60,6 +60,7 @@ const addMetaData = (metadata) => (req, res, next) => {
     Object.assign(req, { _wsMetadata: metadata });
     next();
 };
+const getMetaData = (req) => req['_wsMetadata'];
 const entityRouteOptions = {
     modelResolvers: model_resolvers_1.modelResolvers,
     fileResolvers: file_resolvers_1.fileResolvers
@@ -74,36 +75,6 @@ exports.EntityRoutes = (schemaCollection, options = entityRouteOptions) => {
     const { modelResolvers, fileResolvers } = options;
     if (modelResolvers === undefined || fileResolvers === undefined)
         throw Error('Expected modelResolvers and fileResolvers');
-    // const storage = multer.diskStorage( {
-    //   destination: ( req, file, cb ) => {
-    //     const { title } = req[ '_wsMetadata' ]
-    //     let destination : DiskStorageOptions[ 'destination' ]
-    //     if( title in fileResolvers ){
-    //       if ( fileResolvers[ title ].zip ){
-    //         destination = fileResolvers[ title ].zip
-    //       } else {
-    //         destination = fileResolvers[ title ].destination
-    //       }
-    //     } else {
-    //       destination = fileResolvers.default.destination
-    //     }
-    //     if ( is.string( destination ) || is.undefined( destination ) )
-    //       throw Error( 'Expected diskStorage destination to be in function form' )
-    //     destination( req, file, cb )
-    //   },
-    //   filename: ( req, file, cb ) => {
-    //     const { title } = req[ '_wsMetadata' ]
-    //     let filename: DiskStorageOptions[ 'filename' ]
-    //     if ( title in fileResolvers ) {
-    //       filename = fileResolvers[ title ].filename
-    //     } else {
-    //       filename = fileResolvers.default.filename
-    //     }
-    //     if ( is.string( filename ) || is.undefined( filename ) )
-    //       throw Error( 'Expected diskStorage filename to be in function form' )
-    //     filename( req, file, cb )
-    //   }
-    // } )
     const storage = entity_storage_1.EntityStorage(fileResolvers);
     const upload = multer({ storage });
     const models = mongoose_models_1.mongooseModels(schemaCollection);
@@ -119,55 +90,110 @@ exports.EntityRoutes = (schemaCollection, options = entityRouteOptions) => {
                 throw Error(`Expected post body to have ${parentProperty}.entityId`);
             }
         };
-        const addFiles = (req, uploadablePropertyNames) => {
+        const getFiles = (req, uploadablePropertyNames) => {
+            const filePaths = {};
             if (uploadablePropertyNames.length) {
-                const { body } = req;
                 const files = req.files;
                 if (!files)
-                    return;
+                    return filePaths;
                 uploadablePropertyNames.forEach(propertyName => {
                     const file = files.find(f => f.fieldname === '/' + propertyName);
                     if (file) {
                         const urlPath = path.relative('public', file.path).split(path.sep).join(path.posix.sep);
-                        body[propertyName] = urlPath;
+                        filePaths[propertyName] = urlPath;
                     }
                 });
             }
+            return filePaths;
         };
-        const postHandler = async (req, res) => {
-            let { body } = req;
+        const getSchema = async (userSchemas, body) => {
+            const parentProperty = userSchemas.parentProperty(title);
+            const parentId = getParentId(body, parentProperty);
+            const uniqueValuesMap = await Model.uniqueValuesMap(parentId);
+            const entitySchema = userSchemas.normalize(title);
+            const schema = add_uniques_1.addUniques(entitySchema, uniqueValuesMap);
+            return schema;
+        };
+        const createModelHandler = async (req, res, next) => {
+            try {
+                let { body } = req;
+                const userSchemas = get_user_1.getUserSchemas(req, schemaCollection, [types_1.PropertyAccesses.create]);
+                if (!userSchemas.titles.includes(title)) {
+                    json_errors_1.notFoundError(res, Error(`${routePath} not found`));
+                    return;
+                }
+                const systemSchema = schemas.normalize(title);
+                const defaultValues = entityFromSchema(systemSchema);
+                const schema = await getSchema(userSchemas, body);
+                body = filter_entity_by_schema_1.filterEntityBySchema(body, schema);
+                body = deep_assign_1.deepAssign({}, defaultValues, body);
+                let model = new Model(body);
+                let meta;
+                if (modelResolvers && (title in modelResolvers)) {
+                    const resolved = await modelResolvers[title](types_1.EntityAccesses.create, model, body, req, res);
+                    model = resolved.document;
+                    meta = resolved.meta;
+                }
+                addMetaData({
+                    Model, model, title, body, meta
+                })(req, res, next);
+            }
+            catch (err) {
+                json_errors_1.userError(res, err);
+            }
+        };
+        const updateModelHandler = async (req, res, next) => {
+            try {
+                const id = req.params.id;
+                let { body } = req;
+                const userSchemas = get_user_1.getUserSchemas(req, schemaCollection, [types_1.PropertyAccesses.create]);
+                if (!userSchemas.titles.includes(title)) {
+                    json_errors_1.notFoundError(res, Error(`${routePath} not found`));
+                    return;
+                }
+                const systemSchema = schemas.normalize(title);
+                let model;
+                const result = await Model.findById(id);
+                if (result === null)
+                    throw new json_errors_1.NotFoundError(`No ${title} found for ID ${id}`);
+                model = result;
+                const schema = await getSchema(userSchemas, body);
+                body = filter_entity_by_schema_1.filterEntityBySchema(body, schema);
+                body = deep_assign_1.deepAssign({}, model.toJSON(), body);
+                Object.assign(model, body);
+                let meta;
+                if (modelResolvers && (title in modelResolvers)) {
+                    const resolved = await modelResolvers[title](types_1.EntityAccesses.create, model, body, req, res);
+                    model = resolved.document;
+                    meta = resolved.meta;
+                }
+                addMetaData({
+                    Model, model, title, body, meta
+                })(req, res, next);
+            }
+            catch (err) {
+                json_errors_1.userError(res, err);
+            }
+        };
+        const createOrUpdateHandler = async (req, res) => {
             try {
                 const userSchemas = get_user_1.getUserSchemas(req, schemaCollection, [types_1.PropertyAccesses.create]);
                 if (!userSchemas.titles.includes(title)) {
                     json_errors_1.notFoundError(res, Error(`${routePath} not found`));
                     return;
                 }
+                const metadata = getMetaData(req);
+                const { model, body, meta } = metadata;
                 const uploadablePropertyNames = userSchemas.uploadablePropertyNames(title);
-                const parentProperty = userSchemas.parentProperty(title);
-                addFiles(req, uploadablePropertyNames);
-                const parentId = getParentId(body, parentProperty);
-                const uniqueValuesMap = await Model.uniqueValuesMap(parentId);
-                const entitySchema = userSchemas.normalize(title);
-                const schema = add_uniques_1.addUniques(entitySchema, uniqueValuesMap);
-                const systemSchema = schemas.normalize(title);
-                const defaultValues = entityFromSchema(systemSchema);
-                body = deep_assign_1.deepAssign({}, defaultValues, body);
+                const schema = await getSchema(userSchemas, body);
+                const filePaths = getFiles(req, uploadablePropertyNames);
+                Object.keys(filePaths).forEach(key => {
+                    const filePath = filePaths[key];
+                    body[key] = filePath;
+                    model[key] = filePath;
+                });
                 const validate = tv4.validateMultiple(body, schema);
                 if (validate.valid) {
-                    let model;
-                    if (req['_wsMetadata'].model) {
-                        model = req['_wsMetadata'].model;
-                        Object.assign(model, body);
-                    }
-                    else {
-                        model = new Model(body);
-                    }
-                    let meta;
-                    if (modelResolvers && (title in modelResolvers)) {
-                        const resolved = await modelResolvers[title](types_1.EntityAccesses.create, model, body, req, res);
-                        model = resolved.document;
-                        meta = resolved.meta;
-                    }
                     const product = await model.save();
                     const filtered = filter_entity_by_schema_1.filterEntityBySchema(product.toJSON(), schema);
                     filtered._id = product._id;
@@ -192,55 +218,14 @@ exports.EntityRoutes = (schemaCollection, options = entityRouteOptions) => {
             }
             next();
         };
-        const fileHandlers = (finalHandler, accesses) => [
-            addMetaData({
-                title, Model
-            }),
-            (req, res, next) => uploadIfHasFile(req, res, next, accesses),
+        const fileHandlers = (modelHandler, finalHandler, accesses) => [
             selectBodyParser,
+            modelHandler,
+            (req, res, next) => uploadIfHasFile(req, res, next, accesses),
             finalHandler
         ];
-        const postHandlers = fileHandlers(postHandler, [types_1.EntityAccesses.create]);
-        const putHandler = async (req, res) => {
-            const id = req.params.id;
-            try {
-                const userSchemas = get_user_1.getUserSchemas(req, schemaCollection, [types_1.EntityAccesses.update]);
-                if (!userSchemas.titles.includes(title)) {
-                    json_errors_1.notFoundError(res, Error(`${routePath} not found`));
-                    return;
-                }
-                const doc = await Model.findById(id);
-                if (doc === null)
-                    throw new json_errors_1.NotFoundError(`No ${title} found for ID ${id}`);
-                let { body } = req;
-                const uploadablePropertyNames = userSchemas.uploadablePropertyNames(title);
-                addFiles(req, uploadablePropertyNames);
-                const parentProperty = userSchemas.parentProperty(title);
-                const parentId = getParentId(id, parentProperty);
-                let uniqueMap = await Model.uniqueValuesMap(parentId);
-                uniqueMap = excludeOwnProperties(doc, uniqueMap);
-                const entitySchema = userSchemas.normalize(title);
-                const schema = add_uniques_1.addUniques(entitySchema, uniqueMap);
-                const filteredBody = filter_entity_by_schema_1.filterEntityBySchema(body, schema);
-                Object.assign(doc, filteredBody);
-                const docAsJson = doc.toJSON();
-                const systemSchema = schemas.normalize(title);
-                const filtered = filter_entity_by_schema_1.filterEntityBySchema(docAsJson, systemSchema);
-                const validate = tv4.validateMultiple(filtered, systemSchema);
-                if (!validate.valid) {
-                    res.status(400).json(validate.errors);
-                    return;
-                }
-                const product = await doc.save();
-                const filteredResult = filter_entity_by_schema_1.filterEntityBySchema(product.toJSON(), schema);
-                filteredResult._id = product._id;
-                res.status(201).json(filteredResult);
-            }
-            catch (err) {
-                json_errors_1.jsonError(res, err);
-            }
-        };
-        const putHandlers = fileHandlers(putHandler, [types_1.EntityAccesses.update]);
+        const postHandlers = fileHandlers(createModelHandler, createOrUpdateHandler, [types_1.EntityAccesses.create]);
+        const putHandlers = fileHandlers(updateModelHandler, createOrUpdateHandler, [types_1.EntityAccesses.update]);
         return {
             [routePath]: {
                 // get list of available ids

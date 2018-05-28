@@ -1,12 +1,12 @@
 /// <reference types="mongoose" />
-import { MongooseDocument } from 'mongoose';
+import { Document } from 'mongoose';
 import { Request, Response } from 'express-serve-static-core';
 import { EntityAccess } from '../security/types';
 export declare type ModelResolverResult = {
-    document: MongooseDocument;
+    document: Document;
     meta?: any;
 };
-export declare type ModelResolver = (access: EntityAccess, document: MongooseDocument, model, req: Request, res: Response) => Promise<ModelResolverResult>;
+export declare type ModelResolver = (access: EntityAccess, document: Document, model, req: Request, res: Response) => Promise<ModelResolverResult>;
 export interface ModelResolverMap {
     [title: string]: ModelResolver;
 }
