@@ -54,7 +54,7 @@ const selectBodyParser = async (req, res, next) => {
     }, {});
     pointerPaths.forEach(pointer => delete body[pointer]);
     const model = json_pointer_1.expand(flatModel);
-    Object.assign(body, model);
+    req.body = Object.assign({}, (req.body || {}), body, model);
     next();
 };
 const addMetaData = (metadata) => (req, res, next) => {

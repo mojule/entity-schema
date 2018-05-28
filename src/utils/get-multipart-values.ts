@@ -9,10 +9,7 @@ export const getMultipartFields = async ( req: Request ) => new Promise( (resolv
     const fields = {}
 
     busboy.on( 'field', ( key, value ) => fields[ key ] = value )
-
-    busboy.on( 'finish', function() {
-      resolve( fields )
-    } )
+    busboy.on( 'finish', () => resolve( fields ) )
 
     req.pipe( busboy )
   } catch( err ) {

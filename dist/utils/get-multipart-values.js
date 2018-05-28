@@ -7,9 +7,7 @@ exports.getMultipartFields = async (req) => new Promise((resolve, reject) => {
         const busboy = new Busboy({ headers });
         const fields = {};
         busboy.on('field', (key, value) => fields[key] = value);
-        busboy.on('finish', function () {
-            resolve(fields);
-        });
+        busboy.on('finish', () => resolve(fields));
         req.pipe(busboy);
     }
     catch (err) {

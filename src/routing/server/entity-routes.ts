@@ -76,7 +76,7 @@ const selectBodyParser = async ( req: Request, res: Response, next: NextFunction
 
   const model = expand( flatModel )
 
-  Object.assign( body, model )
+  req.body = { ...( req.body || {} ), ...body, ...model }
 
   next()
 }
