@@ -55,7 +55,7 @@ exports.EntityStorage = (fileResolvers) => {
                 outStream.on('error', cb);
                 outStream.on('finish', function () {
                     cb(null, {
-                        path: path,
+                        path: outPath,
                         size: outStream.bytesWritten
                     });
                 });

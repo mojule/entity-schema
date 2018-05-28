@@ -70,7 +70,7 @@ export const EntityStorage = ( fileResolvers: FileResolverMap ) => {
 
         outStream.on( 'finish', function() {
           cb( null, {
-            path: path,
+            path: outPath,
             size: outStream.bytesWritten
           } )
         } )

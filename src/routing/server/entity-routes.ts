@@ -111,45 +111,6 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
   if( modelResolvers === undefined || fileResolvers === undefined )
     throw Error( 'Expected modelResolvers and fileResolvers' )
 
-  // const storage = multer.diskStorage( {
-  //   destination: ( req, file, cb ) => {
-  //     const { title } = req[ '_wsMetadata' ]
-
-  //     let destination : DiskStorageOptions[ 'destination' ]
-
-  //     if( title in fileResolvers ){
-  //       if ( fileResolvers[ title ].zip ){
-  //         destination = fileResolvers[ title ].zip
-  //       } else {
-  //         destination = fileResolvers[ title ].destination
-  //       }
-  //     } else {
-  //       destination = fileResolvers.default.destination
-  //     }
-
-  //     if ( is.string( destination ) || is.undefined( destination ) )
-  //       throw Error( 'Expected diskStorage destination to be in function form' )
-
-  //     destination( req, file, cb )
-  //   },
-  //   filename: ( req, file, cb ) => {
-  //     const { title } = req[ '_wsMetadata' ]
-
-  //     let filename: DiskStorageOptions[ 'filename' ]
-
-  //     if ( title in fileResolvers ) {
-  //       filename = fileResolvers[ title ].filename
-  //     } else {
-  //       filename = fileResolvers.default.filename
-  //     }
-
-  //     if ( is.string( filename ) || is.undefined( filename ) )
-  //       throw Error( 'Expected diskStorage filename to be in function form' )
-
-  //     filename( req, file, cb )
-  //   }
-  // } )
-
   const storage = EntityStorage( fileResolvers )
   const upload = multer( { storage } )
 
