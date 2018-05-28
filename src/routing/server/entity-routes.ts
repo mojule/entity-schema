@@ -164,14 +164,18 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
     }
 
     const getSchema = async ( userSchemas, body ) => {
-      const parentProperty = userSchemas.parentProperty( title )
+      try {
+        const parentProperty = userSchemas.parentProperty( title )
 
-      const parentId = getParentId( body, parentProperty )
-      const uniqueValuesMap = await( <any>Model ).uniqueValuesMap( parentId )
-      const entitySchema = <IEntitySchema>userSchemas.normalize( title )
-      const schema = addUniques( entitySchema, uniqueValuesMap )
+        const parentId = getParentId( body, parentProperty )
+        const uniqueValuesMap = await ( <any>Model ).uniqueValuesMap( parentId )
+        const entitySchema = <IEntitySchema>userSchemas.normalize( title )
+        const schema = addUniques( entitySchema, uniqueValuesMap )
 
-      return schema
+        return schema
+      } catch ( err ){
+        throw err
+      }
     }
 
     const createModelHandler = async ( req: Request, res: Response, next: NextFunction ) => {

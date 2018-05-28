@@ -108,12 +108,17 @@ exports.EntityRoutes = (schemaCollection, options = entityRouteOptions) => {
             return filePaths;
         };
         const getSchema = async (userSchemas, body) => {
-            const parentProperty = userSchemas.parentProperty(title);
-            const parentId = getParentId(body, parentProperty);
-            const uniqueValuesMap = await Model.uniqueValuesMap(parentId);
-            const entitySchema = userSchemas.normalize(title);
-            const schema = add_uniques_1.addUniques(entitySchema, uniqueValuesMap);
-            return schema;
+            try {
+                const parentProperty = userSchemas.parentProperty(title);
+                const parentId = getParentId(body, parentProperty);
+                const uniqueValuesMap = await Model.uniqueValuesMap(parentId);
+                const entitySchema = userSchemas.normalize(title);
+                const schema = add_uniques_1.addUniques(entitySchema, uniqueValuesMap);
+                return schema;
+            }
+            catch (err) {
+                throw err;
+            }
         };
         const createModelHandler = async (req, res, next) => {
             try {
