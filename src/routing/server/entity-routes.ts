@@ -5,6 +5,7 @@ import { kebabCase, camelCase } from 'lodash'
 import * as tv4 from 'tv4'
 import { serverError, userError, notFoundError, NotFoundError, jsonError } from './json-errors'
 import * as multer from 'multer'
+import { DiskStorageOptions } from 'multer'
 import * as fs from 'fs'
 import * as path from 'path'
 import { is } from '@mojule/is'
@@ -25,36 +26,12 @@ import { PropertyAccesses, EntityAccess, EntityAccesses } from '../../security/t
 import { deepAssign } from '../../utils/deep-assign'
 import { ModelResolverMap } from '../../model-resolvers/types';
 import { modelResolvers } from '../../model-resolvers';
+import { FileResolverMap, fileResolvers } from '../../file-resolvers'
+import { EntityStorage } from '../../file-resolvers/entity-storage';
 
 const { from: entityFromSchema } = SchemaMapper( { omitDefault: false } )
 
 const jsonParser = bodyParser.json()
-
-const storage = multer.diskStorage( {
-  destination: ( req, file, cb ) => {
-    const { mimetype } = file
-    const { title, Model } = req[ '_wsMetadata' ]
-
-    const model = req[ '_wsMetadata' ].model || Model()
-
-    req[ '_wsMetadata' ].model = model
-
-    const rootDirectory = mimetype.startsWith( 'image' ) ? 'img' : 'files'
-    const entityPath = `public/${ rootDirectory }/${ kebabCase( title ) }`
-    const modelPath = `${ entityPath }/${ model.id }`
-
-    ensureDirectories( entityPath, modelPath )
-
-    cb( null, modelPath )
-  },
-  filename: ( req, file, cb ) => {
-    const parsed = path.parse( file.originalname )
-    const filename = kebabCase( file.fieldname ) + parsed.ext
-    cb( null, filename )
-  }
-} )
-
-const upload = multer( { storage } )
 
 /*
   when you check that a property value is unique within a collection, you don't
@@ -109,10 +86,72 @@ const addMetaData = ( metadata: any ) => ( req: Request, res: Response, next: Ne
   next()
 }
 
-export const EntityRoutes = ( schemaCollection: IAppSchema[], resolvers: ModelResolverMap = modelResolvers ): IRouteData => {
-  if( resolvers !== modelResolvers ) {
-    resolvers = Object.assign( {}, modelResolvers, resolvers )
+export interface EntityRouteOptions {
+  modelResolvers?: ModelResolverMap
+  fileResolvers?: FileResolverMap
+}
+
+const entityRouteOptions: EntityRouteOptions = {
+  modelResolvers,
+  fileResolvers
+}
+
+export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRouteOptions = entityRouteOptions ): IRouteData => {
+  if ( options !== entityRouteOptions ) {
+    let { modelResolvers, fileResolvers } = entityRouteOptions
+
+    modelResolvers = Object.assign( {}, modelResolvers, options.modelResolvers )
+    fileResolvers = Object.assign( {}, fileResolvers, options.fileResolvers )
+
+    options = { modelResolvers, fileResolvers }
   }
+
+  const { modelResolvers, fileResolvers } = options
+
+  if( modelResolvers === undefined || fileResolvers === undefined )
+    throw Error( 'Expected modelResolvers and fileResolvers' )
+
+  // const storage = multer.diskStorage( {
+  //   destination: ( req, file, cb ) => {
+  //     const { title } = req[ '_wsMetadata' ]
+
+  //     let destination : DiskStorageOptions[ 'destination' ]
+
+  //     if( title in fileResolvers ){
+  //       if ( fileResolvers[ title ].zip ){
+  //         destination = fileResolvers[ title ].zip
+  //       } else {
+  //         destination = fileResolvers[ title ].destination
+  //       }
+  //     } else {
+  //       destination = fileResolvers.default.destination
+  //     }
+
+  //     if ( is.string( destination ) || is.undefined( destination ) )
+  //       throw Error( 'Expected diskStorage destination to be in function form' )
+
+  //     destination( req, file, cb )
+  //   },
+  //   filename: ( req, file, cb ) => {
+  //     const { title } = req[ '_wsMetadata' ]
+
+  //     let filename: DiskStorageOptions[ 'filename' ]
+
+  //     if ( title in fileResolvers ) {
+  //       filename = fileResolvers[ title ].filename
+  //     } else {
+  //       filename = fileResolvers.default.filename
+  //     }
+
+  //     if ( is.string( filename ) || is.undefined( filename ) )
+  //       throw Error( 'Expected diskStorage filename to be in function form' )
+
+  //     filename( req, file, cb )
+  //   }
+  // } )
+
+  const storage = EntityStorage( fileResolvers )
+  const upload = multer( { storage } )
 
   const models = mongooseModels<Model<Document>>( schemaCollection )
   const schemas = SchemaCollection( schemaCollection )
@@ -190,8 +229,8 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], resolvers: ModelRe
           }
 
           let meta
-          if( title in resolvers ){
-            const resolved = await resolvers[ title ]( EntityAccesses.create, model, body, req, res )
+          if ( modelResolvers && ( title in modelResolvers ) ){
+            const resolved = await modelResolvers[ title ]( EntityAccesses.create, model, body, req, res )
             model = resolved.document
             meta = resolved.meta
           }

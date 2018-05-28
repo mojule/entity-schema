@@ -7,7 +7,6 @@ const multer = require("multer");
 const path = require("path");
 const bodyParser = require("body-parser");
 const json_pointer_1 = require("@mojule/json-pointer");
-const ensure_directories_1 = require("../../utils/ensure-directories");
 const schema_collection_1 = require("../../schema-collection");
 const pascal_case_1 = require("../../utils/pascal-case");
 const mongoose_models_1 = require("../../mongoose/mongoose-models");
@@ -18,27 +17,10 @@ const SchemaMapper = require("@mojule/schema-mapper");
 const types_1 = require("../../security/types");
 const deep_assign_1 = require("../../utils/deep-assign");
 const model_resolvers_1 = require("../../model-resolvers");
+const file_resolvers_1 = require("../../file-resolvers");
+const entity_storage_1 = require("../../file-resolvers/entity-storage");
 const { from: entityFromSchema } = SchemaMapper({ omitDefault: false });
 const jsonParser = bodyParser.json();
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        const { mimetype } = file;
-        const { title, Model } = req['_wsMetadata'];
-        const model = req['_wsMetadata'].model || Model();
-        req['_wsMetadata'].model = model;
-        const rootDirectory = mimetype.startsWith('image') ? 'img' : 'files';
-        const entityPath = `public/${rootDirectory}/${lodash_1.kebabCase(title)}`;
-        const modelPath = `${entityPath}/${model.id}`;
-        ensure_directories_1.ensureDirectories(entityPath, modelPath);
-        cb(null, modelPath);
-    },
-    filename: (req, file, cb) => {
-        const parsed = path.parse(file.originalname);
-        const filename = lodash_1.kebabCase(file.fieldname) + parsed.ext;
-        cb(null, filename);
-    }
-});
-const upload = multer({ storage });
 /*
   when you check that a property value is unique within a collection, you don't
   want it to fail because the existing entity has that property, so remove self
@@ -78,10 +60,52 @@ const addMetaData = (metadata) => (req, res, next) => {
     Object.assign(req, { _wsMetadata: metadata });
     next();
 };
-exports.EntityRoutes = (schemaCollection, resolvers = model_resolvers_1.modelResolvers) => {
-    if (resolvers !== model_resolvers_1.modelResolvers) {
-        resolvers = Object.assign({}, model_resolvers_1.modelResolvers, resolvers);
+const entityRouteOptions = {
+    modelResolvers: model_resolvers_1.modelResolvers,
+    fileResolvers: file_resolvers_1.fileResolvers
+};
+exports.EntityRoutes = (schemaCollection, options = entityRouteOptions) => {
+    if (options !== entityRouteOptions) {
+        let { modelResolvers, fileResolvers } = entityRouteOptions;
+        modelResolvers = Object.assign({}, modelResolvers, options.modelResolvers);
+        fileResolvers = Object.assign({}, fileResolvers, options.fileResolvers);
+        options = { modelResolvers, fileResolvers };
     }
+    const { modelResolvers, fileResolvers } = options;
+    if (modelResolvers === undefined || fileResolvers === undefined)
+        throw Error('Expected modelResolvers and fileResolvers');
+    // const storage = multer.diskStorage( {
+    //   destination: ( req, file, cb ) => {
+    //     const { title } = req[ '_wsMetadata' ]
+    //     let destination : DiskStorageOptions[ 'destination' ]
+    //     if( title in fileResolvers ){
+    //       if ( fileResolvers[ title ].zip ){
+    //         destination = fileResolvers[ title ].zip
+    //       } else {
+    //         destination = fileResolvers[ title ].destination
+    //       }
+    //     } else {
+    //       destination = fileResolvers.default.destination
+    //     }
+    //     if ( is.string( destination ) || is.undefined( destination ) )
+    //       throw Error( 'Expected diskStorage destination to be in function form' )
+    //     destination( req, file, cb )
+    //   },
+    //   filename: ( req, file, cb ) => {
+    //     const { title } = req[ '_wsMetadata' ]
+    //     let filename: DiskStorageOptions[ 'filename' ]
+    //     if ( title in fileResolvers ) {
+    //       filename = fileResolvers[ title ].filename
+    //     } else {
+    //       filename = fileResolvers.default.filename
+    //     }
+    //     if ( is.string( filename ) || is.undefined( filename ) )
+    //       throw Error( 'Expected diskStorage filename to be in function form' )
+    //     filename( req, file, cb )
+    //   }
+    // } )
+    const storage = entity_storage_1.EntityStorage(fileResolvers);
+    const upload = multer({ storage });
     const models = mongoose_models_1.mongooseModels(schemaCollection);
     const schemas = schema_collection_1.SchemaCollection(schemaCollection);
     const { entityTitles } = schemas;
@@ -139,8 +163,8 @@ exports.EntityRoutes = (schemaCollection, resolvers = model_resolvers_1.modelRes
                         model = new Model(body);
                     }
                     let meta;
-                    if (title in resolvers) {
-                        const resolved = await resolvers[title](types_1.EntityAccesses.create, model, body, req, res);
+                    if (modelResolvers && (title in modelResolvers)) {
+                        const resolved = await modelResolvers[title](types_1.EntityAccesses.create, model, body, req, res);
                         model = resolved.document;
                         meta = resolved.meta;
                     }
