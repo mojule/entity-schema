@@ -28,6 +28,7 @@ import { ModelResolverMap } from '../../model-resolvers/types';
 import { modelResolvers } from '../../model-resolvers';
 import { FileResolverMap, fileResolvers } from '../../file-resolvers'
 import { EntityStorage } from '../../file-resolvers/entity-storage';
+import { getMultipartFields } from '../../utils/get-multipart-values';
 
 const { from: entityFromSchema } = SchemaMapper( { omitDefault: false } )
 
@@ -54,7 +55,7 @@ const excludeOwnProperties = ( model: {}, uniqueValuesMap: {} ) => {
   if the http body is json, use jsonParse, otherwise parse the req.body as if
   it were a multipart form
 */
-const selectBodyParser = ( req: Request, res: Response, next: NextFunction ) => {
+const selectBodyParser = async ( req: Request, res: Response, next: NextFunction ) => {
   if( req.headers[ 'content-type' ]!.startsWith( 'application/json' ) ) {
     jsonParser( req, res, next )
 
@@ -62,8 +63,7 @@ const selectBodyParser = ( req: Request, res: Response, next: NextFunction ) => 
   }
 
   // add a check here that it's form multipart
-
-  const { body } = req
+  const body = await getMultipartFields( req )
 
   const pointerPaths = Object.keys( body ).filter( key => key.startsWith( '/' ) )
 
