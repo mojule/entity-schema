@@ -111,11 +111,15 @@ export interface Metadata {
 
 const uploadFiles = ( handleFile: FileHandler ) =>
   async ( req: Request, res: Response, next: NextFunction ) => {
-    const files = <Express.Multer.File[]>req.files
+    try {
+      const files = <Express.Multer.File[]>req.files
 
-    await Promise.all( files.map( file => handleFile( req, file ) ) )
+      await Promise.all( files.map( file => handleFile( req, file ) ) )
 
-    next()
+      next()
+    } catch( err ) {
+      userError( res, err )
+    }
   }
 
 export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRouteOptions = entityRouteOptions ): IRouteData => {
