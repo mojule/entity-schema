@@ -68,9 +68,14 @@ const entityRouteOptions = {
     fileResolvers: file_resolvers_1.fileResolvers
 };
 const uploadFiles = (handleFile) => async (req, res, next) => {
-    const files = req.files;
-    await Promise.all(files.map(file => handleFile(req, file)));
-    next();
+    try {
+        const files = req.files;
+        await Promise.all(files.map(file => handleFile(req, file)));
+        next();
+    }
+    catch (err) {
+        json_errors_1.userError(res, err);
+    }
 };
 exports.EntityRoutes = (schemaCollection, options = entityRouteOptions) => {
     if (options !== entityRouteOptions) {
