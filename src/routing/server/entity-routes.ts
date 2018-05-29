@@ -248,9 +248,10 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
         model = result
 
         const schema = await getSchema( userSchemas, body )
+        const filteredModel = filterEntityBySchema( model.toJSON(), systemSchema )
 
         body = filterEntityBySchema( body, schema )
-        body = deepAssign( {}, model.toJSON(), body )
+        body = deepAssign( {}, filteredModel, body )
 
         Object.assign( model, body )
 

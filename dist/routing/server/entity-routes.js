@@ -171,8 +171,9 @@ exports.EntityRoutes = (schemaCollection, options = entityRouteOptions) => {
                     throw new json_errors_1.NotFoundError(`No ${title} found for ID ${id}`);
                 model = result;
                 const schema = await getSchema(userSchemas, body);
+                const filteredModel = filter_entity_by_schema_1.filterEntityBySchema(model.toJSON(), systemSchema);
                 body = filter_entity_by_schema_1.filterEntityBySchema(body, schema);
-                body = deep_assign_1.deepAssign({}, model.toJSON(), body);
+                body = deep_assign_1.deepAssign({}, filteredModel, body);
                 Object.assign(model, body);
                 let meta;
                 if (modelResolvers && (title in modelResolvers)) {
