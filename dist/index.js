@@ -55,4 +55,6 @@ const security_1 = require("./security");
 exports.PassportSecurity = security_1.PassportSecurity;
 const schemas_1 = require("./security/schemas");
 exports.securitySchemas = schemas_1.securitySchemas;
+const ensure_directories_1 = require("./utils/ensure-directories");
+exports.ensureDirectories = ensure_directories_1.ensureDirectories;
 //# sourceMappingURL=index.js.map

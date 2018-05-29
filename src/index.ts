@@ -30,6 +30,7 @@ import { SchemaRoutes } from './routing/server/schema-routes'
 import { generateTypescript } from './typescript/generate-typescript'
 import { PassportSecurity } from './security'
 import { securitySchemas } from './security/schemas'
+import { ensureDirectories } from './utils/ensure-directories'
 
 export {
   SchemaCollection, addLinks, addUniques, arrayifySchemaForm,
@@ -38,5 +39,6 @@ export {
   schemaWalk, subschemaMap, uniquePropertyNames, uploadablePropertyNames,
   predicates, ArrayifySymbol, oneOfSchemaForm, OneOfSymbol, entityModelToForm,
   schemaFormToEntityModel, predicateUtils, mongooseModels, EntityRoutes,
-  SchemaRoutes, generateTypescript, PassportSecurity, securitySchemas
+  SchemaRoutes, generateTypescript, PassportSecurity, securitySchemas,
+  ensureDirectories
 }

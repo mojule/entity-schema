@@ -24,4 +24,5 @@ import { SchemaRoutes } from './routing/server/schema-routes';
 import { generateTypescript } from './typescript/generate-typescript';
 import { PassportSecurity } from './security';
 import { securitySchemas } from './security/schemas';
-export { SchemaCollection, addLinks, addUniques, arrayifySchemaForm, filterEntityBySchema, interfaceSchemaMapper, linkTitlesForSchema, loadSchemas, NormalizeSchema, SchemaMap, schemaToForm, schemaToMongooseSchema, schemaWalk, subschemaMap, uniquePropertyNames, uploadablePropertyNames, predicates, ArrayifySymbol, oneOfSchemaForm, OneOfSymbol, entityModelToForm, schemaFormToEntityModel, predicateUtils, mongooseModels, EntityRoutes, SchemaRoutes, generateTypescript, PassportSecurity, securitySchemas };
+import { ensureDirectories } from './utils/ensure-directories';
+export { SchemaCollection, addLinks, addUniques, arrayifySchemaForm, filterEntityBySchema, interfaceSchemaMapper, linkTitlesForSchema, loadSchemas, NormalizeSchema, SchemaMap, schemaToForm, schemaToMongooseSchema, schemaWalk, subschemaMap, uniquePropertyNames, uploadablePropertyNames, predicates, ArrayifySymbol, oneOfSchemaForm, OneOfSymbol, entityModelToForm, schemaFormToEntityModel, predicateUtils, mongooseModels, EntityRoutes, SchemaRoutes, generateTypescript, PassportSecurity, securitySchemas, ensureDirectories };
