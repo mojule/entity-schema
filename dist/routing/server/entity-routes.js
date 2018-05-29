@@ -67,12 +67,10 @@ const entityRouteOptions = {
     modelResolvers: model_resolvers_1.modelResolvers,
     fileResolvers: file_resolvers_1.fileResolvers
 };
-const uploadFiles = (storage) => async (req, res, next) => {
+const uploadFiles = (handleFile) => async (req, res, next) => {
     const files = req.files;
-    const handleFile = pify(storage._handleFile);
-    return Promise.all(files.map(file => {
-        return handleFile(req, file);
-    }));
+    await Promise.all(files.map(file => handleFile(req, file)));
+    next();
 };
 exports.EntityRoutes = (schemaCollection, options = entityRouteOptions) => {
     if (options !== entityRouteOptions) {
@@ -85,8 +83,8 @@ exports.EntityRoutes = (schemaCollection, options = entityRouteOptions) => {
     if (modelResolvers === undefined || fileResolvers === undefined)
         throw Error('Expected modelResolvers and fileResolvers');
     const storage = entity_storage_1.EntityStorage(fileResolvers);
-    //const upload = multer( { storage } )
-    const upload = uploadFiles(storage);
+    const handleFile = pify(storage._handleFile);
+    const upload = uploadFiles(handleFile);
     const models = mongoose_models_1.mongooseModels(schemaCollection);
     const schemas = schema_collection_1.SchemaCollection(schemaCollection);
     const { entityTitles } = schemas;

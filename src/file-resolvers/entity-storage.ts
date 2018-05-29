@@ -6,6 +6,13 @@ import { is } from '@mojule/is'
 
 export type GetDestinationFn = ( req: Express.Request, file: Express.Multer.File, cb: ( error: null | Error, destination: string ) => void ) => void
 
+export interface FileHandlerResult {
+  path: string
+  size: number
+}
+
+export type FileHandler = ( req: Express.Request, file: Express.Multer.File ) => Promise<FileHandlerResult>
+
 export const EntityStorage = ( fileResolvers: FileResolverMap ) => {
   const getDestination: GetDestinationFn = ( req, file, cb ) => {
     const { title } = req[ '_wsMetadata' ]

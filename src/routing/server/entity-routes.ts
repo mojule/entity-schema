@@ -27,7 +27,7 @@ import { deepAssign } from '../../utils/deep-assign'
 import { ModelResolverMap } from '../../model-resolvers/types'
 import { modelResolvers } from '../../model-resolvers'
 import { FileResolverMap, fileResolvers } from '../../file-resolvers'
-import { EntityStorage } from '../../file-resolvers/entity-storage'
+import { EntityStorage, FileHandler } from '../../file-resolvers/entity-storage'
 import { getMultipartData } from '../../utils/get-multipart-values'
 import * as pify from 'pify'
 
@@ -109,15 +109,13 @@ export interface Metadata {
   schema: IEntitySchema
 }
 
-const uploadFiles = ( storage: StorageEngine ) =>
+const uploadFiles = ( handleFile: FileHandler ) =>
   async ( req: Request, res: Response, next: NextFunction ) => {
     const files = <Express.Multer.File[]>req.files
 
-    const handleFile = pify( storage._handleFile )
+    await Promise.all( files.map( file => handleFile( req, file ) ) )
 
-    return Promise.all( files.map( file => {
-      return handleFile( req, file )
-    }))
+    next()
   }
 
 export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRouteOptions = entityRouteOptions ): IRouteData => {
@@ -136,8 +134,8 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
     throw Error( 'Expected modelResolvers and fileResolvers' )
 
   const storage = EntityStorage( fileResolvers )
-  //const upload = multer( { storage } )
-  const upload = uploadFiles( storage )
+  const handleFile = <FileHandler>pify( storage._handleFile )
+  const upload = uploadFiles( handleFile )
 
   const models = mongooseModels<Model<Document>>( schemaCollection )
   const schemas = SchemaCollection( schemaCollection )
