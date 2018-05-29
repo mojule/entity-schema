@@ -31,6 +31,7 @@ import { generateTypescript } from './typescript/generate-typescript'
 import { PassportSecurity } from './security'
 import { securitySchemas } from './security/schemas'
 import { ensureDirectories } from './utils/ensure-directories'
+import { writeFileBuffers } from './utils/write-file-buffers'
 
 export {
   SchemaCollection, addLinks, addUniques, arrayifySchemaForm,
@@ -40,5 +41,5 @@ export {
   predicates, ArrayifySymbol, oneOfSchemaForm, OneOfSymbol, entityModelToForm,
   schemaFormToEntityModel, predicateUtils, mongooseModels, EntityRoutes,
   SchemaRoutes, generateTypescript, PassportSecurity, securitySchemas,
-  ensureDirectories
+  ensureDirectories, writeFileBuffers
 }

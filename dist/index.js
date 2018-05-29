@@ -57,4 +57,6 @@ const schemas_1 = require("./security/schemas");
 exports.securitySchemas = schemas_1.securitySchemas;
 const ensure_directories_1 = require("./utils/ensure-directories");
 exports.ensureDirectories = ensure_directories_1.ensureDirectories;
+const write_file_buffers_1 = require("./utils/write-file-buffers");
+exports.writeFileBuffers = write_file_buffers_1.writeFileBuffers;
 //# sourceMappingURL=index.js.map
