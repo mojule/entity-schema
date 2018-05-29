@@ -44,7 +44,7 @@ export const EntityStorage = ( fileResolvers: FileResolverMap ) => {
           const { zip } = resolvers
 
           if ( zip !== undefined ) {
-            return zip( req, file, ( err, outPath: string ) => {
+            return zip( req, file, outPath, ( err, outPath: string ) => {
               if ( err ) return cb( err )
               cb( null, {
                 path: outPath,

@@ -28,7 +28,7 @@ exports.EntityStorage = (fileResolvers) => {
                     const resolvers = fileResolvers[title];
                     const { zip } = resolvers;
                     if (zip !== undefined) {
-                        return zip(req, file, (err, outPath) => {
+                        return zip(req, file, outPath, (err, outPath) => {
                             if (err)
                                 return cb(err);
                             cb(null, {
