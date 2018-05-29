@@ -5,7 +5,7 @@
 import { DiskStorageOptions } from 'multer';
 import { Model, Document } from 'mongoose';
 export interface ExtendedDiskStorageOptions extends DiskStorageOptions {
-    zip?: ((req: Express.Request, file: Express.Multer.File, callback: (error: Error | null, destination: string) => void) => void);
+    zip?: ((req: Express.Request, file: Express.Multer.File, outPath: string, callback: (error: Error | null, destination: string) => void) => void);
 }
 export interface FileResolverMap {
     [title: string]: ExtendedDiskStorageOptions;

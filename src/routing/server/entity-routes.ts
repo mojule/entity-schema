@@ -1,11 +1,11 @@
 import { Request, Response, RequestHandler, NextFunction } from 'express-serve-static-core'
 import * as mongoose from 'mongoose'
-import { Model, Document } from 'mongoose'
+import { Model, Document, MongooseDocument } from 'mongoose'
 import { kebabCase, camelCase } from 'lodash'
 import * as tv4 from 'tv4'
 import { serverError, userError, notFoundError, NotFoundError, jsonError } from './json-errors'
 import * as multer from 'multer'
-import { DiskStorageOptions } from 'multer'
+import { DiskStorageOptions, StorageEngine } from 'multer'
 import * as fs from 'fs'
 import * as path from 'path'
 import { is } from '@mojule/is'
@@ -22,12 +22,14 @@ import { addUniques } from '../../add-uniques'
 import { filterEntityBySchema } from '../../filter-entity-by-schema'
 import { getUserSchemas } from '../../utils/get-user'
 import * as SchemaMapper from '@mojule/schema-mapper'
-import { PropertyAccesses, EntityAccess, EntityAccesses } from '../../security/types';
+import { PropertyAccesses, EntityAccess, EntityAccesses } from '../../security/types'
 import { deepAssign } from '../../utils/deep-assign'
-import { ModelResolverMap } from '../../model-resolvers/types';
-import { modelResolvers } from '../../model-resolvers';
+import { ModelResolverMap } from '../../model-resolvers/types'
+import { modelResolvers } from '../../model-resolvers'
 import { FileResolverMap, fileResolvers } from '../../file-resolvers'
-import { EntityStorage } from '../../file-resolvers/entity-storage';
+import { EntityStorage, FileHandler } from '../../file-resolvers/entity-storage'
+import { getMultipartData } from '../../utils/get-multipart-values'
+import * as pify from 'pify'
 
 const { from: entityFromSchema } = SchemaMapper( { omitDefault: false } )
 
@@ -38,7 +40,7 @@ const jsonParser = bodyParser.json()
   want it to fail because the existing entity has that property, so remove self
   from the collection before checking
 */
-const excludeOwnProperties = ( model: {}, uniqueValuesMap: {} ) => {
+const excludeOwnProperties = ( model: Document, uniqueValuesMap: {} ) => {
   const map = {}
 
   Object.keys( uniqueValuesMap ).forEach( propertyName => {
@@ -54,37 +56,39 @@ const excludeOwnProperties = ( model: {}, uniqueValuesMap: {} ) => {
   if the http body is json, use jsonParse, otherwise parse the req.body as if
   it were a multipart form
 */
-const selectBodyParser = ( req: Request, res: Response, next: NextFunction ) => {
-  if( req.headers[ 'content-type' ]!.startsWith( 'application/json' ) ) {
+const selectBodyParser = async ( req: Request, res: Response, next: NextFunction ) => {
+  if ( req.headers[ 'content-type' ]!.startsWith( 'application/json' ) ) {
     jsonParser( req, res, next )
 
     return
   }
 
   // add a check here that it's form multipart
+  const { fields, files } = await getMultipartData( req )
 
-  const { body } = req
-
-  const pointerPaths = Object.keys( body ).filter( key => key.startsWith( '/' ) )
+  const pointerPaths = Object.keys( fields ).filter( key => key.startsWith( '/' ) )
 
   const flatModel = pointerPaths.reduce( ( obj, pointer ) => {
-    obj[ pointer ] = JSON.parse( body[ pointer ] )
+    obj[ pointer ] = JSON.parse( fields[ pointer ] )
     return obj
   }, {} )
 
-  pointerPaths.forEach( pointer => delete body[ pointer ] )
+  pointerPaths.forEach( pointer => delete fields[ pointer ] )
 
   const model = expand( flatModel )
 
-  Object.assign( body, model )
+  req.body = { ...( req.body || {} ), ...fields, ...model }
+  req.files = files
 
   next()
 }
 
-const addMetaData = ( metadata: any ) => ( req: Request, res: Response, next: NextFunction ) => {
+const addMetaData = ( metadata: Metadata ) => ( req: Request, res: Response, next: NextFunction ) => {
   Object.assign( req, { _wsMetadata: metadata } )
   next()
 }
+
+const getMetaData = ( req: Request ) => <Metadata>req[ '_wsMetadata' ]
 
 export interface EntityRouteOptions {
   modelResolvers?: ModelResolverMap
@@ -95,6 +99,33 @@ const entityRouteOptions: EntityRouteOptions = {
   modelResolvers,
   fileResolvers
 }
+
+export interface Metadata {
+  Model: Model<Document>
+  model: Document
+  title: string
+  body: any
+  meta: any
+  schema: IEntitySchema
+}
+
+const uploadFiles = ( handleFile: FileHandler ) =>
+  async ( req: Request, res: Response, next: NextFunction ) => {
+    try {
+      const files = <Express.Multer.File[]>req.files
+
+      await Promise.all( files.map( file =>
+        handleFile( req, file )
+        .then( data => {
+          Object.assign( file, data )
+        })
+      ))
+
+      next()
+    } catch( err ) {
+      userError( res, err )
+    }
+  }
 
 export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRouteOptions = entityRouteOptions ): IRouteData => {
   if ( options !== entityRouteOptions ) {
@@ -108,11 +139,12 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
 
   const { modelResolvers, fileResolvers } = options
 
-  if( modelResolvers === undefined || fileResolvers === undefined )
+  if ( modelResolvers === undefined || fileResolvers === undefined )
     throw Error( 'Expected modelResolvers and fileResolvers' )
 
   const storage = EntityStorage( fileResolvers )
-  const upload = multer( { storage } )
+  const handleFile = <FileHandler>pify( storage._handleFile )
+  const upload = uploadFiles( handleFile )
 
   const models = mongooseModels<Model<Document>>( schemaCollection )
   const schemas = SchemaCollection( schemaCollection )
@@ -131,12 +163,13 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
       }
     }
 
-    const addFiles = ( req: Request, uploadablePropertyNames: string[] ) => {
+    const getFiles = ( req: Request, uploadablePropertyNames: string[] ) => {
+      const filePaths = {}
+
       if ( uploadablePropertyNames.length ) {
-        const { body } = req
         const files = <Express.Multer.File[]>req.files
 
-        if( !files ) return
+        if ( !files ) return filePaths
 
         uploadablePropertyNames.forEach( propertyName => {
           const file = files.find( f => f.fieldname === '/' + propertyName )
@@ -144,15 +177,127 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
           if ( file ) {
             const urlPath = path.relative( 'public', file.path ).split( path.sep ).join( path.posix.sep )
 
-            body[ propertyName ] = urlPath
+            filePaths[ propertyName ] = urlPath
           }
         } )
       }
+
+      return filePaths
     }
 
-    const postHandler = async ( req: Request, res: Response ) => {
-      let { body } = req
+    const getSchema = async ( userSchemas, body, doc?: mongoose.Document ) => {
+      try {
+        const parentProperty = userSchemas.parentProperty( title )
+        const parentId = getParentId( body, parentProperty )
 
+        let uniqueValuesMap = await ( <any>Model ).uniqueValuesMap( parentId )
+
+        if ( doc ) {
+          uniqueValuesMap = excludeOwnProperties( doc, uniqueValuesMap )
+        }
+
+        const entitySchema = <IEntitySchema>userSchemas.normalize( title )
+        const schema = addUniques( entitySchema, uniqueValuesMap )
+
+        return schema
+      } catch ( err ) {
+        throw err
+      }
+    }
+
+    const createModelHandler = async ( req: Request, res: Response, next: NextFunction ) => {
+      try {
+        let { body } = req
+
+        const userSchemas = getUserSchemas( req, schemaCollection, [ PropertyAccesses.create ] )
+
+        if ( !userSchemas.titles.includes( title ) ) {
+          notFoundError( res, Error( `${ routePath } not found` ) )
+
+          return
+        }
+
+        const systemSchema = <IEntitySchema>schemas.normalize( title )
+        const defaultValues = entityFromSchema( systemSchema )
+
+        // remove empty strings that aren't in required
+        Object.keys( defaultValues ).forEach( key => {
+          const required = systemSchema.required || []
+          if ( !required.includes( key ) && defaultValues[ key ] === '' ) {
+            delete defaultValues[ key ]
+          }
+        } )
+
+        const schema = await getSchema( userSchemas, body )
+
+        body = filterEntityBySchema( body, schema )
+        body = deepAssign( {}, defaultValues, body )
+
+        let model: any = new Model( body )
+
+        let meta
+        if ( modelResolvers && ( title in modelResolvers ) ) {
+          const resolved = await modelResolvers[ title ]( EntityAccesses.create, model, body, req, res )
+          model = resolved.document
+          meta = resolved.meta
+        }
+
+        addMetaData( {
+          Model, model, title, body, meta, schema
+        } )( req, res, next )
+      } catch ( err ) {
+        userError( res, err )
+      }
+    }
+
+    const updateModelHandler = async ( req: Request, res: Response, next: NextFunction ) => {
+      try {
+        const id: string = req.params.id
+        let { body } = req
+
+        const userSchemas = getUserSchemas( req, schemaCollection, [ PropertyAccesses.create ] )
+
+        if ( !userSchemas.titles.includes( title ) ) {
+          notFoundError( res, Error( `${ routePath } not found` ) )
+
+          return
+        }
+
+        const systemSchema = <IEntitySchema>schemas.normalize( title )
+
+        let model: Document
+
+        const result = await Model.findById( id )
+
+        if ( result === null )
+          throw new NotFoundError( `No ${ title } found for ID ${ id }` )
+
+        model = result
+
+        const schema = await getSchema( userSchemas, body, model )
+        const filteredModel = filterEntityBySchema( model.toJSON(), systemSchema )
+
+        body = filterEntityBySchema( body, schema )
+        body = deepAssign( {}, filteredModel, body )
+
+        Object.assign( model, body )
+
+        let meta
+        if ( modelResolvers && ( title in modelResolvers ) ) {
+          const resolved = await modelResolvers[ title ]( EntityAccesses.create, model, body, req, res )
+          model = resolved.document
+          meta = resolved.meta
+        }
+
+        addMetaData( {
+          Model, model, title, body, meta, schema
+        } )( req, res, next )
+      } catch ( err ) {
+        userError( res, err )
+      }
+    }
+
+    const createOrUpdateHandler = async ( req: Request, res: Response ) => {
       try {
         const userSchemas = getUserSchemas( req, schemaCollection, [ PropertyAccesses.create ] )
 
@@ -162,46 +307,25 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
           return
         }
 
+        const { model, body, meta, schema } = getMetaData( req )
         const uploadablePropertyNames = userSchemas.uploadablePropertyNames( title )
-        const parentProperty = userSchemas.parentProperty( title )
+        const filePaths = getFiles( req, uploadablePropertyNames )
 
-        addFiles( req, uploadablePropertyNames )
-
-        const parentId = getParentId( body, parentProperty )
-        const uniqueValuesMap = await ( <any> Model ).uniqueValuesMap( parentId )
-        const entitySchema = <IEntitySchema>userSchemas.normalize( title )
-        const schema = addUniques( entitySchema, uniqueValuesMap )
-
-        const systemSchema = <IEntitySchema>schemas.normalize( title )
-        const defaultValues = entityFromSchema( systemSchema )
-
-        body = deepAssign( {}, defaultValues, body )
+        Object.keys( filePaths ).forEach( key => {
+          const filePath = filePaths[ key ]
+          body[ key ] = filePath
+          model[ key ] = filePath
+        } )
 
         const validate = tv4.validateMultiple( body, <tv4.JsonSchema>schema )
 
         if ( validate.valid ) {
-          let model
-
-          if ( req[ '_wsMetadata' ].model ) {
-            model = req[ '_wsMetadata' ].model
-            Object.assign( model, body )
-          } else {
-            model = <any>new Model( body )
-          }
-
-          let meta
-          if ( modelResolvers && ( title in modelResolvers ) ){
-            const resolved = await modelResolvers[ title ]( EntityAccesses.create, model, body, req, res )
-            model = resolved.document
-            meta = resolved.meta
-          }
-
           const product = await ( <any>model ).save()
           const filtered = filterEntityBySchema( product.toJSON(), schema )
 
           filtered._id = product._id
 
-          if( meta )
+          if ( meta )
             filtered._meta = meta
 
           res.status( 201 ).json( filtered )
@@ -218,83 +342,22 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
       const uploadablePropertyNames = userSchemas.uploadablePropertyNames( title )
 
       if ( uploadablePropertyNames.length ) {
-        upload.any()( req, res, next )
+        upload( req, res, next )
         return
       }
 
       next()
     }
 
-    const fileHandlers = ( finalHandler: RequestHandler, accesses: EntityAccess[] ) => [
-      addMetaData( {
-        title, Model
-      } ),
-      ( req, res, next ) => uploadIfHasFile( req, res, next, accesses ),
+    const fileHandlers = ( modelHandler: RequestHandler, finalHandler: RequestHandler, accesses: EntityAccess[] ) => [
       selectBodyParser,
+      modelHandler,
+      ( req, res, next ) => uploadIfHasFile( req, res, next, accesses ),
       finalHandler
     ]
 
-    const postHandlers = fileHandlers( postHandler, [ EntityAccesses.create ] )
-
-    const putHandler = async ( req: Request, res: Response ) => {
-      const id: string = req.params.id
-
-      try {
-        const userSchemas = getUserSchemas( req, schemaCollection, [ EntityAccesses.update ] )
-
-        if ( !userSchemas.titles.includes( title ) ) {
-          notFoundError( res, Error( `${ routePath } not found` ) )
-
-          return
-        }
-
-        const doc = await Model.findById( id )
-
-        if ( doc === null )
-          throw new NotFoundError( `No ${ title } found for ID ${ id }` )
-
-        let { body } = req
-
-        const uploadablePropertyNames = userSchemas.uploadablePropertyNames( title )
-
-        addFiles( req, uploadablePropertyNames )
-
-        const parentProperty = userSchemas.parentProperty( title )
-        const parentId = getParentId( id, parentProperty )
-
-        let uniqueMap = await ( <any> Model ).uniqueValuesMap( parentId )
-
-        uniqueMap = excludeOwnProperties( doc, uniqueMap )
-
-        const entitySchema = <IEntitySchema>userSchemas.normalize( title )
-        const schema = addUniques( entitySchema, uniqueMap )
-        const filteredBody = filterEntityBySchema( body, schema )
-
-        Object.assign( doc, filteredBody )
-
-        const docAsJson = doc.toJSON()
-        const systemSchema = <IEntitySchema>schemas.normalize( title )
-        const filtered = filterEntityBySchema( docAsJson, systemSchema )
-        const validate = tv4.validateMultiple( filtered, <tv4.JsonSchema>systemSchema )
-
-        if ( !validate.valid ) {
-          res.status( 400 ).json( validate.errors )
-          return
-        }
-
-        const product = await doc.save()
-
-        const filteredResult = filterEntityBySchema( product.toJSON(), schema )
-
-        filteredResult._id = product._id
-
-        res.status( 201 ).json( filteredResult )
-      } catch ( err ) {
-        jsonError( res, err )
-      }
-    }
-
-    const putHandlers = fileHandlers( putHandler, [ EntityAccesses.update ] )
+    const postHandlers = fileHandlers( createModelHandler, createOrUpdateHandler, [ EntityAccesses.create ] )
+    const putHandlers = fileHandlers( updateModelHandler, createOrUpdateHandler, [ EntityAccesses.update ] )
 
     return {
       [ routePath ]: {
@@ -387,7 +450,7 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
         },
         // update an existing entity
         put: putHandlers,
-        delete: async( req: Request, res: Response ) => {
+        delete: async ( req: Request, res: Response ) => {
           const id: string = req.params.id
 
           try {
@@ -411,7 +474,7 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
             filteredResult._id = doc._id
 
             res.json( filteredResult )
-          } catch( err ){
+          } catch ( err ) {
             jsonError( res, err )
           }
         }
@@ -437,7 +500,7 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
               filteredResult._id = doc._id
 
               return filteredResult
-            })
+            } )
 
             res.json( filtered )
           } catch ( err ) {
@@ -461,12 +524,12 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
             const nested: any = {}
 
             Object.keys( req.query ).forEach( key => {
-              if( key.startsWith( '/' ) ){
+              if ( key.startsWith( '/' ) ) {
                 nested[ key ] = req.query[ key ]
               } else {
                 normal[ key ] = req.query[ key ]
               }
-            })
+            } )
 
             const query = Object.assign( {}, normal, expand( nested ) )
 

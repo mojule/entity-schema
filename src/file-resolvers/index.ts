@@ -6,7 +6,7 @@ import { Model, Document } from 'mongoose'
 import { ensureDirectories } from '../utils/ensure-directories'
 
 export interface ExtendedDiskStorageOptions extends DiskStorageOptions {
-  zip?: ( ( req: Express.Request, file: Express.Multer.File, callback: ( error: Error | null, destination: string ) => void ) => void )
+  zip?: ( ( req: Express.Request, file: Express.Multer.File, outPath: string, callback: ( error: Error | null, destination: string ) => void ) => void )
 }
 
 export interface FileResolverMap {

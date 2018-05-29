@@ -6,6 +6,13 @@ import { is } from '@mojule/is'
 
 export type GetDestinationFn = ( req: Express.Request, file: Express.Multer.File, cb: ( error: null | Error, destination: string ) => void ) => void
 
+export interface FileHandlerResult {
+  path: string
+  size: number
+}
+
+export type FileHandler = ( req: Express.Request, file: Express.Multer.File ) => Promise<FileHandlerResult>
+
 export const EntityStorage = ( fileResolvers: FileResolverMap ) => {
   const getDestination: GetDestinationFn = ( req, file, cb ) => {
     const { title } = req[ '_wsMetadata' ]
@@ -37,7 +44,7 @@ export const EntityStorage = ( fileResolvers: FileResolverMap ) => {
           const { zip } = resolvers
 
           if ( zip !== undefined ) {
-            return zip( req, file, ( err, outPath: string ) => {
+            return zip( req, file, outPath, ( err, outPath: string ) => {
               if ( err ) return cb( err )
               cb( null, {
                 path: outPath,
@@ -62,18 +69,27 @@ export const EntityStorage = ( fileResolvers: FileResolverMap ) => {
       filename( req, file, ( err, filename ) => {
         outPath = path.join( outPath, filename )
 
-        const outStream = fs.createWriteStream( outPath )
+        fs.writeFile( outPath, file.buffer, err => {
+          if( err ) return cb( err )
 
-        file[ 'stream' ].pipe( outStream )
-
-        outStream.on( 'error', cb )
-
-        outStream.on( 'finish', function() {
           cb( null, {
             path: outPath,
-            size: outStream.bytesWritten
+            size: file.buffer.length
           } )
-        } )
+        })
+
+        // const outStream = fs.createWriteStream( outPath )
+
+        // file[ 'stream' ].pipe( outStream )
+
+        // outStream.on( 'error', cb )
+
+        // outStream.on( 'finish', function() {
+        //   cb( null, {
+        //     path: outPath,
+        //     size: outStream.bytesWritten
+        //   } )
+        // } )
       })
     } )
   }

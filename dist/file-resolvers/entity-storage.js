@@ -28,7 +28,7 @@ exports.EntityStorage = (fileResolvers) => {
                     const resolvers = fileResolvers[title];
                     const { zip } = resolvers;
                     if (zip !== undefined) {
-                        return zip(req, file, (err, outPath) => {
+                        return zip(req, file, outPath, (err, outPath) => {
                             if (err)
                                 return cb(err);
                             cb(null, {
@@ -50,15 +50,23 @@ exports.EntityStorage = (fileResolvers) => {
                 throw Error('Expected diskStorage filename to be in function form');
             filename(req, file, (err, filename) => {
                 outPath = path.join(outPath, filename);
-                const outStream = fs.createWriteStream(outPath);
-                file['stream'].pipe(outStream);
-                outStream.on('error', cb);
-                outStream.on('finish', function () {
+                fs.writeFile(outPath, file.buffer, err => {
+                    if (err)
+                        return cb(err);
                     cb(null, {
                         path: outPath,
-                        size: outStream.bytesWritten
+                        size: file.buffer.length
                     });
                 });
+                // const outStream = fs.createWriteStream( outPath )
+                // file[ 'stream' ].pipe( outStream )
+                // outStream.on( 'error', cb )
+                // outStream.on( 'finish', function() {
+                //   cb( null, {
+                //     path: outPath,
+                //     size: outStream.bytesWritten
+                //   } )
+                // } )
             });
         });
     };
