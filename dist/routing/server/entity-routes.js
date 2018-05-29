@@ -130,6 +130,13 @@ exports.EntityRoutes = (schemaCollection, options = entityRouteOptions) => {
                 }
                 const systemSchema = schemas.normalize(title);
                 const defaultValues = entityFromSchema(systemSchema);
+                // remove empty strings that aren't in required
+                Object.keys(defaultValues).forEach(key => {
+                    const required = systemSchema.required || [];
+                    if (!required.includes(key) && defaultValues[key] === '') {
+                        delete defaultValues[key];
+                    }
+                });
                 const schema = await getSchema(userSchemas, body);
                 body = filter_entity_by_schema_1.filterEntityBySchema(body, schema);
                 body = deep_assign_1.deepAssign({}, defaultValues, body);

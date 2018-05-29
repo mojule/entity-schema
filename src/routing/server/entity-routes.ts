@@ -192,6 +192,15 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
 
         const systemSchema = <IEntitySchema>schemas.normalize( title )
         const defaultValues = entityFromSchema( systemSchema )
+
+        // remove empty strings that aren't in required
+        Object.keys( defaultValues ).forEach( key => {
+          const required = systemSchema.required || []
+          if ( !required.includes( key ) && defaultValues[ key ] === '' ){
+            delete defaultValues[ key ]
+          }
+        } )
+
         const schema = await getSchema( userSchemas, body )
 
         body = filterEntityBySchema( body, schema )
