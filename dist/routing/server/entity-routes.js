@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = require("lodash");
 const tv4 = require("tv4");
 const json_errors_1 = require("./json-errors");
-const multer = require("multer");
 const path = require("path");
 const bodyParser = require("body-parser");
 const json_pointer_1 = require("@mojule/json-pointer");
@@ -20,6 +19,7 @@ const model_resolvers_1 = require("../../model-resolvers");
 const file_resolvers_1 = require("../../file-resolvers");
 const entity_storage_1 = require("../../file-resolvers/entity-storage");
 const get_multipart_values_1 = require("../../utils/get-multipart-values");
+const pify = require("pify");
 const { from: entityFromSchema } = SchemaMapper({ omitDefault: false });
 const jsonParser = bodyParser.json();
 /*
@@ -46,15 +46,16 @@ const selectBodyParser = async (req, res, next) => {
         return;
     }
     // add a check here that it's form multipart
-    const body = await get_multipart_values_1.getMultipartFields(req);
-    const pointerPaths = Object.keys(body).filter(key => key.startsWith('/'));
+    const { fields, files } = await get_multipart_values_1.getMultipartData(req);
+    const pointerPaths = Object.keys(fields).filter(key => key.startsWith('/'));
     const flatModel = pointerPaths.reduce((obj, pointer) => {
-        obj[pointer] = JSON.parse(body[pointer]);
+        obj[pointer] = JSON.parse(fields[pointer]);
         return obj;
     }, {});
-    pointerPaths.forEach(pointer => delete body[pointer]);
+    pointerPaths.forEach(pointer => delete fields[pointer]);
     const model = json_pointer_1.expand(flatModel);
-    req.body = Object.assign({}, (req.body || {}), body, model);
+    req.body = Object.assign({}, (req.body || {}), fields, model);
+    req.files = files;
     next();
 };
 const addMetaData = (metadata) => (req, res, next) => {
@@ -65,6 +66,13 @@ const getMetaData = (req) => req['_wsMetadata'];
 const entityRouteOptions = {
     modelResolvers: model_resolvers_1.modelResolvers,
     fileResolvers: file_resolvers_1.fileResolvers
+};
+const uploadFiles = (storage) => async (req, res, next) => {
+    const files = req.files;
+    const handleFile = pify(storage._handleFile);
+    return Promise.all(files.map(file => {
+        return handleFile(req, file);
+    }));
 };
 exports.EntityRoutes = (schemaCollection, options = entityRouteOptions) => {
     if (options !== entityRouteOptions) {
@@ -77,7 +85,8 @@ exports.EntityRoutes = (schemaCollection, options = entityRouteOptions) => {
     if (modelResolvers === undefined || fileResolvers === undefined)
         throw Error('Expected modelResolvers and fileResolvers');
     const storage = entity_storage_1.EntityStorage(fileResolvers);
-    const upload = multer({ storage });
+    //const upload = multer( { storage } )
+    const upload = uploadFiles(storage);
     const models = mongoose_models_1.mongooseModels(schemaCollection);
     const schemas = schema_collection_1.SchemaCollection(schemaCollection);
     const { entityTitles } = schemas;
@@ -228,7 +237,7 @@ exports.EntityRoutes = (schemaCollection, options = entityRouteOptions) => {
             const userSchemas = get_user_1.getUserSchemas(req, schemaCollection, accesses);
             const uploadablePropertyNames = userSchemas.uploadablePropertyNames(title);
             if (uploadablePropertyNames.length) {
-                upload.any()(req, res, next);
+                upload(req, res, next);
                 return;
             }
             next();

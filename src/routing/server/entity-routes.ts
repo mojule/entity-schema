@@ -5,7 +5,7 @@ import { kebabCase, camelCase } from 'lodash'
 import * as tv4 from 'tv4'
 import { serverError, userError, notFoundError, NotFoundError, jsonError } from './json-errors'
 import * as multer from 'multer'
-import { DiskStorageOptions } from 'multer'
+import { DiskStorageOptions, StorageEngine } from 'multer'
 import * as fs from 'fs'
 import * as path from 'path'
 import { is } from '@mojule/is'
@@ -22,13 +22,14 @@ import { addUniques } from '../../add-uniques'
 import { filterEntityBySchema } from '../../filter-entity-by-schema'
 import { getUserSchemas } from '../../utils/get-user'
 import * as SchemaMapper from '@mojule/schema-mapper'
-import { PropertyAccesses, EntityAccess, EntityAccesses } from '../../security/types';
+import { PropertyAccesses, EntityAccess, EntityAccesses } from '../../security/types'
 import { deepAssign } from '../../utils/deep-assign'
-import { ModelResolverMap } from '../../model-resolvers/types';
-import { modelResolvers } from '../../model-resolvers';
+import { ModelResolverMap } from '../../model-resolvers/types'
+import { modelResolvers } from '../../model-resolvers'
 import { FileResolverMap, fileResolvers } from '../../file-resolvers'
-import { EntityStorage } from '../../file-resolvers/entity-storage';
-import { getMultipartFields } from '../../utils/get-multipart-values';
+import { EntityStorage } from '../../file-resolvers/entity-storage'
+import { getMultipartData } from '../../utils/get-multipart-values'
+import * as pify from 'pify'
 
 const { from: entityFromSchema } = SchemaMapper( { omitDefault: false } )
 
@@ -63,20 +64,21 @@ const selectBodyParser = async ( req: Request, res: Response, next: NextFunction
   }
 
   // add a check here that it's form multipart
-  const body = await getMultipartFields( req )
+  const { fields, files } = await getMultipartData( req )
 
-  const pointerPaths = Object.keys( body ).filter( key => key.startsWith( '/' ) )
+  const pointerPaths = Object.keys( fields ).filter( key => key.startsWith( '/' ) )
 
   const flatModel = pointerPaths.reduce( ( obj, pointer ) => {
-    obj[ pointer ] = JSON.parse( body[ pointer ] )
+    obj[ pointer ] = JSON.parse( fields[ pointer ] )
     return obj
   }, {} )
 
-  pointerPaths.forEach( pointer => delete body[ pointer ] )
+  pointerPaths.forEach( pointer => delete fields[ pointer ] )
 
   const model = expand( flatModel )
 
-  req.body = { ...( req.body || {} ), ...body, ...model }
+  req.body = { ...( req.body || {} ), ...fields, ...model }
+  req.files = files
 
   next()
 }
@@ -107,6 +109,17 @@ export interface Metadata {
   schema: IEntitySchema
 }
 
+const uploadFiles = ( storage: StorageEngine ) =>
+  async ( req: Request, res: Response, next: NextFunction ) => {
+    const files = <Express.Multer.File[]>req.files
+
+    const handleFile = pify( storage._handleFile )
+
+    return Promise.all( files.map( file => {
+      return handleFile( req, file )
+    }))
+  }
+
 export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRouteOptions = entityRouteOptions ): IRouteData => {
   if ( options !== entityRouteOptions ) {
     let { modelResolvers, fileResolvers } = entityRouteOptions
@@ -123,7 +136,8 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
     throw Error( 'Expected modelResolvers and fileResolvers' )
 
   const storage = EntityStorage( fileResolvers )
-  const upload = multer( { storage } )
+  //const upload = multer( { storage } )
+  const upload = uploadFiles( storage )
 
   const models = mongooseModels<Model<Document>>( schemaCollection )
   const schemas = SchemaCollection( schemaCollection )
@@ -321,7 +335,7 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
       const uploadablePropertyNames = userSchemas.uploadablePropertyNames( title )
 
       if ( uploadablePropertyNames.length ) {
-        upload.any()( req, res, next )
+        upload( req, res, next )
         return
       }
 
