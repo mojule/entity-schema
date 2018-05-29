@@ -69,18 +69,27 @@ export const EntityStorage = ( fileResolvers: FileResolverMap ) => {
       filename( req, file, ( err, filename ) => {
         outPath = path.join( outPath, filename )
 
-        const outStream = fs.createWriteStream( outPath )
+        fs.writeFile( outPath, file.buffer, err => {
+          if( err ) return cb( err )
 
-        file[ 'stream' ].pipe( outStream )
-
-        outStream.on( 'error', cb )
-
-        outStream.on( 'finish', function() {
           cb( null, {
             path: outPath,
-            size: outStream.bytesWritten
+            size: file.buffer.length
           } )
-        } )
+        })
+
+        // const outStream = fs.createWriteStream( outPath )
+
+        // file[ 'stream' ].pipe( outStream )
+
+        // outStream.on( 'error', cb )
+
+        // outStream.on( 'finish', function() {
+        //   cb( null, {
+        //     path: outPath,
+        //     size: outStream.bytesWritten
+        //   } )
+        // } )
       })
     } )
   }

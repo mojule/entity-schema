@@ -46,7 +46,14 @@ export const getMultipartData = async ( req: Request ) => new Promise <Multipart
         buffer: Buffer.from( '' )
       }
 
-      files.push( file )
+      const chunks: Buffer[] = []
+
+      stream.on( 'data', chunk => chunks.push( chunk ) )
+
+      stream.on( 'end', () => {
+        file.buffer = Buffer.concat( chunks )
+        files.push( file )
+      })
     })
     busboy.on( 'finish', () => resolve( { fields, files } ) )
 
