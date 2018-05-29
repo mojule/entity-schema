@@ -107,11 +107,14 @@ exports.EntityRoutes = (schemaCollection, options = entityRouteOptions) => {
             }
             return filePaths;
         };
-        const getSchema = async (userSchemas, body) => {
+        const getSchema = async (userSchemas, body, doc) => {
             try {
                 const parentProperty = userSchemas.parentProperty(title);
                 const parentId = getParentId(body, parentProperty);
-                const uniqueValuesMap = await Model.uniqueValuesMap(parentId);
+                let uniqueValuesMap = await Model.uniqueValuesMap(parentId);
+                if (doc) {
+                    uniqueValuesMap = excludeOwnProperties(doc, uniqueValuesMap);
+                }
                 const entitySchema = userSchemas.normalize(title);
                 const schema = add_uniques_1.addUniques(entitySchema, uniqueValuesMap);
                 return schema;
@@ -170,7 +173,7 @@ exports.EntityRoutes = (schemaCollection, options = entityRouteOptions) => {
                 if (result === null)
                     throw new json_errors_1.NotFoundError(`No ${title} found for ID ${id}`);
                 model = result;
-                const schema = await getSchema(userSchemas, body);
+                const schema = await getSchema(userSchemas, body, model);
                 const filteredModel = filter_entity_by_schema_1.filterEntityBySchema(model.toJSON(), systemSchema);
                 body = filter_entity_by_schema_1.filterEntityBySchema(body, schema);
                 body = deep_assign_1.deepAssign({}, filteredModel, body);

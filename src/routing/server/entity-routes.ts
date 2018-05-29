@@ -39,7 +39,7 @@ const jsonParser = bodyParser.json()
   want it to fail because the existing entity has that property, so remove self
   from the collection before checking
 */
-const excludeOwnProperties = ( model: {}, uniqueValuesMap: {} ) => {
+const excludeOwnProperties = ( model: Document, uniqueValuesMap: {} ) => {
   const map = {}
 
   Object.keys( uniqueValuesMap ).forEach( propertyName => {
@@ -163,12 +163,17 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
       return filePaths
     }
 
-    const getSchema = async ( userSchemas, body ) => {
+    const getSchema = async ( userSchemas, body, doc?: mongoose.Document ) => {
       try {
         const parentProperty = userSchemas.parentProperty( title )
-
         const parentId = getParentId( body, parentProperty )
-        const uniqueValuesMap = await ( <any>Model ).uniqueValuesMap( parentId )
+
+        let uniqueValuesMap = await ( <any>Model ).uniqueValuesMap( parentId )
+
+        if ( doc ){
+          uniqueValuesMap = excludeOwnProperties( doc, uniqueValuesMap )
+        }
+
         const entitySchema = <IEntitySchema>userSchemas.normalize( title )
         const schema = addUniques( entitySchema, uniqueValuesMap )
 
@@ -247,7 +252,7 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
 
         model = result
 
-        const schema = await getSchema( userSchemas, body )
+        const schema = await getSchema( userSchemas, body, model )
         const filteredModel = filterEntityBySchema( model.toJSON(), systemSchema )
 
         body = filterEntityBySchema( body, schema )
