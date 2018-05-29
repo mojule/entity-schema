@@ -70,7 +70,10 @@ const entityRouteOptions = {
 const uploadFiles = (handleFile) => async (req, res, next) => {
     try {
         const files = req.files;
-        await Promise.all(files.map(file => handleFile(req, file)));
+        await Promise.all(files.map(file => handleFile(req, file)
+            .then(data => {
+            Object.assign(file, data);
+        })));
         next();
     }
     catch (err) {

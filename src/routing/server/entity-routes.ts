@@ -114,7 +114,12 @@ const uploadFiles = ( handleFile: FileHandler ) =>
     try {
       const files = <Express.Multer.File[]>req.files
 
-      await Promise.all( files.map( file => handleFile( req, file ) ) )
+      await Promise.all( files.map( file =>
+        handleFile( req, file )
+        .then( data => {
+          Object.assign( file, data )
+        })
+      ))
 
       next()
     } catch( err ) {
