@@ -1,5 +1,6 @@
 /// <reference types="mongoose" />
 import { Model, Document } from 'mongoose';
+import { IEntitySchema } from '../../predicates/entity-schema';
 import { IAppSchema } from '../../predicates/app-schema';
 import { IRouteData } from './types';
 import { ModelResolverMap } from '../../model-resolvers/types';
@@ -14,5 +15,6 @@ export interface Metadata {
     title: string;
     body: any;
     meta: any;
+    schema: IEntitySchema;
 }
 export declare const EntityRoutes: (schemaCollection: IAppSchema[], options?: EntityRouteOptions) => IRouteData;

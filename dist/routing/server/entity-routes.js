@@ -151,7 +151,7 @@ exports.EntityRoutes = (schemaCollection, options = entityRouteOptions) => {
                     meta = resolved.meta;
                 }
                 addMetaData({
-                    Model, model, title, body, meta
+                    Model, model, title, body, meta, schema
                 })(req, res, next);
             }
             catch (err) {
@@ -185,7 +185,7 @@ exports.EntityRoutes = (schemaCollection, options = entityRouteOptions) => {
                     meta = resolved.meta;
                 }
                 addMetaData({
-                    Model, model, title, body, meta
+                    Model, model, title, body, meta, schema
                 })(req, res, next);
             }
             catch (err) {
@@ -199,10 +199,8 @@ exports.EntityRoutes = (schemaCollection, options = entityRouteOptions) => {
                     json_errors_1.notFoundError(res, Error(`${routePath} not found`));
                     return;
                 }
-                const metadata = getMetaData(req);
-                const { model, body, meta } = metadata;
+                const { model, body, meta, schema } = getMetaData(req);
                 const uploadablePropertyNames = userSchemas.uploadablePropertyNames(title);
-                const schema = await getSchema(userSchemas, body);
                 const filePaths = getFiles(req, uploadablePropertyNames);
                 Object.keys(filePaths).forEach(key => {
                     const filePath = filePaths[key];

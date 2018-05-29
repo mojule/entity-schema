@@ -56,7 +56,7 @@ const excludeOwnProperties = ( model: Document, uniqueValuesMap: {} ) => {
   it were a multipart form
 */
 const selectBodyParser = async ( req: Request, res: Response, next: NextFunction ) => {
-  if( req.headers[ 'content-type' ]!.startsWith( 'application/json' ) ) {
+  if ( req.headers[ 'content-type' ]!.startsWith( 'application/json' ) ) {
     jsonParser( req, res, next )
 
     return
@@ -104,6 +104,7 @@ export interface Metadata {
   title: string
   body: any
   meta: any
+  schema: IEntitySchema
 }
 
 export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRouteOptions = entityRouteOptions ): IRouteData => {
@@ -118,7 +119,7 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
 
   const { modelResolvers, fileResolvers } = options
 
-  if( modelResolvers === undefined || fileResolvers === undefined )
+  if ( modelResolvers === undefined || fileResolvers === undefined )
     throw Error( 'Expected modelResolvers and fileResolvers' )
 
   const storage = EntityStorage( fileResolvers )
@@ -147,7 +148,7 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
       if ( uploadablePropertyNames.length ) {
         const files = <Express.Multer.File[]>req.files
 
-        if( !files ) return filePaths
+        if ( !files ) return filePaths
 
         uploadablePropertyNames.forEach( propertyName => {
           const file = files.find( f => f.fieldname === '/' + propertyName )
@@ -170,7 +171,7 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
 
         let uniqueValuesMap = await ( <any>Model ).uniqueValuesMap( parentId )
 
-        if ( doc ){
+        if ( doc ) {
           uniqueValuesMap = excludeOwnProperties( doc, uniqueValuesMap )
         }
 
@@ -178,7 +179,7 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
         const schema = addUniques( entitySchema, uniqueValuesMap )
 
         return schema
-      } catch ( err ){
+      } catch ( err ) {
         throw err
       }
     }
@@ -201,7 +202,7 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
         // remove empty strings that aren't in required
         Object.keys( defaultValues ).forEach( key => {
           const required = systemSchema.required || []
-          if ( !required.includes( key ) && defaultValues[ key ] === '' ){
+          if ( !required.includes( key ) && defaultValues[ key ] === '' ) {
             delete defaultValues[ key ]
           }
         } )
@@ -220,9 +221,9 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
           meta = resolved.meta
         }
 
-        addMetaData({
-          Model, model, title, body, meta
-        })( req, res, next )
+        addMetaData( {
+          Model, model, title, body, meta, schema
+        } )( req, res, next )
       } catch ( err ) {
         userError( res, err )
       }
@@ -268,7 +269,7 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
         }
 
         addMetaData( {
-          Model, model, title, body, meta
+          Model, model, title, body, meta, schema
         } )( req, res, next )
       } catch ( err ) {
         userError( res, err )
@@ -285,17 +286,15 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
           return
         }
 
-        const metadata = getMetaData( req )
-        const { model, body, meta } = metadata
+        const { model, body, meta, schema } = getMetaData( req )
         const uploadablePropertyNames = userSchemas.uploadablePropertyNames( title )
-        const schema = await getSchema( userSchemas, body )
         const filePaths = getFiles( req, uploadablePropertyNames )
 
         Object.keys( filePaths ).forEach( key => {
           const filePath = filePaths[ key ]
           body[ key ] = filePath
           model[ key ] = filePath
-        })
+        } )
 
         const validate = tv4.validateMultiple( body, <tv4.JsonSchema>schema )
 
@@ -305,7 +304,7 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
 
           filtered._id = product._id
 
-          if( meta )
+          if ( meta )
             filtered._meta = meta
 
           res.status( 201 ).json( filtered )
@@ -430,7 +429,7 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
         },
         // update an existing entity
         put: putHandlers,
-        delete: async( req: Request, res: Response ) => {
+        delete: async ( req: Request, res: Response ) => {
           const id: string = req.params.id
 
           try {
@@ -454,7 +453,7 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
             filteredResult._id = doc._id
 
             res.json( filteredResult )
-          } catch( err ){
+          } catch ( err ) {
             jsonError( res, err )
           }
         }
@@ -480,7 +479,7 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
               filteredResult._id = doc._id
 
               return filteredResult
-            })
+            } )
 
             res.json( filtered )
           } catch ( err ) {
@@ -504,12 +503,12 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
             const nested: any = {}
 
             Object.keys( req.query ).forEach( key => {
-              if( key.startsWith( '/' ) ){
+              if ( key.startsWith( '/' ) ) {
                 nested[ key ] = req.query[ key ]
               } else {
                 normal[ key ] = req.query[ key ]
               }
-            })
+            } )
 
             const query = Object.assign( {}, normal, expand( nested ) )
 
