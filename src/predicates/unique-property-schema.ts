@@ -5,5 +5,6 @@ export interface IUniquePropertySchema extends IWsSchema {
 }
 
 const isUniquePropertySchema = ( value ) : value is IUniquePropertySchema =>
+  value &&
   value.wsUnique === true &&
   isWsSchema( value )

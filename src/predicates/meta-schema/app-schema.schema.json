@@ -1,0 +1,24 @@
+{
+  "id": "http://workingspec.com/meta-schema/app-schema",
+  "title": "App Schema",
+  "description": "A schema that has an ID, a title and a type",
+  "type": "object",
+  "properties": {
+    "id": {
+      "title": "Schema ID",
+      "type": "string",
+      "format": "uri"
+    },
+    "title": {
+      "title": "Schema Title",
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "title": "Schema Type",
+      "type": "string",
+      "enum": [ "string", "number", "integer", "boolean", "object", "array" ]
+    }
+  },
+  "required": [ "id", "title", "type" ]
+}

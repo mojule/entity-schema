@@ -1,5 +1,3 @@
-import { is } from '@mojule/is'
-
 export interface INumberSchema {
   type: 'number'
 }

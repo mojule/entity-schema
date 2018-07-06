@@ -1,0 +1,38 @@
+{
+  "id": "http://workingspec.com/meta-schema/object-schema",
+  "title": "Object Schema",
+  "type": "object",
+  "properties": {
+    "id": {
+      "title": "Schema ID",
+      "type": "string",
+      "format": "uri"
+    },
+    "title": {
+      "title": "Schema Title",
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "title": "Schema Type",
+      "type": "string",
+      "enum": [ "object" ]
+    },
+    "additionalProperties": {
+      "title": "Additional Properties",
+      "type": "boolean",
+      "enum": [ false ],
+      "default": "false"
+    },
+    "properties": {
+      "title": "Properties",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "http://workingspec.com/meta-schema/subschema"
+      }
+    }
+  },
+  "required": [
+    "id", "title", "type", "additionalProperties", "properties"
+  ]
+}

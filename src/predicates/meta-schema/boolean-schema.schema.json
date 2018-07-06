@@ -1,0 +1,13 @@
+{
+  "id": "http://workingspec.com/meta-schema/boolean-schema",
+  "title": "Boolean Schema",
+  "type": "object",
+  "properties": {
+    "type": {
+      "title": "Schema Type",
+      "type": "string",
+      "enum": [ "boolean" ]
+    }
+  },
+  "required": [ "type" ]
+}

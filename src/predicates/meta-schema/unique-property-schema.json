@@ -1,0 +1,24 @@
+{
+  "id": "http://workingspec.com/meta-schema/unique-property-schema",
+  "title": "Unique Property Schema",
+  "description": "A schema that has a title and a type, and a property that must be unique within some collection",
+  "type": "object",
+  "properties": {
+    "title": {
+      "title": "Schema Title",
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "title": "Schema Type",
+      "type": "string",
+      "enum": [ "string", "number", "integer", "boolean", "object", "array" ]
+    },
+    "wsUnique": {
+      "type": "boolean",
+      "enum": [ true ],
+      "default": true
+    }
+  },
+  "required": [ "title", "type", "wsUnique" ]
+}

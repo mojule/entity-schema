@@ -1,5 +1,4 @@
-import { is } from '@mojule/is'
-import { TSubschema, isSubschema } from './subschema'
+import { TSubschema } from './subschema'
 
 export interface IArraySchema {
   type: 'array'

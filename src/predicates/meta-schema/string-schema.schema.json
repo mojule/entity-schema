@@ -1,0 +1,13 @@
+{
+  "id": "http://workingspec.com/meta-schema/string-schema",
+  "title": "String Schema",
+  "type": "object",
+  "properties": {
+    "type": {
+      "title": "Schema Type",
+      "type": "string",
+      "enum": [ "string" ]
+    }
+  },
+  "required": [ "type" ]
+}

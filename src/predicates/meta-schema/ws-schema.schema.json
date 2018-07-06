@@ -1,0 +1,19 @@
+{
+  "id": "http://workingspec.com/meta-schema/ws-schema",
+  "title": "WS Schema",
+  "description": "A schema that has a title and a type",
+  "type": "object",
+  "properties": {
+    "title": {
+      "title": "Schema Title",
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "title": "Schema Type",
+      "type": "string",
+      "enum": [ "string", "number", "integer", "boolean", "object", "array" ]
+    }
+  },
+  "required": [ "title", "type" ]
+}

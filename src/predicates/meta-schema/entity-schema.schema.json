@@ -1,0 +1,42 @@
+{
+  "id": "http://workingspec.com/meta-schema/entity-schema",
+  "title": "Entity Schema",
+  "type": "object",
+  "properties": {
+    "id": {
+      "title": "Schema ID",
+      "type": "string",
+      "format": "uri"
+    },
+    "title": {
+      "title": "Schema Title",
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "title": "Schema Type",
+      "type": "string",
+      "enum": [ "object" ]
+    },
+    "format": {
+      "title": "Entity Format",
+      "type": "string",
+      "enum": [ "workingspec-entity" ],
+      "default": "workingspec-entity"
+    },
+    "additionalProperties": {
+      "title": "Additional Properties",
+      "type": "boolean",
+      "enum": [ false ],
+      "default": "false"
+    },
+    "properties": {
+      "title": "Properties",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "http://workingspec.com/meta-schema/subschema"
+      }
+    }
+  },
+  "required": [ "id", "title", "type", "format", "additionalProperties", "properties" ]
+}
