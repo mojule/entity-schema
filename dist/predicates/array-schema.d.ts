@@ -1,5 +1,6 @@
 import { TSubschema } from './subschema';
-export interface IArraySchema {
+import { JSONSchema4 } from '../../node_modules/@types/json-schema';
+export interface IArraySchema extends JSONSchema4 {
     type: 'array';
     items?: TSubschema;
 }

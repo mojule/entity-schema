@@ -1,7 +1,6 @@
-import { is } from '@mojule/is'
-import { IWsSchema, isWsSchema } from './ws-schema'
+import { JSONSchema4 } from '../../node_modules/@types/json-schema';
 
-export interface IBooleanSchema {
+export interface IBooleanSchema extends JSONSchema4 {
   type: 'boolean'
 }
 

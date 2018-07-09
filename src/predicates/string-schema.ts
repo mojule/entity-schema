@@ -1,6 +1,6 @@
-import { is } from '@mojule/is'
+import { JSONSchema4 } from '../../node_modules/@types/json-schema'
 
-export interface IStringSchema {
+export interface IStringSchema extends JSONSchema4 {
   type: 'string'
 }
 
