@@ -7,8 +7,9 @@ import { is } from '@mojule/is'
 import { strictSelect } from '@mojule/dom-utils'
 import { uploadablePropertyNames } from '../uploadable-properties'
 import { IObjectSchema } from '../predicates/object-schema'
-import { arrayifySchemaForm, ArrayifyApi } from './arrayify-schema-form'
-import { oneOfSchemaForm, OneOfApi } from './oneof-schema-form'
+import { arrayifySchemaForm } from './arrayify-schema-form'
+import { oneOfSchemaForm } from './oneof-schema-form'
+import { SchemaFormElement, ArrayifySymbol, OneOfSymbol } from './types'
 
 const inputTypeMap = {
   string: 'text',
@@ -24,15 +25,7 @@ interface ISchemaElModel {
   }
 }
 
-export const ArrayifySymbol = Symbol( 'arrayify' )
-export const OneOfSymbol = Symbol( 'oneOf' )
-
 const Id = ( pathSegs: string[] ) => '/' + pathSegs.join( '/' )
-
-export interface SchemaFormElement extends HTMLFormElement {
-  [ ArrayifySymbol ]: ArrayifyApi
-  [ OneOfSymbol ]: OneOfApi
-}
 
 export const schemaToForm = ( document: Document, schema: IObjectSchema, arrayify = true ) => {
   const uploadableProperties = uploadablePropertyNames( schema )
@@ -204,7 +197,6 @@ export const schemaToForm = ( document: Document, schema: IObjectSchema, arrayif
       const inputWrapper = schemaInput({ schema, options })
 
       if( schema.format === 'uri' && schema.wsUploadable ){
-        const pathLabel = <HTMLLabelElement>strictSelect( inputWrapper, 'label' )
         const pathInput = <HTMLInputElement>strictSelect( inputWrapper, 'input' )
         const fileInput = <HTMLInputElement>pathInput.cloneNode( true )
 
@@ -315,7 +307,7 @@ export const schemaToForm = ( document: Document, schema: IObjectSchema, arrayif
 
   const mapper = Mapper( { map, predicates } )
 
-  const schemaFormEl = form(
+  const schemaFormEl = <SchemaFormElement>form(
     uploadableProperties.length ? {
       enctype: 'multipart/form-data'
     } : {},

@@ -1,2 +1,2 @@
-import { SchemaFormElement } from './schema-to-form';
+import { SchemaFormElement } from './types';
 export declare const schemaFormToEntityModel: (formEl: SchemaFormElement) => any;

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const schema_to_form_1 = require("./schema-to-form");
 const dom_utils_1 = require("@mojule/dom-utils");
+const types_1 = require("./types");
 const closest = (el, selector) => {
     if (el.matches(selector))
         return el;
@@ -90,7 +90,7 @@ const arrayify = (arrayEl, h) => {
     return { add, size, remove, get, reindex };
 };
 exports.arrayifySchemaForm = (schemaFormEl, h) => {
-    if (schemaFormEl[schema_to_form_1.ArrayifySymbol])
+    if (schemaFormEl[types_1.ArrayifySymbol])
         throw Error('Schema form has already been arrayified');
     const arraySchemaEls = Array.from(schemaFormEl.querySelectorAll('[data-schema][data-type="array"]'));
     const api = {};

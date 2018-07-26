@@ -1,7 +1,6 @@
 import { expand } from '@mojule/json-pointer'
 import { is } from '@mojule/is'
-import { SchemaFieldEditor } from './types'
-import { SchemaFormElement } from './schema-to-form'
+import { SchemaFieldEditor, SchemaFormElement } from './types'
 
 const resolveOneOf = jsonPointerToValueMap => {
   const keys = Object.keys( jsonPointerToValueMap )

@@ -6,6 +6,7 @@ const schema_to_form_1 = require("./schema-to-form");
 const filter_entity_by_schema_1 = require("../filter-entity-by-schema");
 const subschema_map_1 = require("../subschema-map");
 const dom_utils_1 = require("@mojule/dom-utils");
+const types_1 = require("./types");
 const arrays_in_path_1 = require("../utils/arrays-in-path");
 exports.entityModelToForm = (document, schema, model) => {
     const schemaFormEl = schema_to_form_1.schemaToForm(document, schema);
@@ -36,8 +37,8 @@ exports.entityModelToForm = (document, schema, model) => {
         });
         jsonPointerMap[schemaPath + '/?'] = index;
     });
-    const arrayifyApi = schemaFormEl[schema_to_form_1.ArrayifySymbol];
-    const oneOfApi = schemaFormEl[schema_to_form_1.OneOfSymbol];
+    const arrayifyApi = schemaFormEl[types_1.ArrayifySymbol];
+    const oneOfApi = schemaFormEl[types_1.OneOfSymbol];
     const arrayInfo = arrays_in_path_1.arrayPointerInfo(jsonPointerMap);
     Object.keys(arrayInfo).forEach(arrayPointerPath => {
         const length = arrayInfo[arrayPointerPath];

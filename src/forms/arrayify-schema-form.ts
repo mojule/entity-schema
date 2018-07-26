@@ -1,6 +1,6 @@
 import { IH } from '@mojule/h/types'
-import { ArrayifySymbol } from './schema-to-form'
 import { strictSelect, strictGetAttribute } from '@mojule/dom-utils'
+import { SchemaFormElement, ArrayifySymbol } from './types'
 
 const closest = ( el: HTMLElement, selector: string ) => {
   if( el.matches( selector ) ) return el
@@ -14,24 +14,24 @@ const reindexAttributeValue = ( existingValue: string, path: string, index: numb
   const segs = existingValue.split( path + '/' )
   const [ left, right ] = segs
   const [ , ...rest ] = right.split( '/' )
-  
-  return [ left + path, index, ...rest ].join( '/' )  
+
+  return [ left + path, index, ...rest ].join( '/' )
 }
 
-const reindexElements = ( els: HTMLElement[], attributeName: string, path: string, index: number, isDataName = false ) => {  
+const reindexElements = ( els: HTMLElement[], attributeName: string, path: string, index: number, isDataName = false ) => {
   els.forEach( el => {
     const oldValue = isDataName ?
       el.dataset[ attributeName ]! :
       el.getAttribute( attributeName )!
-    
+
     const newValue = reindexAttributeValue( oldValue, path, index )
-    
+
     if( isDataName ){
       el.dataset[ attributeName ] = newValue
     } else {
       el.setAttribute( attributeName, newValue )
-    }   
-  })  
+    }
+  })
 }
 
 const arrayify = ( arrayEl: HTMLDivElement, h: IH ) => {
@@ -73,7 +73,7 @@ const arrayify = ( arrayEl: HTMLDivElement, h: IH ) => {
 
       const editorEls = <HTMLLabelElement[]>Array.from(
         item.querySelectorAll( 'input, textarea, select' )
-      ) 
+      )
 
       const dataPathEls = <HTMLElement[]>Array.from(
         item.querySelectorAll( '[data-path]' )
@@ -81,7 +81,7 @@ const arrayify = ( arrayEl: HTMLDivElement, h: IH ) => {
 
       reindexElements( labelEls, 'for', path, index )
       reindexElements( editorEls, 'name', path, index )
-      reindexElements( dataPathEls, 'path', path, index, true )     
+      reindexElements( dataPathEls, 'path', path, index, true )
     })
   }
 
@@ -141,7 +141,7 @@ export interface ArrayifyApi {
   }
 }
 
-export const arrayifySchemaForm = ( schemaFormEl : HTMLFormElement, h: IH ) => {
+export const arrayifySchemaForm = ( schemaFormEl : SchemaFormElement, h: IH ) => {
   if( schemaFormEl[ ArrayifySymbol ] )
     throw Error( 'Schema form has already been arrayified' )
 

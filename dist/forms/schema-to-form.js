@@ -9,13 +9,12 @@ const dom_utils_1 = require("@mojule/dom-utils");
 const uploadable_properties_1 = require("../uploadable-properties");
 const arrayify_schema_form_1 = require("./arrayify-schema-form");
 const oneof_schema_form_1 = require("./oneof-schema-form");
+const types_1 = require("./types");
 const inputTypeMap = {
     string: 'text',
     number: 'number',
     boolean: 'checkbox'
 };
-exports.ArrayifySymbol = Symbol('arrayify');
-exports.OneOfSymbol = Symbol('oneOf');
 const Id = (pathSegs) => '/' + pathSegs.join('/');
 exports.schemaToForm = (document, schema, arrayify = true) => {
     const uploadableProperties = uploadable_properties_1.uploadablePropertyNames(schema);
@@ -138,7 +137,6 @@ exports.schemaToForm = (document, schema, arrayify = true) => {
         stringSchema: (schema, options) => {
             const inputWrapper = schemaInput({ schema, options });
             if (schema.format === 'uri' && schema.wsUploadable) {
-                const pathLabel = dom_utils_1.strictSelect(inputWrapper, 'label');
                 const pathInput = dom_utils_1.strictSelect(inputWrapper, 'input');
                 const fileInput = pathInput.cloneNode(true);
                 fileInput.type = 'file';
@@ -215,8 +213,8 @@ exports.schemaToForm = (document, schema, arrayify = true) => {
         enctype: 'multipart/form-data'
     } : {}, mapper(schema, { pathSegs: [] }));
     if (arrayify)
-        schemaFormEl[exports.ArrayifySymbol] = arrayify_schema_form_1.arrayifySchemaForm(schemaFormEl, h);
-    schemaFormEl[exports.OneOfSymbol] = oneof_schema_form_1.oneOfSchemaForm(schemaFormEl, h);
+        schemaFormEl[types_1.ArrayifySymbol] = arrayify_schema_form_1.arrayifySchemaForm(schemaFormEl, h);
+    schemaFormEl[types_1.OneOfSymbol] = oneof_schema_form_1.oneOfSchemaForm(schemaFormEl, h);
     return schemaFormEl;
 };
 //# sourceMappingURL=schema-to-form.js.map

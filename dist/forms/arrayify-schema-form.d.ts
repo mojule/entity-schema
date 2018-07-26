@@ -1,4 +1,5 @@
 import { IH } from '@mojule/h/types';
+import { SchemaFormElement } from './types';
 export interface ArrayifyApi {
     [path: string]: {
         add: () => HTMLLIElement;
@@ -8,4 +9,4 @@ export interface ArrayifyApi {
         reindex: () => void;
     };
 }
-export declare const arrayifySchemaForm: (schemaFormEl: HTMLFormElement, h: IH) => ArrayifyApi;
+export declare const arrayifySchemaForm: (schemaFormEl: SchemaFormElement, h: IH) => ArrayifyApi;
