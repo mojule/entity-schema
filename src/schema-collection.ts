@@ -12,9 +12,10 @@ import { filterEntityBySchema } from './filter-entity-by-schema'
 import { IAppSchema } from './predicates/app-schema'
 import { IEntitySchema } from './predicates/entity-schema'
 import { uploadablePropertyNames } from './uploadable-properties'
-import { Role, EntityAccess, EntityAccesses } from './security/types';
-import { FilterSchemaForRoles } from './filter-schema-for-roles';
+import { Role, EntityAccess, EntityAccesses } from './security/types'
+import { FilterSchemaForRoles } from './filter-schema-for-roles'
 import { is } from '@mojule/is';
+import { SchemaCollectionApi } from './types'
 
 const SchemaMapResolver = ( schemaMap: ISchemaMap ) =>
   ( id: string ): JSONSchema4 => schemaMap[ id ]
@@ -51,7 +52,7 @@ interface RoleFilters {
   [ title: string ]: ( userRoles: Role[] ) => IEntitySchema | {}
 }
 
-export const SchemaCollection = ( schemas: IAppSchema[], userRoles?: Role[], accesses: EntityAccess[] = [ EntityAccesses.read ] ) => {
+export const SchemaCollection = ( schemas: IAppSchema[], userRoles?: Role[], accesses: EntityAccess[] = [ EntityAccesses.read ] ): SchemaCollectionApi => {
   if( Array.isArray( userRoles ) ){
     schemas = <IAppSchema[]>schemas.map(
       schema => {
@@ -107,7 +108,7 @@ export const SchemaCollection = ( schemas: IAppSchema[], userRoles?: Role[], acc
   const interfaceSchemaCache = new Map<string, JSONSchema4>()
   const mongooseSchemaCache = new Map<string, Schema>()
 
-  const api = {
+  const api: SchemaCollectionApi = {
     get titles(){
       return titles.slice()
     },
