@@ -1,7 +1,5 @@
-/// <reference types="multer" />
 /// <reference types="express-serve-static-core" />
 /// <reference types="passport" />
-/// <reference types="mongoose" />
 import { DiskStorageOptions } from 'multer';
 import { Model, Document } from 'mongoose';
 export interface ExtendedDiskStorageOptions extends DiskStorageOptions {

@@ -4,6 +4,6 @@ export declare type SchemaFieldEditor = HTMLInputElement | HTMLTextAreaElement |
 export declare const ArrayifySymbol: unique symbol;
 export declare const OneOfSymbol: unique symbol;
 export interface SchemaFormElement extends HTMLFormElement {
-    [ ArrayifySymbol ]: ArrayifyApi;
-    [ OneOfSymbol ]: OneOfApi;
+    [ArrayifySymbol]: ArrayifyApi;
+    [OneOfSymbol]: OneOfApi;
 }

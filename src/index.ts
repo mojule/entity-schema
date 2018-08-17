@@ -25,8 +25,8 @@ import { generateTypescript } from './typescript/generate-typescript'
 import { PassportSecurity } from './security'
 import { securitySchemas } from './security/schemas'
 import { ensureDirectories } from './utils/ensure-directories'
-import { writeFileBuffers } from './utils/write-file-buffers'
 import { ArrayifySymbol, OneOfSymbol } from './forms/types'
+import { writeFileBuffers } from './files/file-buffers'
 
 export {
   SchemaCollection, addLinks, addUniques, arrayifySchemaForm,

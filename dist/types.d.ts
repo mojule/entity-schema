@@ -1,5 +1,4 @@
 /// <reference types="tv4" />
-/// <reference types="mongoose" />
 import { JSONSchema4 } from 'json-schema';
 import { IEntitySchema } from './predicates/entity-schema';
 import { ISchemaMap } from './schema-map';

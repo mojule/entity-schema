@@ -1,5 +1,4 @@
-import { IEntitySchema } from '../predicates/entity-schema';
-export declare const securitySchemas: (IEntitySchema | {
+export declare const securitySchemas: (import("../../../../../../../Users/Nik Coughlin/Documents/GitHub/entity-schema/src/predicates/entity-schema").IEntitySchema | {
     id: string;
     title: string;
     description: string;

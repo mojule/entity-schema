@@ -25,6 +25,6 @@ import { generateTypescript } from './typescript/generate-typescript';
 import { PassportSecurity } from './security';
 import { securitySchemas } from './security/schemas';
 import { ensureDirectories } from './utils/ensure-directories';
-import { writeFileBuffers } from './utils/write-file-buffers';
 import { ArrayifySymbol, OneOfSymbol } from './forms/types';
+import { writeFileBuffers } from './files/file-buffers';
 export { SchemaCollection, addLinks, addUniques, arrayifySchemaForm, filterEntityBySchema, interfaceSchemaMapper, linkTitlesForSchema, loadSchemas, NormalizeSchema, SchemaMap, schemaToForm, schemaToMongooseSchema, schemaWalk, subschemaMap, uniquePropertyNames, uploadablePropertyNames, predicates, ArrayifySymbol, oneOfSchemaForm, OneOfSymbol, entityModelToForm, schemaFormToEntityModel, predicateUtils, mongooseModels, EntityRoutes, SchemaRoutes, generateTypescript, PassportSecurity, securitySchemas, ensureDirectories, writeFileBuffers };

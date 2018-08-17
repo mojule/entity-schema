@@ -1,4 +1,3 @@
-/// <reference types="mongoose" />
 import { Model, Document } from 'mongoose';
 import { IEntitySchema } from '../../predicates/entity-schema';
 import { IAppSchema } from '../../predicates/app-schema';

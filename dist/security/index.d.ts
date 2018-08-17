@@ -1,4 +1,3 @@
-/// <reference types="mongoose" />
 import { Model } from 'mongoose';
 import { UserDocument, ApiKeyDocument } from './types';
 import { Request } from 'express-serve-static-core';
