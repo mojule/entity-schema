@@ -1,19 +1,20 @@
 import { is, Utils } from '@mojule/is'
-import { isOneOfSchema, IOneOfSchema } from './oneof-schema'
-import { isEntitySchema, IEntitySchema } from './entity-schema'
-import { isAppSchema, IAppSchema } from './app-schema'
-import { isEnumSchema, IEnumSchema } from './enum-schema'
-import { isRefSchema, IRefSchema } from './ref-schema'
-import { isChildEntitySchema, IChildEntitySchema } from './child-entity-schema'
-import { IConstPropertySchema, isConstPropertySchema } from './const-property-schema'
-import { IEntityReferenceSchema, isEntityReferenceSchema } from './entity-reference-schema'
-import { isSubschema, TSubschema } from './subschema'
-import { isWsSchema, IWsSchema } from './ws-schema'
-import { isObjectSchema, IObjectSchema } from './object-schema'
-import { isStringSchema, IStringSchema } from './string-schema'
-import { isNumberSchema, INumberSchema } from './number-schema'
-import { isBooleanSchema, IBooleanSchema } from './boolean-schema'
-import { isArraySchema, IArraySchema } from './array-schema'
+import { isOneOfSchema } from './oneof-schema'
+import { isEntitySchema } from './entity-schema'
+import { isAppSchema } from './app-schema'
+import { isEnumSchema } from './enum-schema'
+import { isRefSchema } from './ref-schema'
+import { isChildEntitySchema } from './child-entity-schema'
+import { isConstPropertySchema } from './const-property-schema'
+import { isEntityReferenceSchema } from './entity-reference-schema'
+import { isSubschema } from './subschema'
+import { isWsSchema } from './ws-schema'
+import { isObjectSchema } from './object-schema'
+import { isStringSchema } from './string-schema'
+import { isNumberSchema } from './number-schema'
+import { isBooleanSchema } from './boolean-schema'
+import { isArraySchema } from './array-schema'
+import { isIntegerSchema } from './integer-schema'
 
 // object key order is important - will match in that order when finding types!
 export const predicates = {
@@ -21,6 +22,7 @@ export const predicates = {
   constPropertySchema: isConstPropertySchema,
   stringSchema: isStringSchema,
   numberSchema: isNumberSchema,
+  integerSchema: isIntegerSchema,
   booleanSchema: isBooleanSchema,
   arraySchema: isArraySchema,
   childEntitySchema: isChildEntitySchema,

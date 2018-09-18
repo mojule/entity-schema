@@ -146,6 +146,7 @@ exports.schemaToForm = (document, schema, arrayify = true) => {
             return inputWrapper;
         },
         numberSchema: (schema, options) => schemaInput({ schema, options }),
+        integerSchema: (schema, options) => schemaInput({ schema, options }),
         booleanSchema: (schema, options) => schemaInput({ schema, options }),
         nullSchema: (schema, options) => schemaWrapper({ schema, options }),
         arraySchema: (schema, options) => {

@@ -16,12 +16,14 @@ const string_schema_1 = require("./string-schema");
 const number_schema_1 = require("./number-schema");
 const boolean_schema_1 = require("./boolean-schema");
 const array_schema_1 = require("./array-schema");
+const integer_schema_1 = require("./integer-schema");
 // object key order is important - will match in that order when finding types!
 exports.predicates = {
     oneOfSchema: oneof_schema_1.isOneOfSchema,
     constPropertySchema: const_property_schema_1.isConstPropertySchema,
     stringSchema: string_schema_1.isStringSchema,
     numberSchema: number_schema_1.isNumberSchema,
+    integerSchema: integer_schema_1.isIntegerSchema,
     booleanSchema: boolean_schema_1.isBooleanSchema,
     arraySchema: array_schema_1.isArraySchema,
     childEntitySchema: child_entity_schema_1.isChildEntitySchema,

@@ -209,6 +209,7 @@ export const schemaToForm = ( document: Document, schema: IObjectSchema, arrayif
       return inputWrapper
     },
     numberSchema: ( schema, options ) => schemaInput({ schema, options }),
+    integerSchema: ( schema, options ) => schemaInput( { schema, options } ),
     booleanSchema: ( schema, options ) => schemaInput({ schema, options }),
     nullSchema: ( schema, options ) => schemaWrapper({ schema, options }),
     arraySchema: ( schema, options ) => {

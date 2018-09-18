@@ -23,22 +23,22 @@ exports.TagsSchema = (tagType = defaultTagType) => ({
 exports.MetaSchema = () => ({
     id: 'http://workingspec.com/schema/file-meta',
     title: 'File Meta',
-    descriptions: 'Metadata about the file',
+    description: 'Metadata about the file',
     type: 'object',
     properties: {
         filename: {
             title: 'Filename',
-            descriptions: 'The name of the file',
+            description: 'The name of the file',
             type: 'string'
         },
         mimetype: {
             title: 'Mime Type',
-            descriptions: 'The mime type of the file',
+            description: 'The mime type of the file',
             type: 'string'
         },
         size: {
             title: 'Size',
-            descriptions: 'The size of the file in bytes',
+            description: 'The size of the file in bytes',
             type: 'integer'
         }
     },
