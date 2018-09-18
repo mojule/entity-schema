@@ -14,6 +14,7 @@ import { SchemaFormElement, ArrayifySymbol, OneOfSymbol } from './types'
 const inputTypeMap = {
   string: 'text',
   number: 'number',
+  integer: 'number',
   boolean: 'checkbox'
 }
 

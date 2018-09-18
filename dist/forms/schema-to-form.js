@@ -13,6 +13,7 @@ const types_1 = require("./types");
 const inputTypeMap = {
     string: 'text',
     number: 'number',
+    integer: 'number',
     boolean: 'checkbox'
 };
 const Id = (pathSegs) => '/' + pathSegs.join('/');
@@ -56,11 +57,13 @@ exports.schemaToForm = (document, schema, arrayify = true) => {
         const title = schema.title || lodash_1.upperFirst(type);
         const { pathSegs, isRequired } = options;
         const path = pathSegs.join('/');
-        const editorType = format === 'multiline' ?
-            format :
-            type === 'string' && schema.enum ?
-                'enum' :
-                'string';
+        const editorType = type === 'integer' ?
+            'number' :
+            format === 'multiline' ?
+                format :
+                type === 'string' && schema.enum ?
+                    'enum' :
+                    'string';
         const schemaEl = schemaWrapper(model);
         const name = Id(pathSegs);
         let inputType = inputTypeMap[type];
@@ -87,6 +90,9 @@ exports.schemaToForm = (document, schema, arrayify = true) => {
                 (editor).maxLength = schema.maxLength;
             if (schema.pattern)
                 (editor).pattern = schema.pattern;
+        }
+        if (type === 'integer') {
+            editor.step = '1';
         }
         if (type === 'boolean' && is_1.is.boolean(schema.default)) {
             if (inputType === 'hidden') {
