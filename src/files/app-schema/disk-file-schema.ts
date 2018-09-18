@@ -10,12 +10,17 @@ export const diskFileSchema: IEntitySchema = {
   type: 'object',
   format: 'workingspec-entity',
   properties: {
+    name: {
+      title: 'Name',
+      type: 'string',
+      description: 'The name of the disk file'
+    },
     path: FilePathSchema( 'file' ),
     meta: MetaSchema(),
     tags: TagsSchema( 'file' )
   },
   additionalProperties: false,
-  required: [ 'path', 'meta' ]
+  required: [ 'name', 'path', 'meta' ]
 }
 
 export const diskFileReferenceSchema = ReferenceSchema( 'Disk File' )

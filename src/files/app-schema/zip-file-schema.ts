@@ -10,6 +10,11 @@ export const zipFileSchema: IEntitySchema = {
   type: 'object',
   format: 'workingspec-entity',
   properties: {
+    name: {
+      title: 'Name',
+      type: 'string',
+      description: 'The name of the zip file'
+    },
     path: FilePathSchema( 'zip file' ),
     filePaths: {
       title: 'File Paths',
@@ -24,7 +29,7 @@ export const zipFileSchema: IEntitySchema = {
     tags: TagsSchema( 'zip file' )
   },
   additionalProperties: false,
-  required: [ 'path' ]
+  required: [ 'name', 'path', 'filePaths' ]
 }
 
 export const zipFileReferenceSchema = ReferenceSchema( 'Zip File' )
