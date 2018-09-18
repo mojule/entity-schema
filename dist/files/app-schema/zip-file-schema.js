@@ -25,4 +25,5 @@ exports.zipFileSchema = {
     additionalProperties: false,
     required: ['path']
 };
+exports.zipFileReferenceSchema = common_1.ReferenceSchema('Zip File');
 //# sourceMappingURL=zip-file-schema.js.map

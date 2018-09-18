@@ -16,4 +16,5 @@ exports.diskFileSchema = {
     additionalProperties: false,
     required: ['path', 'meta']
 };
+exports.diskFileReferenceSchema = common_1.ReferenceSchema('Disk File');
 //# sourceMappingURL=disk-file-schema.js.map

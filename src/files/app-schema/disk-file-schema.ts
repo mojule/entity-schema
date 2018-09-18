@@ -1,4 +1,4 @@
-import { FilePathSchema, TagsSchema, MetaSchema } from './common'
+import { FilePathSchema, TagsSchema, MetaSchema, ReferenceSchema } from './common'
 
 // TODO - get this back into JSON and think of a more robust way to export it
 
@@ -16,3 +16,5 @@ export const diskFileSchema = {
   additionalProperties: false,
   required: [ 'path', 'meta' ]
 }
+
+export const diskFileReferenceSchema = ReferenceSchema( 'Disk File' )

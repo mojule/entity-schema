@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("./common");
 // TODO - get this back into JSON and think of a more robust way to export it
-exports.diskFileSchema = {
+exports.imageFileSchema = {
     id: 'http://workingspec.com/schema/image-file',
     title: 'Image File',
     description: 'An image file stored on disk',
@@ -15,4 +15,5 @@ exports.diskFileSchema = {
     additionalProperties: false,
     required: ['path']
 };
+exports.imageFileReferenceSchema = common_1.ReferenceSchema('Image File');
 //# sourceMappingURL=image-file-schema.js.map

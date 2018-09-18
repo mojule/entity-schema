@@ -1,4 +1,4 @@
-import { FilePathSchema, TagsSchema } from './common'
+import { FilePathSchema, TagsSchema, ReferenceSchema } from './common'
 
 // TODO - get this back into JSON and think of a more robust way to export it
 
@@ -25,3 +25,5 @@ export const zipFileSchema = {
   additionalProperties: false,
   required: [ 'path' ]
 }
+
+export const zipFileReferenceSchema = ReferenceSchema( 'Zip File' )

@@ -125,7 +125,7 @@ export const zipBufferToFileBuffers = async ( zipFileBuffer: Buffer, options = d
   })
 }
 
-const defaultBeforeEnd = async ( zip: any ) => {}
+const defaultBeforeEnd = async ( _zip: any ) => {}
 
 export const fileBuffersToZipBuffer = async ( fileBuffers: FilePathBuffers, beforeEnd = defaultBeforeEnd ): Promise<Buffer> => {
   const zip = new yazl.ZipFile()

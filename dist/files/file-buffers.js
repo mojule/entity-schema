@@ -88,7 +88,7 @@ exports.zipBufferToFileBuffers = async (zipFileBuffer, options = defaultZipToFil
         });
     });
 };
-const defaultBeforeEnd = async (zip) => { };
+const defaultBeforeEnd = async (_zip) => { };
 exports.fileBuffersToZipBuffer = async (fileBuffers, beforeEnd = defaultBeforeEnd) => {
     const zip = new yazl.ZipFile();
     Object.keys(fileBuffers).forEach(key => zip.addBuffer(fileBuffers[key], key, {

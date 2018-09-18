@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const lodash_1 = require("lodash");
 const defaultFileType = 'file';
 const defaultTagType = 'item';
 exports.FilePathSchema = (fileType = defaultFileType) => ({
@@ -39,5 +40,28 @@ exports.MetaSchema = () => ({
         }
     },
     required: ['filename', 'mimetype', 'size']
+});
+exports.ReferenceSchema = (title) => ({
+    id: `http://workingspec.com/schema/${lodash_1.kebabCase(title)}-reference`,
+    title: `${title} Reference`,
+    description: `Links to a ${title}`,
+    type: `object`,
+    properties: {
+        entityId: {
+            title,
+            type: `string`,
+            pattern: `^[0-9a-f]{24}$`,
+            message: `${title} must be a 24 character hex string. (0-9, a-f)`
+        },
+        entityType: {
+            title: `Entity Type`,
+            type: `string`,
+            enum: [title],
+            readOnly: true,
+            default: title
+        }
+    },
+    required: [`entityId`, `entityType`],
+    additionalProperties: false
 });
 //# sourceMappingURL=common.js.map

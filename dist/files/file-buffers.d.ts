@@ -9,4 +9,4 @@ export interface ZipToFileBuffersOptions {
     map: (fileName: string) => string;
 }
 export declare const zipBufferToFileBuffers: (zipFileBuffer: Buffer, options?: ZipToFileBuffersOptions) => Promise<FilePathBuffers>;
-export declare const fileBuffersToZipBuffer: (fileBuffers: FilePathBuffers, beforeEnd?: (zip: any) => Promise<void>) => Promise<Buffer>;
+export declare const fileBuffersToZipBuffer: (fileBuffers: FilePathBuffers, beforeEnd?: (_zip: any) => Promise<void>) => Promise<Buffer>;
