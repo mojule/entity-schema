@@ -9,6 +9,11 @@ exports.zipFileSchema = {
     type: 'object',
     format: 'workingspec-entity',
     properties: {
+        name: {
+            title: 'Name',
+            type: 'string',
+            description: 'The name of the zip file'
+        },
         path: common_1.FilePathSchema('zip file'),
         filePaths: {
             title: 'File Paths',
@@ -23,7 +28,7 @@ exports.zipFileSchema = {
         tags: common_1.TagsSchema('zip file')
     },
     additionalProperties: false,
-    required: ['path']
+    required: ['name', 'path', 'filePaths']
 };
 exports.zipFileReferenceSchema = common_1.ReferenceSchema('Zip File');
 //# sourceMappingURL=zip-file-schema.js.map

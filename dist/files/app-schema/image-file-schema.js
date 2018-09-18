@@ -9,11 +9,17 @@ exports.imageFileSchema = {
     type: 'object',
     format: 'workingspec-entity',
     properties: {
+        name: {
+            title: 'Name',
+            type: 'string',
+            description: 'The name of the image file'
+        },
         path: common_1.FilePathSchema('image file'),
+        meta: common_1.ImageMetaSchema(),
         tags: common_1.TagsSchema('image file')
     },
     additionalProperties: false,
-    required: ['path']
+    required: ['name', 'path', 'meta']
 };
 exports.imageFileReferenceSchema = common_1.ReferenceSchema('Image File');
 //# sourceMappingURL=image-file-schema.js.map

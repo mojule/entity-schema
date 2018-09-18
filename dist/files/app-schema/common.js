@@ -44,6 +44,40 @@ exports.MetaSchema = () => ({
     },
     required: ['filename', 'mimetype', 'size']
 });
+exports.ImageMetaSchema = () => ({
+    id: 'http://workingspec.com/schema/image-file-meta',
+    title: 'Image File Meta',
+    description: 'Metadata about the image file',
+    type: 'object',
+    properties: {
+        filename: {
+            title: 'Filename',
+            description: 'The name of the image file',
+            type: 'string'
+        },
+        mimetype: {
+            title: 'Mime Type',
+            description: 'The mime type of the image file',
+            type: 'string'
+        },
+        size: {
+            title: 'Size',
+            description: 'The size of the image file in bytes',
+            type: 'integer'
+        },
+        width: {
+            title: 'Width',
+            description: 'The width of the image file',
+            type: 'integer'
+        },
+        height: {
+            title: 'Height',
+            description: 'The height of the image file',
+            type: 'integer'
+        }
+    },
+    required: ['filename', 'mimetype', 'size', 'width', 'height']
+});
 exports.ReferenceSchema = (title) => ({
     id: `http://workingspec.com/schema/${lodash_1.kebabCase(title)}-reference`,
     title: `${title} Reference`,

@@ -9,12 +9,17 @@ exports.diskFileSchema = {
     type: 'object',
     format: 'workingspec-entity',
     properties: {
+        name: {
+            title: 'Name',
+            type: 'string',
+            description: 'The name of the disk file'
+        },
         path: common_1.FilePathSchema('file'),
         meta: common_1.MetaSchema(),
         tags: common_1.TagsSchema('file')
     },
     additionalProperties: false,
-    required: ['path', 'meta']
+    required: ['name', 'path', 'meta']
 };
 exports.diskFileReferenceSchema = common_1.ReferenceSchema('Disk File');
 //# sourceMappingURL=disk-file-schema.js.map
