@@ -1,8 +1,9 @@
 import { FilePathSchema, TagsSchema, MetaSchema, ReferenceSchema } from './common'
+import { IEntitySchema } from '../../predicates/entity-schema'
 
 // TODO - get this back into JSON and think of a more robust way to export it
 
-export const diskFileSchema = {
+export const diskFileSchema: IEntitySchema = {
   id: 'http://workingspec.com/schema/disk-file',
   title: 'Disk File',
   description: 'A file stored on disk',

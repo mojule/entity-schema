@@ -4,11 +4,13 @@ const lodash_1 = require("lodash");
 const defaultFileType = 'file';
 const defaultTagType = 'item';
 exports.FilePathSchema = (fileType = defaultFileType) => ({
+    id: 'http://workingspec.com/schema/file-path',
     title: 'Path',
     description: `Path to this ${fileType}`,
     type: 'string'
 });
 exports.TagsSchema = (tagType = defaultTagType) => ({
+    id: 'http://workingspec.com/schema/tags',
     title: 'Tags',
     description: `Tags to help categorize this ${tagType}`,
     type: 'array',
@@ -19,7 +21,8 @@ exports.TagsSchema = (tagType = defaultTagType) => ({
     }
 });
 exports.MetaSchema = () => ({
-    tile: 'File Meta',
+    id: 'http://workingspec.com/schema/file-meta',
+    title: 'File Meta',
     descriptions: 'Metadata about the file',
     type: 'object',
     properties: {
