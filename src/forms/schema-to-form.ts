@@ -86,6 +86,8 @@ export const schemaToForm = ( document: Document, schema: IObjectSchema, arrayif
     const path = pathSegs.join( '/' )
 
     const editorType =
+      type === 'integer' ?
+      'number' :
       format === 'multiline' ?
       format :
       type === 'string' && schema.enum ?
@@ -124,6 +126,10 @@ export const schemaToForm = ( document: Document, schema: IObjectSchema, arrayif
         (<HTMLInputElement>(editor)).maxLength = schema.maxLength
       if( schema.pattern )
         (<HTMLInputElement>(editor)).pattern = schema.pattern
+    }
+
+    if( type === 'integer' ){
+      (<HTMLInputElement>editor).step = '1'
     }
 
     if( type === 'boolean' && is.boolean( schema.default ) ){
