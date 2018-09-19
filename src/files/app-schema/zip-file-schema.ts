@@ -1,4 +1,4 @@
-import { FilePathSchema, TagsSchema, ReferenceSchema } from './common'
+import { FilePathSchema, TagsSchema, ReferenceSchema, MetaSchema } from './common'
 import { IEntitySchema } from '../../predicates/entity-schema';
 
 // TODO - get this back into JSON and think of a more robust way to export it
@@ -16,6 +16,7 @@ export const zipFileSchema: IEntitySchema = {
       description: 'The name of the zip file'
     },
     path: FilePathSchema( 'zip file' ),
+    meta: MetaSchema(),
     filePaths: {
       title: 'File Paths',
       description: 'List of the paths in this zip',
@@ -29,7 +30,7 @@ export const zipFileSchema: IEntitySchema = {
     tags: TagsSchema( 'zip file' )
   },
   additionalProperties: false,
-  required: [ 'name', 'path', 'filePaths' ]
+  required: [ 'name', 'path', 'meta', 'filePaths' ]
 }
 
 export const zipFileReferenceSchema = ReferenceSchema( 'Zip File' )

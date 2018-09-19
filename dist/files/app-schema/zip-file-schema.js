@@ -15,6 +15,7 @@ exports.zipFileSchema = {
             description: 'The name of the zip file'
         },
         path: common_1.FilePathSchema('zip file'),
+        meta: common_1.MetaSchema(),
         filePaths: {
             title: 'File Paths',
             description: 'List of the paths in this zip',
@@ -28,7 +29,7 @@ exports.zipFileSchema = {
         tags: common_1.TagsSchema('zip file')
     },
     additionalProperties: false,
-    required: ['name', 'path', 'filePaths']
+    required: ['name', 'path', 'meta', 'filePaths']
 };
 exports.zipFileReferenceSchema = common_1.ReferenceSchema('Zip File');
 //# sourceMappingURL=zip-file-schema.js.map
