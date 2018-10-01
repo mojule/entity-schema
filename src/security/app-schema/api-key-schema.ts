@@ -1,6 +1,8 @@
+import { IEntitySchema } from '../../predicates/entity-schema'
+
 // TODO - get this back into JSON and think of a more robust way to export it
 
-export const apiKeySchema = {
+export const apiKeySchema: IEntitySchema = {
   id: 'http://workingspec.com/schema/api-key',
   title: 'API Key',
   description: 'Key for accessing the API',

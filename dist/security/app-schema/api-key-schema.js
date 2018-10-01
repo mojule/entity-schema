@@ -1,6 +1,6 @@
 "use strict";
-// TODO - get this back into JSON and think of a more robust way to export it
 Object.defineProperty(exports, "__esModule", { value: true });
+// TODO - get this back into JSON and think of a more robust way to export it
 exports.apiKeySchema = {
     id: 'http://workingspec.com/schema/api-key',
     title: 'API Key',

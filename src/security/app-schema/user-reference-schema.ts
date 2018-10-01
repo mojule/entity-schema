@@ -1,4 +1,6 @@
-export const userReferenceSchema = {
+import { IAppSchema } from '../../predicates/app-schema'
+
+export const userReferenceSchema: IAppSchema = {
   id: 'http://workingspec.com/schema/user-reference',
   title: 'User Reference',
   description: 'Links to a User',
