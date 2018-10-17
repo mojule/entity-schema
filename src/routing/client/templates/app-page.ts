@@ -28,7 +28,8 @@ export const AppPageTemplate = ( deps: AdminTemplateDeps ) => {
 
     const anchorLinkModels : AnchorLinkItemModel[] = [
       { path: '/schema', title: 'Schema', isCurrent: currentPath === '/schema' },
-      { path: '/entity', title: 'Entities', isCurrent: currentPath === '/entity' }
+      { path: '/entity', title: 'Entities', isCurrent: currentPath === '/entity' },
+      { path: '/files', title: 'Files', isCurrent: currentPath === '/files' }
     ]
 
     anchorLinkModels.forEach( model => {

@@ -1,2 +1,5 @@
 import { IClientRouterMap } from './client-router';
-export declare const routes: IClientRouterMap;
+export interface ClientDependencies {
+    resolverNames: string[];
+}
+export declare const Routes: (deps: ClientDependencies) => IClientRouterMap;

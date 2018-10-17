@@ -11,3 +11,4 @@ export declare const postJson: (uri: string, model: any, method?: "POST" | "PUT"
 export declare const putJson: (uri: string, model: any, authorize?: string | undefined) => Promise<any>;
 export declare const postFormData: (uri: string, model: any, method?: "POST" | "PUT", authorize?: string | undefined) => Promise<any>;
 export declare const putFormData: (uri: string, model: any, authorize?: string | undefined) => Promise<any>;
+export declare const sendFile: (uri: string, form: HTMLFormElement, method?: "POST" | "PUT") => Promise<any>;

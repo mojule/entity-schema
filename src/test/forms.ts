@@ -7,12 +7,11 @@ import { schemaFormToEntityModel } from '../forms/schema-form-to-entity-model'
 import { IEntitySchema } from '../predicates/entity-schema'
 import { simpleTypesSchema, simpleArraySchema, simpleEnumSchema, simpleOneOfSchema, simpleFileSchema, personSchema, personReferenceSchema, arrayOfEntitySchema } from './fixtures/forms/schema'
 import { strictSelect } from '@mojule/dom-utils'
-import { ArrayifySymbol, arrayifySchemaForm, predicateUtils, subschemaMap, SchemaCollection, schemaToForm } from '..'
+import { ArrayifySymbol, arrayifySchemaForm, SchemaCollection } from '..'
 import * as H from '@mojule/h'
 import { IH } from '@mojule/h/types'
 import { ILinkMap, addLinks } from '../add-links';
-import { flatten } from '@mojule/json-pointer'
-import { createFile, addFileList } from './fixtures/forms/addFileList';
+import { createFile, addFileList } from './fixtures/forms/addFileList'
 
 const document: Document = doc
 const h: IH = H( document )

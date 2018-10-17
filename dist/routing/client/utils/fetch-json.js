@@ -70,4 +70,12 @@ const sendFormData = (uri, model, method = 'POST', authorize) => {
 };
 exports.postFormData = sendFormData;
 exports.putFormData = (uri, model, authorize) => sendFormData(uri, model, 'PUT', authorize);
+exports.sendFile = async (uri, form, method = 'POST') => {
+    const formData = new FormData(form);
+    const res = await fetch(uri, {
+        method,
+        body: formData
+    });
+    return jsonOrError(res);
+};
 //# sourceMappingURL=fetch-json.js.map

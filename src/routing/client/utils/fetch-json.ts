@@ -106,3 +106,14 @@ export const postFormData = sendFormData
 
 export const putFormData = ( uri: string, model: any, authorize?: string ) =>
   sendFormData( uri, model, 'PUT', authorize )
+
+export const sendFile = async ( uri: string, form: HTMLFormElement, method: 'POST' | 'PUT' = 'POST' ) => {
+  const formData = new FormData( form )
+
+  const res = await fetch( uri, {
+    method,
+    body: formData
+  } )
+
+  return jsonOrError( res )
+}

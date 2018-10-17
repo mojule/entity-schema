@@ -1,10 +1,12 @@
-import { routes } from './routes'
+import { Routes, ClientDependencies } from './routes'
 import { emptyElement } from './utils/empty-element'
 import { hashToPath } from './utils/hash-to-path'
 import { strictSelect } from '@mojule/dom-utils'
 import { ClientRouter } from './routes/client-router'
 
-document.addEventListener( 'DOMContentLoaded', () => {
+export const initClient = ( deps: ClientDependencies ) => {
+  const routes = Routes( deps )
+
   const client = <Element>strictSelect( document, '.client' )
 
   const send = ( node: Node ) => {
@@ -28,4 +30,4 @@ document.addEventListener( 'DOMContentLoaded', () => {
   window.addEventListener( 'hashchange', navigate )
 
   navigate()
-} )
+}
