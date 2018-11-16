@@ -30,10 +30,10 @@ exports.predicates = {
     entitySchema: entity_schema_1.isEntitySchema,
     entityReferenceSchema: entity_reference_schema_1.isEntityReferenceSchema,
     objectSchema: object_schema_1.isObjectSchema,
-    appSchema: root_schema_1.isRootSchema,
+    rootSchema: root_schema_1.isRootSchema,
     refSchema: ref_schema_1.isRefSchema,
     enumSchema: enum_schema_1.isEnumSchema,
-    wsSchema: typed_schema_1.isTypedSchema,
+    typedSchema: typed_schema_1.isTypedSchema,
     subSchema: subschema_1.isSubschema,
     anySchema: (value) => is_1.is.object(value)
 };

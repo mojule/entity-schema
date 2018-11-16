@@ -18,7 +18,7 @@ const validateSchemas = (schemas) => {
     if (!Array.isArray(schemas)) {
         throw Error('Expected an array of app schema');
     }
-    const badSchemas = schemas.filter(schema => !predicates_1.predicates.appSchema(schema));
+    const badSchemas = schemas.filter(schema => !predicates_1.predicates.rootSchema(schema));
     if (badSchemas.length) {
         let err = Error(`${badSchemas.length} bad schemas found`);
         try {
@@ -151,8 +151,8 @@ exports.SchemaCollection = (schemas, userRoles, accesses = [types_1.EntityAccess
         parentProperty: (title) => {
             assertEntityTitle(title);
             const schema = api.normalize(title);
-            if (schema.wsParentProperty)
-                return schema.wsParentProperty;
+            if (schema._esParentKey)
+                return schema._esParentKey;
         }
     };
     return api;

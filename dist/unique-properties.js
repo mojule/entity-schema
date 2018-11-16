@@ -5,7 +5,7 @@ exports.uniquePropertyNames = (entitySchema) => {
     const propertyNames = Object.keys(properties);
     const uniqueValuePropertyNames = propertyNames.filter(name => {
         const propertySchema = properties[name];
-        return !!propertySchema.wsUnique;
+        return !!propertySchema._esUnique;
     });
     return uniqueValuePropertyNames;
 };

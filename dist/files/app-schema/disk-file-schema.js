@@ -7,7 +7,7 @@ exports.diskFileSchema = {
     title: 'Disk File',
     description: 'A file stored on disk',
     type: 'object',
-    format: 'workingspec-entity',
+    format: 'entity-schema',
     properties: {
         name: {
             title: 'Name',

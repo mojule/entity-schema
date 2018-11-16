@@ -19,7 +19,7 @@ export const validEntitySchema : EntitySchema = {
   id: 'http://example.com/schema/valid-entity-schema',
   title: 'valid-entity-schema',
   type: 'object',
-  format: 'workingspec-entity',
+  format: 'entity-schema',
   properties: {
     name: {
       $ref: 'http://example.com/schema/valid-app-schema'
@@ -33,7 +33,7 @@ export const normalizedValidEntitySchema : EntitySchema = {
   id: 'http://example.com/schema/valid-entity-schema',
   title: 'valid-entity-schema',
   type: 'object',
-  format: 'workingspec-entity',
+  format: 'entity-schema',
   properties: {
     name: {
       id: 'http://example.com/schema/valid-app-schema',
@@ -51,7 +51,7 @@ export const normalizedValidEntitySchema : EntitySchema = {
 export const validEntitySchemaInterfaceSchema : JSONSchema4 = {
   title: 'IValidEntitySchema',
   type: 'object',
-  format: 'workingspec-entity',
+  format: 'entity-schema',
   properties: {
     name: {
       type: 'string',
@@ -68,7 +68,7 @@ export const toMongooseSchema : EntitySchema = {
   id: "http://example.com/schema/mongoose-schema",
   title: "mongoose-schema",
   type: "object",
-  format: 'workingspec-entity',
+  format: 'entity-schema',
   properties: {
     _id: {
       title: 'ID',
@@ -123,7 +123,7 @@ export const validEntitySchemaUniques : EntitySchema = {
   id: 'http://example.com/schema/valid-entity-schema-uniques',
   title: 'valid-entity-schema-uniques',
   type: 'object',
-  format: 'workingspec-entity',
+  format: 'entity-schema',
   properties: {
     name: {
       $ref: 'http://example.com/schema/valid-app-schema'
@@ -131,7 +131,7 @@ export const validEntitySchemaUniques : EntitySchema = {
     abbrev: {
       title: 'Abbrev',
       type: 'string',
-      wsUnique: true
+      _esUnique: true
     }
   },
   required: [ 'name' ],
@@ -142,7 +142,7 @@ export const validEntitySchemaUniquesAdded : EntitySchema = {
   id: 'http://example.com/schema/valid-entity-schema-uniques',
   title: 'valid-entity-schema-uniques',
   type: 'object',
-  format: 'workingspec-entity',
+  format: 'entity-schema',
   properties: {
     name: {
       id: 'http://example.com/schema/valid-app-schema',
@@ -155,7 +155,7 @@ export const validEntitySchemaUniquesAdded : EntitySchema = {
     abbrev: {
       title: 'Abbrev',
       type: 'string',
-      wsUnique: true,
+      _esUnique: true,
       not: {
         enum: [ 'foo', 'bar' ]
       }
@@ -169,7 +169,7 @@ export const entitySchemaWithArray : EntitySchema = {
   id: 'http://example.com/schema/entity-schema-array',
   title: 'entity-schema-array',
   type: 'object',
-  format: 'workingspec-entity',
+  format: 'entity-schema',
   properties: {
     name: {
       $ref: 'http://example.com/schema/valid-app-schema'
@@ -177,7 +177,7 @@ export const entitySchemaWithArray : EntitySchema = {
     abbrev: {
       title: 'Abbrev',
       type: 'string',
-      wsUnique: true
+      _esUnique: true
     },
     tags: {
       title: 'Tags',
@@ -195,7 +195,7 @@ export const entitySchemaWithLinks : EntitySchema = {
   id: 'http://example.com/schema/entity-schema-links',
   title: 'entity-schema-links',
   type: 'object',
-  format: 'workingspec-entity',
+  format: 'entity-schema',
   properties: {
     name: {
       $ref: 'http://example.com/schema/valid-app-schema'
@@ -229,7 +229,7 @@ export const entitySchemaWithLinksAdded : EntitySchema = {
   id: 'http://example.com/schema/entity-schema-links',
   title: 'entity-schema-links',
   type: 'object',
-  format: 'workingspec-entity',
+  format: 'entity-schema',
   properties: {
     name: {
       id: 'http://example.com/schema/valid-app-schema',
@@ -249,7 +249,7 @@ export const entitySchemaWithLinksAdded : EntitySchema = {
           pattern: "^[0-9a-f]{24}$",
           message: "Parent must be a 24 character hex string. (0-9, a-f)",
           enum: [ 'foo' ],
-          wsEnumTitles: [ 'Foo' ]
+          _esTitles: [ 'Foo' ]
         },
         entityType: {
           title: "Entity Type",
@@ -273,7 +273,7 @@ export const validEnumSchema: EnumSchema & RootSchema = {
   enum: [
     "notSpecified", "other", "internal", "manufacturer"
   ],
-  wsEnumTitles: [
+  _esTitles: [
     "Not Specified", "Other", "Internal", "Manufacturer"
   ]
 }
@@ -282,7 +282,7 @@ export const validChildSchema: ChildEntitySchema =  {
   id: 'http://example.com/schema/valid-child-schema',
   title: 'valid-child-schema',
   type: 'object',
-  format: 'workingspec-entity',
+  format: 'entity-schema',
   properties: {
     parent: {
       title: "Parent",
@@ -307,7 +307,7 @@ export const validChildSchema: ChildEntitySchema =  {
     }
   },
   wsParent: 'Parent',
-  wsParentProperty: 'parent',
+  _esParentKey: 'parent',
   required: [ 'name' ],
   additionalProperties: false
 }
@@ -340,7 +340,7 @@ export const withOneOf: EntitySchema = {
   id: 'http://example.com/schema/entity-schema-oneof',
   title: 'entity-schema-oneof',
   type: 'object',
-  format: 'workingspec-entity',
+  format: 'entity-schema',
   properties: {
     name: {
       $ref: 'http://example.com/schema/valid-app-schema'

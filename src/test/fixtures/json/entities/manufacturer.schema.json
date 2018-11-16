@@ -3,7 +3,7 @@
   "title": "Manufacturer",
   "description": "Building product manufacturer or supplier.",
   "type": "object",
-  "format": "workingspec-entity",
+  "format": "entity-schema",
   "properties": {
     "name": {
       "$ref": "http://workingspec.com/schema/name"

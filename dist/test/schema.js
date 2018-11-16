@@ -234,7 +234,7 @@ describe('Schema', () => {
                 id: "#",
                 title: "foo",
                 type: 'object',
-                format: 'workingspec-entity',
+                format: 'entity-schema',
                 properties: {
                     tags: {
                         title: 'Tags',
@@ -252,7 +252,7 @@ describe('Schema', () => {
                 id: "#",
                 title: "foo",
                 type: 'object',
-                format: 'workingspec-entity',
+                format: 'entity-schema',
                 properties: {},
                 additionalProperties: false
             };
@@ -265,7 +265,7 @@ describe('Schema', () => {
                 id: "#",
                 title: "foo",
                 type: 'object',
-                format: 'workingspec-entity',
+                format: 'entity-schema',
                 properties: {
                     name: { $ref: 'fail' }
                 },
@@ -301,7 +301,7 @@ describe('Schema', () => {
                     type: 'object',
                     id: "#",
                     title: "foo",
-                    format: 'workingspec-entity',
+                    format: 'entity-schema',
                     properties: {
                         parent: {
                             title: "Parent",
@@ -325,7 +325,7 @@ describe('Schema', () => {
                             additionalProperties: false
                         }
                     },
-                    wsParentProperty: 'parent',
+                    _esParentKey: 'parent',
                     additionalProperties: false
                 }), 'childEntitySchema');
             });
@@ -334,13 +334,13 @@ describe('Schema', () => {
                     type: 'object',
                     id: "#",
                     title: "foo",
-                    format: 'workingspec-entity',
+                    format: 'entity-schema',
                     properties: {},
                     additionalProperties: false
                 }), 'entitySchema');
             });
-            it('appSchema', () => {
-                assert.strictEqual(isOf({ type: 'object', id: "#", title: "foo" }), 'appSchema');
+            it('rootSchema', () => {
+                assert.strictEqual(isOf({ type: 'object', id: "#", title: "foo" }), 'rootSchema');
             });
             it('objectSchema', () => {
                 assert.strictEqual(isOf({ type: 'object', id: "#", title: "foo", properties: {}, additionalProperties: false }), 'objectSchema');
@@ -432,7 +432,7 @@ describe('Schema', () => {
                 title: 'User',
                 description: 'Person with access to the system',
                 type: 'object',
-                format: 'workingspec-entity',
+                format: 'entity-schema',
                 properties: {
                     name: {
                         title: 'Name',

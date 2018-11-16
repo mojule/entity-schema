@@ -65,7 +65,7 @@ export const schemaToForm = ( document: Document, schema: ObjectSchema, arrayify
     const { pathSegs } = options
 
     const items = <string[]>schema.enum || []
-    const titles: string[] | undefined = schema.wsEnumTitles
+    const titles: string[] | undefined = schema._esTitles
 
     const selectOptions = items.map( ( item, i ) => {
       const title = titles ? titles[ i ] : startCase( item )
@@ -259,7 +259,7 @@ export const schemaToForm = ( document: Document, schema: ObjectSchema, arrayify
         map.objectSchema( schema, options )
       )
     },
-    appSchema: ( schema, options ) => {
+    rootSchema: ( schema, options ) => {
       return fieldset(
         legend( schema.title ),
         map.objectSchema( schema, options )

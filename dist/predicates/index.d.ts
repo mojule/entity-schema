@@ -10,10 +10,10 @@ export declare const predicates: {
     entitySchema: (value: any) => value is import("./entity-schema").EntitySchema;
     entityReferenceSchema: (value: any) => value is import("./entity-reference-schema").EntityReferenceSchema;
     objectSchema: (value: any) => value is import("./object-schema").ObjectSchema;
-    appSchema: (value: any) => value is import("./root-schema").RootSchema;
+    rootSchema: (value: any) => value is import("./root-schema").RootSchema;
     refSchema: (value: any) => value is import("./ref-schema").RefSchema;
     enumSchema: (value: any) => value is import("./enum-schema").EnumSchema;
-    wsSchema: (value: any) => value is import("./typed-schema").TypedSchema;
+    typedSchema: (value: any) => value is import("./typed-schema").TypedSchema;
     subSchema: (value: any) => value is import("./subschema").Subschema;
     anySchema: (value: any) => value is any;
 };

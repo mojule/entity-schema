@@ -6,7 +6,7 @@ exports.userSchema = {
     title: 'User',
     description: 'Person with access to the system',
     type: 'object',
-    format: 'workingspec-entity',
+    format: 'entity-schema',
     properties: {
         name: {
             title: 'Name',

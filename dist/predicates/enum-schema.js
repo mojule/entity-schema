@@ -6,8 +6,8 @@ exports.isEnumSchema = (value) => value &&
     value.type === 'string' &&
     is_1.is.array(value.enum) &&
     value.enum.every(is_1.is.string) &&
-    is_1.is.array(value.wsEnumTitles) &&
-    value.wsEnumTitles.every(is_1.is.string) &&
-    value.enum.length === value.wsEnumTitles.length &&
+    is_1.is.array(value._esTitles) &&
+    value._esTitles.every(is_1.is.string) &&
+    value.enum.length === value._esTitles.length &&
     typed_schema_1.isTypedSchema(value);
 //# sourceMappingURL=enum-schema.js.map

@@ -4,14 +4,14 @@ const mongoose = require("mongoose");
 const schema_collection_1 = require("../schema-collection");
 const pascal_case_1 = require("../utils/pascal-case");
 exports.mongooseModels = (schemaMap) => {
-    const appSchemas = schema_collection_1.SchemaCollection(schemaMap);
+    const rootSchemas = schema_collection_1.SchemaCollection(schemaMap);
     const createCtor = (title) => {
-        const parentProperty = appSchemas.parentProperty(title);
-        const schema = appSchemas.mongooseSchema(title);
+        const parentProperty = rootSchemas.parentProperty(title);
+        const schema = rootSchemas.mongooseSchema(title);
         const ctorName = pascal_case_1.pascalCase(title);
-        schema.statics.uniquePropertyNames = () => appSchemas.uniquePropertyNames(title);
+        schema.statics.uniquePropertyNames = () => rootSchemas.uniquePropertyNames(title);
         schema.statics.valuesForUniqueProperty = async function (propertyName, parentId) {
-            const uniques = appSchemas.uniquePropertyNames(title);
+            const uniques = rootSchemas.uniquePropertyNames(title);
             if (!uniques.includes(propertyName))
                 throw Error(`${propertyName} is not a unique property`);
             const model = this.model(ctorName);
@@ -25,7 +25,7 @@ exports.mongooseModels = (schemaMap) => {
         };
         schema.statics.uniqueValuesMap = async function (parentId) {
             const result = {};
-            const names = appSchemas.uniquePropertyNames(title);
+            const names = rootSchemas.uniquePropertyNames(title);
             return Promise.all(names.map(propertyName => {
                 const model = this.model(ctorName);
                 return model.valuesForUniqueProperty(propertyName, parentId)
@@ -43,7 +43,7 @@ exports.mongooseModels = (schemaMap) => {
         };
         return mongoose.model(ctorName, schema);
     };
-    return appSchemas.entityTitles.reduce((models, title) => {
+    return rootSchemas.entityTitles.reduce((models, title) => {
         const ctorName = pascal_case_1.pascalCase(title);
         const Ctor = mongoose.models[ctorName] || createCtor(title);
         models[ctorName] = Ctor;

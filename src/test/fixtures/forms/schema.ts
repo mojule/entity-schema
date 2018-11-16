@@ -6,7 +6,7 @@ export const simpleTypesSchema: EntitySchema = {
   id: 'http://example.com/schema/simple-types',
   title: 'Simple Types',
   type: 'object',
-  format: 'workingspec-entity',
+  format: 'entity-schema',
   properties: {
     stringField: {
       type: 'string',
@@ -29,7 +29,7 @@ export const simpleArraySchema: EntitySchema = {
   id: 'http://example.com/schema/simple-array',
   title: 'Simple Array',
   type: 'object',
-  format: 'workingspec-entity',
+  format: 'entity-schema',
   properties: {
     arrayStringField: {
       type: 'array',
@@ -48,7 +48,7 @@ export const personSchema: EntitySchema = {
   id: 'http://example.com/schema/person',
   title: 'Person',
   type: 'object',
-  format: 'workingspec-entity',
+  format: 'entity-schema',
   properties: {
     name: {
       type: 'string',
@@ -87,7 +87,7 @@ export const arrayOfEntitySchema: EntitySchema = {
   id: 'http://example.com/schema/array-of-entity',
   title: 'Array of Entities',
   type: 'object',
-  format: 'workingspec-entity',
+  format: 'entity-schema',
   properties: {
     stringArray: {
       type: 'array',
@@ -113,13 +113,13 @@ export const simpleEnumSchema: EntitySchema = {
   id: 'http://example.com/schema/simple-enum',
   title: 'Simple Enum',
   type: 'object',
-  format: 'workingspec-entity',
+  format: 'entity-schema',
   properties: {
     enumStringField: {
       type: 'string',
       title: 'String Enum',
       enum: [ 'foo', 'bar', 'baz' ],
-      wsEnumTitles: [ 'Foo', 'Bar', 'Baz' ],
+      _esTitles: [ 'Foo', 'Bar', 'Baz' ],
       message: 'Must be Foo, Bar or Baz'
     }
   },
@@ -131,7 +131,7 @@ export const simpleOneOfSchema: EntitySchema = {
   id: 'http://example.com/schema/simple-one-of',
   title: 'Simple OneOf',
   type: 'object',
-  format: 'workingspec-entity',
+  format: 'entity-schema',
   properties: {
     // here to make sure only oneOf fields get transformed
     name: {
@@ -214,7 +214,7 @@ export const simpleFileSchema: EntitySchema = {
   id: 'http://example.com/schema/simple-file',
   title: 'Simple File',
   type: 'object',
-  format: 'workingspec-entity',
+  format: 'entity-schema',
   properties: {
     fileField: {
       title: 'File',

@@ -32,12 +32,12 @@
         "$ref": "http://workingspec.com/meta-schema/subschema"
       }
     },
-    "wsParentProperty": {
+    "_esParentKey": {
       "title": "Parent Property",
       "description": "Name of Property Pointing to Parent",
       "type": "string",
       "minLength": 1
     }
   },
-  "required": [ "id", "title", "type", "additionalProperties", "properties", "wsParentProperty" ]
+  "required": [ "id", "title", "type", "additionalProperties", "properties", "_esParentKey" ]
 }

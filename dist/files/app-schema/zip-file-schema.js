@@ -7,7 +7,7 @@ exports.zipFileSchema = {
     title: 'Zip File',
     description: 'A zip file stored on disk',
     type: 'object',
-    format: 'workingspec-entity',
+    format: 'entity-schema',
     properties: {
         name: {
             title: 'Name',

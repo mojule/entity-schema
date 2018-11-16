@@ -29,10 +29,10 @@ export const predicates = {
   entitySchema: isEntitySchema,
   entityReferenceSchema: isEntityReferenceSchema,
   objectSchema: isObjectSchema,
-  appSchema: isRootSchema,
+  rootSchema: isRootSchema,
   refSchema: isRefSchema,
   enumSchema: isEnumSchema,
-  wsSchema: isTypedSchema,
+  typedSchema: isTypedSchema,
   subSchema: isSubschema,
   anySchema: ( value ) : value is any => is.object( value )
 }

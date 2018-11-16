@@ -1,1 +1,1 @@
-{"version":3,"file":"unique-property-schema.js","sourceRoot":"","sources":["../../src/predicates/unique-property-schema.ts"],"names":[],"mappings":";;AAAA,iDAA2D;AAM9C,QAAA,sBAAsB,GAAG,CAAE,KAAK,EAAmC,EAAE,CAChF,KAAK;IACL,KAAK,CAAC,QAAQ,KAAK,IAAI;IACvB,4BAAa,CAAE,KAAK,CAAE,CAAA"}
+{"version":3,"file":"unique-property-schema.js","sourceRoot":"","sources":["../../src/predicates/unique-property-schema.ts"],"names":[],"mappings":";;AAAA,iDAA2D;AAM9C,QAAA,sBAAsB,GAAG,CAAE,KAAK,EAAmC,EAAE,CAChF,KAAK;IACL,KAAK,CAAC,SAAS,KAAK,IAAI;IACxB,4BAAa,CAAE,KAAK,CAAE,CAAA"}

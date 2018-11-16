@@ -14,11 +14,11 @@
       "type": "string",
       "enum": [ "string", "number", "integer", "boolean", "object", "array" ]
     },
-    "wsUnique": {
+    "_esUnique": {
       "type": "boolean",
       "enum": [ true ],
       "default": true
     }
   },
-  "required": [ "title", "type", "wsUnique" ]
+  "required": [ "title", "type", "_esUnique" ]
 }

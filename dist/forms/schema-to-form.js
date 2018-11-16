@@ -42,7 +42,7 @@ exports.schemaToForm = (document, schema, arrayify = true) => {
         const { schema, options } = model;
         const { pathSegs } = options;
         const items = schema.enum || [];
-        const titles = schema.wsEnumTitles;
+        const titles = schema._esTitles;
         const selectOptions = items.map((item, i) => {
             const title = titles ? titles[i] : lodash_1.startCase(item);
             return option({ value: item }, title);
@@ -179,7 +179,7 @@ exports.schemaToForm = (document, schema, arrayify = true) => {
         entitySchema: (schema, options) => {
             return fieldset(legend(schema.title), map.objectSchema(schema, options));
         },
-        appSchema: (schema, options) => {
+        rootSchema: (schema, options) => {
             return fieldset(legend(schema.title), map.objectSchema(schema, options));
         },
         entityReferenceSchema: (schema, options) => {

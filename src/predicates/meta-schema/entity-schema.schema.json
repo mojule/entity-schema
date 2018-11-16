@@ -21,8 +21,8 @@
     "format": {
       "title": "Entity Format",
       "type": "string",
-      "enum": [ "workingspec-entity" ],
-      "default": "workingspec-entity"
+      "enum": [ "entity-schema" ],
+      "default": "entity-schema"
     },
     "additionalProperties": {
       "title": "Additional Properties",

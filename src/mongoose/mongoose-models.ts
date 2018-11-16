@@ -6,17 +6,17 @@ import { pascalCase } from '../utils/pascal-case'
 import { IExistingValuesMap } from '../add-uniques'
 
 export const mongooseModels = <TMongooseModels>( schemaMap: RootSchema[] ) => {
-  const appSchemas = SchemaCollection( schemaMap )
+  const rootSchemas = SchemaCollection( schemaMap )
 
   const createCtor = ( title: string ) => {
-    const parentProperty = appSchemas.parentProperty( title )
-    const schema = appSchemas.mongooseSchema( title )
+    const parentProperty = rootSchemas.parentProperty( title )
+    const schema = rootSchemas.mongooseSchema( title )
     const ctorName = pascalCase( title )
 
-    schema.statics.uniquePropertyNames = () => appSchemas.uniquePropertyNames( title )
+    schema.statics.uniquePropertyNames = () => rootSchemas.uniquePropertyNames( title )
 
     schema.statics.valuesForUniqueProperty = async function( propertyName: string, parentId?: string ): Promise<string[]> {
-      const uniques = appSchemas.uniquePropertyNames( title )
+      const uniques = rootSchemas.uniquePropertyNames( title )
 
       if ( !uniques.includes( propertyName ) )
         throw Error( `${ propertyName } is not a unique property` )
@@ -37,7 +37,7 @@ export const mongooseModels = <TMongooseModels>( schemaMap: RootSchema[] ) => {
 
     schema.statics.uniqueValuesMap = async function( parentId?: string ): Promise<IExistingValuesMap> {
       const result: IExistingValuesMap = {}
-      const names = appSchemas.uniquePropertyNames( title )
+      const names = rootSchemas.uniquePropertyNames( title )
 
       return Promise.all( names.map( propertyName => {
         const model = this.model( ctorName )
@@ -61,7 +61,7 @@ export const mongooseModels = <TMongooseModels>( schemaMap: RootSchema[] ) => {
     return mongoose.model( ctorName, schema )
   }
 
-  return <TMongooseModels>appSchemas.entityTitles.reduce( ( models, title ) => {
+  return <TMongooseModels>rootSchemas.entityTitles.reduce( ( models, title ) => {
     const ctorName = pascalCase( title )
     const Ctor = mongoose.models[ ctorName ] || createCtor( title )
 

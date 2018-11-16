@@ -16,14 +16,14 @@
     },
     "enum": {
       "title": "Enum Values",
-      "description": "Should have same number of entries as `wsEnumTitles`",
+      "description": "Should have same number of entries as `_esTitles`",
       "type": "array",
       "items": {
         "title": "Enum Value",
         "type": "string"
       }
     },
-    "wsEnumTitles": {
+    "_esTitles": {
       "title": "Enum Titles",
       "description": "Should have same number of entries as `enum`",
       "type": "array",
@@ -33,5 +33,5 @@
       }
     }
   },
-  "required": [ "title", "type", "enum", "wsEnumTitles" ]
+  "required": [ "title", "type", "enum", "_esTitles" ]
 }

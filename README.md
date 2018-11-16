@@ -105,7 +105,7 @@ the REST API etc
 
 An `Entity Schema` should always be an `Object Schema`
 
-Additionally it should have its `format` keyword set to `workingspec-entity`
+Additionally it should have its `format` keyword set to `entity-schema`
 
 It should not have other *Entity Schema* as subschema - use a *Reference Schema*
 instead
@@ -119,7 +119,7 @@ An entity should have a name:string property
   "id": "http://example.com/schema/foo",
   "title": "Foo",
   "type": "object",
-  "format": "workingspec-entity",
+  "format": "entity-schema",
   "properties": {
     "name": {
       "$ref": "http://example.com/schema/name"
@@ -175,7 +175,7 @@ match the title field of the linked entity
 
 An *Entity Schema* which has a link to a parent *Entity Schema*
 
-It should have a `wsParentProperty` which is the name of the property that
+It should have a `_esParentKey` which is the name of the property that
 points to the parent entity
 
 The property it points to should be an *Entity Reference Schema*
@@ -185,8 +185,8 @@ The property it points to should be an *Entity Reference Schema*
   "id": "http://example.com/schema/foo",
   "title": "Foo",
   "type": "object",
-  "format": "workingspec-entity",
-  "wsParentProperty": "bar",
+  "format": "entity-schema",
+  "_esParentKey": "bar",
   "properties": {
     "name": {
       "$ref": "http://example.com/schema/name"
@@ -217,7 +217,7 @@ of the Entities of this type
 {
   "title": "Name",
   "type": "string",
-  "wsUnique": true
+  "_esUnique": true
 }
 ```
 
@@ -251,7 +251,7 @@ A schema representing a string enum
 
 It should be of type string, with an `enum` keyword listing possible values
 
-It should have a `wsEnumTitles` keyword that lists human readable titles for the
+It should have a `_esTitles` keyword that lists human readable titles for the
 enums - so these two arrays should have the same length
 
 ```json
@@ -261,7 +261,7 @@ enums - so these two arrays should have the same length
   "enum": [
     "foo", "bar", "baz"
   ],
-  "wsEnumTitles": [
+  "_esTitles": [
     "Foo", "Bar", "Baz"
   ]
 }

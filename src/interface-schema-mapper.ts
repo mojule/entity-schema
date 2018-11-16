@@ -47,4 +47,4 @@ const map = {
   }
 }
 
-export const interfaceSchemaMapper = <( appSchema: RootSchema ) => JSONSchema4>Mapper( { map } )
+export const interfaceSchemaMapper = <( rootSchema: RootSchema ) => JSONSchema4>Mapper( { map } )

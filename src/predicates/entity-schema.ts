@@ -1,10 +1,10 @@
 import { ObjectSchema, isObjectSchema } from './object-schema'
 
 export interface EntitySchema extends ObjectSchema {
-  format: 'workingspec-entity'
+  format: 'entity-schema'
 }
 
 export const isEntitySchema = ( value ) : value is EntitySchema =>
   value &&
-  value.format === 'workingspec-entity' &&
+  value.format === 'entity-schema' &&
   isObjectSchema( value )

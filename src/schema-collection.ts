@@ -25,7 +25,7 @@ const validateSchemas = ( schemas : RootSchema[] ) => {
     throw Error( 'Expected an array of app schema' )
   }
 
-  const badSchemas = schemas.filter( schema => !predicates.appSchema( schema ) )
+  const badSchemas = schemas.filter( schema => !predicates.rootSchema( schema ) )
 
   if( badSchemas.length ){
     let err = Error( `${ badSchemas.length } bad schemas found` )
@@ -206,7 +206,7 @@ export const SchemaCollection = ( schemas: RootSchema[], userRoles?: Role[], acc
 
       const schema = <EntitySchema>api.normalize( title )
 
-      if( schema.wsParentProperty ) return schema.wsParentProperty
+      if( schema._esParentKey ) return schema._esParentKey
     }
   }
 

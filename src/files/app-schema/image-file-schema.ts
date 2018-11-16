@@ -8,7 +8,7 @@ export const imageFileSchema: EntitySchema = {
   title: 'Image File',
   description: 'An image file stored on disk',
   type: 'object',
-  format: 'workingspec-entity',
+  format: 'entity-schema',
   properties: {
     name: {
       title: 'Name',

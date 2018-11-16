@@ -6,7 +6,7 @@ exports.apiKeySchema = {
     title: 'API Key',
     description: 'Key for accessing the API',
     type: 'object',
-    format: 'workingspec-entity',
+    format: 'entity-schema',
     properties: {
         name: {
             title: 'Name',
