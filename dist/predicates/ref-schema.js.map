@@ -1,1 +1,1 @@
-{"version":3,"file":"ref-schema.js","sourceRoot":"","sources":["../../src/predicates/ref-schema.ts"],"names":[],"mappings":";;AACA,mCAA+B;AAMlB,QAAA,WAAW,GAAG,CAAE,KAAK,EAAyB,EAAE,CAC3D,OAAE,CAAC,MAAM,CAAE,KAAK,CAAE;IAClB,OAAE,CAAC,MAAM,CAAE,KAAK,CAAC,IAAI,CAAE,CAAA"}
+{"version":3,"file":"ref-schema.js","sourceRoot":"","sources":["../../src/predicates/ref-schema.ts"],"names":[],"mappings":";;AACA,mCAA+B;AAMlB,QAAA,WAAW,GAAG,CAAE,KAAK,EAAwB,EAAE,CAC1D,OAAE,CAAC,MAAM,CAAE,KAAK,CAAE;IAClB,OAAE,CAAC,MAAM,CAAE,KAAK,CAAC,IAAI,CAAE,CAAA"}

@@ -1,6 +1,6 @@
 import { Model, Document } from 'mongoose';
-import { IEntitySchema } from '../../predicates/entity-schema';
-import { IAppSchema } from '../../predicates/app-schema';
+import { EntitySchema } from '../../predicates/entity-schema';
+import { RootSchema } from '../../predicates/root-schema';
 import { IRouteData } from './types';
 import { ModelResolverMap } from '../../model-resolvers/types';
 import { FileResolverMap } from '../../file-resolvers';
@@ -14,6 +14,6 @@ export interface Metadata {
     title: string;
     body: any;
     meta: any;
-    schema: IEntitySchema;
+    schema: EntitySchema;
 }
-export declare const EntityRoutes: (schemaCollection: IAppSchema[], options?: EntityRouteOptions) => IRouteData;
+export declare const EntityRoutes: (schemaCollection: RootSchema[], options?: EntityRouteOptions) => IRouteData;

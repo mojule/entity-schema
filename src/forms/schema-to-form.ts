@@ -6,7 +6,7 @@ import { upperFirst, startCase } from 'lodash'
 import { is } from '@mojule/is'
 import { strictSelect } from '@mojule/dom-utils'
 import { uploadablePropertyNames } from '../uploadable-properties'
-import { IObjectSchema } from '../predicates/object-schema'
+import { ObjectSchema } from '../predicates/object-schema'
 import { arrayifySchemaForm } from './arrayify-schema-form'
 import { oneOfSchemaForm } from './oneof-schema-form'
 import { SchemaFormElement, ArrayifySymbol, OneOfSymbol } from './types'
@@ -28,7 +28,7 @@ interface ISchemaElModel {
 
 const Id = ( pathSegs: string[] ) => '/' + pathSegs.join( '/' )
 
-export const schemaToForm = ( document: Document, schema: IObjectSchema, arrayify = true ) => {
+export const schemaToForm = ( document: Document, schema: ObjectSchema, arrayify = true ) => {
   const uploadableProperties = uploadablePropertyNames( schema )
 
   const h = H( document )

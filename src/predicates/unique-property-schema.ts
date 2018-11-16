@@ -1,10 +1,10 @@
-import { IWsSchema, isWsSchema } from './ws-schema'
+import { TypedSchema, isTypedSchema } from './typed-schema'
 
-export interface IUniquePropertySchema extends IWsSchema {
+export interface UniquePropertySchema extends TypedSchema {
   wsUnique: true
 }
 
-export const isUniquePropertySchema = ( value ) : value is IUniquePropertySchema =>
+export const isUniquePropertySchema = ( value ) : value is UniquePropertySchema =>
   value &&
   value.wsUnique === true &&
-  isWsSchema( value )
+  isTypedSchema( value )

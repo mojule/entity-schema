@@ -1,6 +1,6 @@
-import { IAppSchema } from "../../predicates/app-schema";
-export declare const FilePathSchema: (fileType?: string) => IAppSchema;
-export declare const TagsSchema: (tagType?: string) => IAppSchema;
-export declare const MetaSchema: () => IAppSchema;
-export declare const ImageMetaSchema: () => IAppSchema;
-export declare const ReferenceSchema: (title: string) => IAppSchema;
+import { RootSchema } from "../../predicates/root-schema";
+export declare const FilePathSchema: (fileType?: string) => RootSchema;
+export declare const TagsSchema: (tagType?: string) => RootSchema;
+export declare const MetaSchema: () => RootSchema;
+export declare const ImageMetaSchema: () => RootSchema;
+export declare const ReferenceSchema: (title: string) => RootSchema;

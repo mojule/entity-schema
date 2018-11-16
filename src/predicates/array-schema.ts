@@ -1,10 +1,10 @@
-import { TSubschema } from './subschema'
+import { Subschema } from './subschema'
 import { JSONSchema4 } from 'json-schema'
 
-export interface IArraySchema extends JSONSchema4 {
+export interface ArraySchema extends JSONSchema4 {
   type: 'array'
-  items?: TSubschema
+  items?: Subschema
 }
 
-export const isArraySchema = ( value ): value is IArraySchema =>
+export const isArraySchema = ( value ): value is ArraySchema =>
   value && value.type === 'array'

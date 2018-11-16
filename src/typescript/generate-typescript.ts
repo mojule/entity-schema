@@ -1,7 +1,7 @@
 import { compile } from 'json-schema-to-typescript'
 import { JSONSchema4 } from 'json-schema'
 import { kebabCase } from 'lodash'
-import { IAppSchema } from '../predicates/app-schema'
+import { RootSchema } from '../predicates/root-schema'
 import { SchemaCollection } from '../schema-collection'
 import { pascalCase } from '../utils/pascal-case'
 
@@ -15,7 +15,7 @@ export interface TypescriptFiles {
   enums: GeneratedFile[]
 }
 
-export const generateTypescript = async ( schemaMap: IAppSchema[] ): Promise<TypescriptFiles> => {
+export const generateTypescript = async ( schemaMap: RootSchema[] ): Promise<TypescriptFiles> => {
   const schemaCollection = SchemaCollection( schemaMap )
   const { entityTitles, enumTitles } = schemaCollection
 

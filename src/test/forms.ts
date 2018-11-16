@@ -4,7 +4,7 @@ import * as assert from 'assert'
 import * as doc from '@mojule/document'
 import { entityModelToForm } from '../forms/entity-model-to-form'
 import { schemaFormToEntityModel } from '../forms/schema-form-to-entity-model'
-import { IEntitySchema } from '../predicates/entity-schema'
+import { EntitySchema } from '../predicates/entity-schema'
 import { simpleTypesSchema, simpleArraySchema, simpleEnumSchema, simpleOneOfSchema, simpleFileSchema, personSchema, personReferenceSchema, arrayOfEntitySchema } from './fixtures/forms/schema'
 import { strictSelect } from '@mojule/dom-utils'
 import { ArrayifySymbol, arrayifySchemaForm, SchemaCollection } from '..'
@@ -16,7 +16,7 @@ import { createFile, addFileList } from './fixtures/forms/addFileList'
 const document: Document = doc
 const h: IH = H( document )
 
-const roundTrip = ( entityModel, schema: IEntitySchema ) => {
+const roundTrip = ( entityModel, schema: EntitySchema ) => {
   const form = entityModelToForm( document, schema, entityModel )
   const model = schemaFormToEntityModel( form )
 
@@ -122,7 +122,7 @@ describe( 'forms', () => {
         }
 
         const schemas = SchemaCollection( [ personSchema, personReferenceSchema, arrayOfEntitySchema ] )
-        const schema = <IEntitySchema>schemas.normalize( 'Array of Entities' )
+        const schema = <EntitySchema>schemas.normalize( 'Array of Entities' )
         const linkedSchema = addLinks( schema, links )
 
         const form = entityModelToForm( document, linkedSchema, entity )

@@ -1,5 +1,5 @@
-import { IEntitySchema } from './predicates/entity-schema';
+import { EntitySchema } from './predicates/entity-schema';
 export interface IExistingValuesMap {
     [propertyName: string]: string[];
 }
-export declare const addUniques: (schema: IEntitySchema, existingValues: IExistingValuesMap) => IEntitySchema;
+export declare const addUniques: (schema: EntitySchema, existingValues: IExistingValuesMap) => EntitySchema;

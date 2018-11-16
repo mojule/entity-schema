@@ -1,20 +1,20 @@
 export declare const predicates: {
-    oneOfSchema: (value: any) => value is import("./oneof-schema").IOneOfSchema;
-    constPropertySchema: (value: any) => value is import("./const-property-schema").IConstPropertySchema;
-    stringSchema: (value: any) => value is import("./string-schema").IStringSchema;
-    numberSchema: (value: any) => value is import("./number-schema").INumberSchema;
-    integerSchema: (value: any) => value is import("./integer-schema").IIntegerSchema;
-    booleanSchema: (value: any) => value is import("./boolean-schema").IBooleanSchema;
-    arraySchema: (value: any) => value is import("./array-schema").IArraySchema;
-    childEntitySchema: (value: any) => value is import("./child-entity-schema").IChildEntitySchema;
-    entitySchema: (value: any) => value is import("./entity-schema").IEntitySchema;
-    entityReferenceSchema: (value: any) => value is import("./entity-reference-schema").IEntityReferenceSchema;
-    objectSchema: (value: any) => value is import("./object-schema").IObjectSchema;
-    appSchema: (value: any) => value is import("./app-schema").IAppSchema;
-    refSchema: (value: any) => value is import("./ref-schema").IRefSchema;
-    enumSchema: (value: any) => value is import("./enum-schema").IEnumSchema;
-    wsSchema: (value: any) => value is import("./ws-schema").IWsSchema;
-    subSchema: (value: any) => value is import("./subschema").TSubschema;
+    oneOfSchema: (value: any) => value is import("./oneof-schema").OneOfSchema;
+    constPropertySchema: (value: any) => value is import("./const-property-schema").ConstPropertySchema;
+    stringSchema: (value: any) => value is import("./string-schema").StringSchema;
+    numberSchema: (value: any) => value is import("./number-schema").NumberSchema;
+    integerSchema: (value: any) => value is import("./integer-schema").IntegerSchema;
+    booleanSchema: (value: any) => value is import("./boolean-schema").BooleanSchema;
+    arraySchema: (value: any) => value is import("./array-schema").ArraySchema;
+    childEntitySchema: (value: any) => value is import("./child-entity-schema").ChildEntitySchema;
+    entitySchema: (value: any) => value is import("./entity-schema").EntitySchema;
+    entityReferenceSchema: (value: any) => value is import("./entity-reference-schema").EntityReferenceSchema;
+    objectSchema: (value: any) => value is import("./object-schema").ObjectSchema;
+    appSchema: (value: any) => value is import("./root-schema").RootSchema;
+    refSchema: (value: any) => value is import("./ref-schema").RefSchema;
+    enumSchema: (value: any) => value is import("./enum-schema").EnumSchema;
+    wsSchema: (value: any) => value is import("./typed-schema").TypedSchema;
+    subSchema: (value: any) => value is import("./subschema").Subschema;
     anySchema: (value: any) => value is any;
 };
 export declare const predicateUtils: {

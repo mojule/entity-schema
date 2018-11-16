@@ -5,7 +5,7 @@ import { startCase, kebabCase } from 'lodash'
 import { TitlesAnchorNav, ErrorPage, AppPage, ActionList } from '../templates'
 import { linkTitlesForSchema } from '../../../link-titles-for-schema'
 import { addLinks } from '../../../add-links'
-import { IEntitySchema } from '../../../predicates/entity-schema'
+import { EntitySchema } from '../../../predicates/entity-schema'
 import { IClientRouterMap } from './client-router'
 import { schemaToForm } from '../../../forms/schema-to-form'
 import { schemaFormToEntityModel } from '../../../forms/schema-form-to-entity-model'
@@ -39,9 +39,9 @@ const schemaWithLinks = async ( schema, authorize?: string ) => {
   return addLinks( schema, linkMap )
 }
 
-const getSchema = async ( title: string, authorize?: string ): Promise<IEntitySchema> => {
-  const normalizedSchema: IEntitySchema = await fetchJson( `/schema/${ title }/normalized`, authorize )
-  const schema: IEntitySchema = await schemaWithLinks( normalizedSchema, authorize )
+const getSchema = async ( title: string, authorize?: string ): Promise<EntitySchema> => {
+  const normalizedSchema: EntitySchema = await fetchJson( `/schema/${ title }/normalized`, authorize )
+  const schema: EntitySchema = await schemaWithLinks( normalizedSchema, authorize )
 
   return schema
 }

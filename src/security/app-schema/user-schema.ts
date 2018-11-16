@@ -1,8 +1,8 @@
-import { IEntitySchema } from '../../predicates/entity-schema'
+import { EntitySchema } from '../../predicates/entity-schema'
 
 // TODO - get this back into JSON and think of a more robust way to export it
 
-export const userSchema: IEntitySchema = {
+export const userSchema: EntitySchema = {
   id: 'http://workingspec.com/schema/user',
   title: 'User',
   description: 'Person with access to the system',

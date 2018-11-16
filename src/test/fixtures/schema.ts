@@ -1,12 +1,12 @@
 import { JSONSchema4 } from 'json-schema'
-import { IAppSchema } from '../../predicates/app-schema'
-import { IEntitySchema } from '../../predicates/entity-schema'
-import { IEnumSchema } from '../../predicates/enum-schema'
-import { IChildEntitySchema } from '../../predicates/child-entity-schema'
-import { IConstPropertySchema } from '../../predicates/const-property-schema'
-import { IOneOfSchema } from '../../predicates/oneof-schema'
+import { RootSchema } from '../../predicates/root-schema'
+import { EntitySchema } from '../../predicates/entity-schema'
+import { EnumSchema } from '../../predicates/enum-schema'
+import { ChildEntitySchema } from '../../predicates/child-entity-schema'
+import { ConstPropertySchema } from '../../predicates/const-property-schema'
+import { OneOfSchema } from '../../predicates/oneof-schema'
 
-export const validAppSchema : IAppSchema = {
+export const validAppSchema : RootSchema = {
   id: 'http://example.com/schema/valid-app-schema',
   title: 'valid-app-schema',
   type: 'string',
@@ -15,7 +15,7 @@ export const validAppSchema : IAppSchema = {
   pattern: '^[A-Za-z]+$'
 }
 
-export const validEntitySchema : IEntitySchema = {
+export const validEntitySchema : EntitySchema = {
   id: 'http://example.com/schema/valid-entity-schema',
   title: 'valid-entity-schema',
   type: 'object',
@@ -29,7 +29,7 @@ export const validEntitySchema : IEntitySchema = {
   additionalProperties: false
 }
 
-export const normalizedValidEntitySchema : IEntitySchema = {
+export const normalizedValidEntitySchema : EntitySchema = {
   id: 'http://example.com/schema/valid-entity-schema',
   title: 'valid-entity-schema',
   type: 'object',
@@ -64,7 +64,7 @@ export const validEntitySchemaInterfaceSchema : JSONSchema4 = {
   additionalProperties: false
 }
 
-export const toMongooseSchema : IEntitySchema = {
+export const toMongooseSchema : EntitySchema = {
   id: "http://example.com/schema/mongoose-schema",
   title: "mongoose-schema",
   type: "object",
@@ -119,7 +119,7 @@ export const toMongooseSchema : IEntitySchema = {
   additionalProperties: false
 }
 
-export const validEntitySchemaUniques : IEntitySchema = {
+export const validEntitySchemaUniques : EntitySchema = {
   id: 'http://example.com/schema/valid-entity-schema-uniques',
   title: 'valid-entity-schema-uniques',
   type: 'object',
@@ -138,7 +138,7 @@ export const validEntitySchemaUniques : IEntitySchema = {
   additionalProperties: false
 }
 
-export const validEntitySchemaUniquesAdded : IEntitySchema = {
+export const validEntitySchemaUniquesAdded : EntitySchema = {
   id: 'http://example.com/schema/valid-entity-schema-uniques',
   title: 'valid-entity-schema-uniques',
   type: 'object',
@@ -165,7 +165,7 @@ export const validEntitySchemaUniquesAdded : IEntitySchema = {
   additionalProperties: false
 }
 
-export const entitySchemaWithArray : IEntitySchema = {
+export const entitySchemaWithArray : EntitySchema = {
   id: 'http://example.com/schema/entity-schema-array',
   title: 'entity-schema-array',
   type: 'object',
@@ -191,7 +191,7 @@ export const entitySchemaWithArray : IEntitySchema = {
   additionalProperties: false
 }
 
-export const entitySchemaWithLinks : IEntitySchema = {
+export const entitySchemaWithLinks : EntitySchema = {
   id: 'http://example.com/schema/entity-schema-links',
   title: 'entity-schema-links',
   type: 'object',
@@ -225,7 +225,7 @@ export const entitySchemaWithLinks : IEntitySchema = {
   additionalProperties: false
 }
 
-export const entitySchemaWithLinksAdded : IEntitySchema = {
+export const entitySchemaWithLinksAdded : EntitySchema = {
   id: 'http://example.com/schema/entity-schema-links',
   title: 'entity-schema-links',
   type: 'object',
@@ -266,7 +266,7 @@ export const entitySchemaWithLinksAdded : IEntitySchema = {
   additionalProperties: false
 }
 
-export const validEnumSchema: IEnumSchema & IAppSchema = {
+export const validEnumSchema: EnumSchema & RootSchema = {
   id: 'fjkshfgjsd',
   title: "Copyright",
   type: "string",
@@ -278,7 +278,7 @@ export const validEnumSchema: IEnumSchema & IAppSchema = {
   ]
 }
 
-export const validChildSchema: IChildEntitySchema =  {
+export const validChildSchema: ChildEntitySchema =  {
   id: 'http://example.com/schema/valid-child-schema',
   title: 'valid-child-schema',
   type: 'object',
@@ -312,7 +312,7 @@ export const validChildSchema: IChildEntitySchema =  {
   additionalProperties: false
 }
 
-export const validConstSchema : IConstPropertySchema = {
+export const validConstSchema : ConstPropertySchema = {
   title: 'valid-const-schema',
   type: 'string',
   enum: [ 'const' ],
@@ -320,7 +320,7 @@ export const validConstSchema : IConstPropertySchema = {
   readOnly: true
 }
 
-export const validOneOfSchema : IOneOfSchema & IAppSchema = {
+export const validOneOfSchema : OneOfSchema & RootSchema = {
   id: 'http://example.com/schema/valid-oneof-schema',
   title: 'valid-oneof-schema',
   type: 'string',
@@ -336,7 +336,7 @@ export const validOneOfSchema : IOneOfSchema & IAppSchema = {
   ]
 }
 
-export const withOneOf: IEntitySchema = {
+export const withOneOf: EntitySchema = {
   id: 'http://example.com/schema/entity-schema-oneof',
   title: 'entity-schema-oneof',
   type: 'object',

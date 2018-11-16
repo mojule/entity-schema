@@ -1,3 +1,3 @@
-import { IEntitySchema } from '../../predicates/entity-schema';
-export declare const imageFileSchema: IEntitySchema;
-export declare const imageFileReferenceSchema: import("../../predicates/app-schema").IAppSchema;
+import { EntitySchema } from '../../predicates/entity-schema';
+export declare const imageFileSchema: EntitySchema;
+export declare const imageFileReferenceSchema: import("../../predicates/root-schema").RootSchema;

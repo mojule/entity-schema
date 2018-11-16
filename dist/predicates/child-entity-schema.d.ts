@@ -1,5 +1,5 @@
-import { IEntitySchema } from './entity-schema';
-export interface IChildEntitySchema extends IEntitySchema {
+import { EntitySchema } from './entity-schema';
+export interface ChildEntitySchema extends EntitySchema {
     wsParentProperty: string;
 }
-export declare const isChildEntitySchema: (value: any) => value is IChildEntitySchema;
+export declare const isChildEntitySchema: (value: any) => value is ChildEntitySchema;

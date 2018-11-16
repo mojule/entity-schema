@@ -4,7 +4,7 @@ import {
 } from '@mojule/json-pointer'
 
 import { Role, Roles, EntityAccess, EntityAccesses } from './security/types'
-import { IAppSchema } from './predicates/app-schema'
+import { RootSchema } from './predicates/root-schema'
 
 const getParentPath = ( path: string, search: string ) => {
   const segs = path.split( '/' )
@@ -32,7 +32,7 @@ const getSecurePaths = ( pvas: PointerValue[] ) => {
   return securePaths
 }
 
-export const FilterSchemaForRoles = ( schema: IAppSchema ) => {
+export const FilterSchemaForRoles = ( schema: RootSchema ) => {
   const flat = flatten( schema )
   const pvas = pointerValueArray( flat )
   const securePaths = getSecurePaths( pvas )
@@ -42,7 +42,7 @@ export const FilterSchemaForRoles = ( schema: IAppSchema ) => {
     return map
   }, <any>{} )
 
-  const filterSchemaForRoles = ( userRoles: Role[], accesses: EntityAccess[] = [ EntityAccesses.read ] ): IAppSchema | {} => {
+  const filterSchemaForRoles = ( userRoles: Role[], accesses: EntityAccess[] = [ EntityAccesses.read ] ): RootSchema | {} => {
     const hasAccess = ( propertyPath: string, isProperty = false ) => {
       return accesses.every( access => {
         // no delete access exists on properties

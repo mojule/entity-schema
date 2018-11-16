@@ -40,7 +40,7 @@ All schema and subschema should have at least a title and type
 [src/predicates/ref-schema.ts](/src/predicates/ref-schema.ts)
 
 These are the only exception to the `title` and `type` rule, but the schema they
-point to must be App Schema, which have both of those fields
+point to must be RootSchema, which have both of those fields
 
 ### Subschema
 
@@ -48,10 +48,10 @@ point to must be App Schema, which have both of those fields
 
 One of either *WS Schema* or *$ref Schema*
 
-### App Schema
+### RootSchema
 
 Represents a schema used in the app. It exists as a file so has a URI id
-property. An *App Schema* `id` and `title` should be unique within the
+property. A *RootSchema* `id` and `title` should be unique within the
 application.
 
 ```json
@@ -62,13 +62,13 @@ application.
 }
 ```
 
-### Object Schema
+### ObjectSchema
 
 [src/predicates/object-schema.ts](/src/predicates/object-schema.ts)
 
-Represents an app schema for an object
+Represents a RootSchema of type `object`
 
-An `Object Schema` should always be an `App Schema`, eg exist as it's own file,
+An `ObjectSchema` should always be a `RootSchema`, eg exist as it's own file,
 have a URI ID etc.
 
 It should always be `type: 'object'`

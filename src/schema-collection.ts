@@ -9,8 +9,8 @@ import { schemaToMongooseSchema } from './schema-to-mongoose-schema'
 import { interfaceSchemaMapper } from './interface-schema-mapper'
 import { uniquePropertyNames } from './unique-properties'
 import { filterEntityBySchema } from './filter-entity-by-schema'
-import { IAppSchema } from './predicates/app-schema'
-import { IEntitySchema } from './predicates/entity-schema'
+import { RootSchema } from './predicates/root-schema'
+import { EntitySchema } from './predicates/entity-schema'
 import { uploadablePropertyNames } from './uploadable-properties'
 import { Role, EntityAccess, EntityAccesses } from './security/types'
 import { FilterSchemaForRoles } from './filter-schema-for-roles'
@@ -20,7 +20,7 @@ import { SchemaCollectionApi } from './types'
 const SchemaMapResolver = ( schemaMap: ISchemaMap ) =>
   ( id: string ): JSONSchema4 => schemaMap[ id ]
 
-const validateSchemas = ( schemas : IAppSchema[] ) => {
+const validateSchemas = ( schemas : RootSchema[] ) => {
   if( !Array.isArray( schemas ) ){
     throw Error( 'Expected an array of app schema' )
   }
@@ -49,12 +49,12 @@ const validateSchemas = ( schemas : IAppSchema[] ) => {
 }
 
 interface RoleFilters {
-  [ title: string ]: ( userRoles: Role[] ) => IEntitySchema | {}
+  [ title: string ]: ( userRoles: Role[] ) => EntitySchema | {}
 }
 
-export const SchemaCollection = ( schemas: IAppSchema[], userRoles?: Role[], accesses: EntityAccess[] = [ EntityAccesses.read ] ): SchemaCollectionApi => {
+export const SchemaCollection = ( schemas: RootSchema[], userRoles?: Role[], accesses: EntityAccess[] = [ EntityAccesses.read ] ): SchemaCollectionApi => {
   if( Array.isArray( userRoles ) ){
-    schemas = <IAppSchema[]>schemas.map(
+    schemas = <RootSchema[]>schemas.map(
       schema => {
         const filterForRoles = FilterSchemaForRoles( schema )
 
@@ -72,7 +72,7 @@ export const SchemaCollection = ( schemas: IAppSchema[], userRoles?: Role[], acc
 
   const titles : string[] = []
   const titleMap : IAppSchemaMap = {}
-  const entitySchemas : IEntitySchema[] = []
+  const entitySchemas : EntitySchema[] = []
   const entityTitles : string[] = []
   const enumTitles: string[] = []
 
@@ -104,7 +104,7 @@ export const SchemaCollection = ( schemas: IAppSchema[], userRoles?: Role[], acc
       throw Error( `No entity schema in collection with title ${ title }` )
   }
 
-  const normalizedSchemaCache = new Map<string, IAppSchema>()
+  const normalizedSchemaCache = new Map<string, RootSchema>()
   const interfaceSchemaCache = new Map<string, JSONSchema4>()
   const mongooseSchemaCache = new Map<string, Schema>()
 
@@ -130,7 +130,7 @@ export const SchemaCollection = ( schemas: IAppSchema[], userRoles?: Role[], acc
     get: ( title: string ) => {
       assertTitle( title )
 
-      return <IAppSchema>titleMap[ title ]
+      return <RootSchema>titleMap[ title ]
     },
     normalize: ( title: string ) => {
       assertTitle( title )
@@ -138,7 +138,7 @@ export const SchemaCollection = ( schemas: IAppSchema[], userRoles?: Role[], acc
       if( normalizedSchemaCache.has( title ) )
         return normalizedSchemaCache.get( title )!
 
-      const normalizedSchema = <IAppSchema>normalize( titleMap[ title ] )
+      const normalizedSchema = <RootSchema>normalize( titleMap[ title ] )
 
       normalizedSchemaCache.set( title, normalizedSchema )
 
@@ -165,7 +165,7 @@ export const SchemaCollection = ( schemas: IAppSchema[], userRoles?: Role[], acc
       if( mongooseSchemaCache.has( title ) )
         return mongooseSchemaCache.get( title )!
 
-      const schema = <IEntitySchema>api.normalize( title )
+      const schema = <EntitySchema>api.normalize( title )
 
       const mongooseSchema = schemaToMongooseSchema( schema )
 
@@ -176,35 +176,35 @@ export const SchemaCollection = ( schemas: IAppSchema[], userRoles?: Role[], acc
     uniquePropertyNames: ( title: string ) => {
       assertEntityTitle( title )
 
-      const schema = <IEntitySchema>api.normalize( title )
+      const schema = <EntitySchema>api.normalize( title )
 
       return uniquePropertyNames( schema )
     },
     uploadablePropertyNames: ( title: string ) => {
       assertEntityTitle( title )
 
-      const schema = <IEntitySchema>api.normalize( title )
+      const schema = <EntitySchema>api.normalize( title )
 
       return uploadablePropertyNames( schema )
     },
     filterEntity: <TEntityModel>( title: string, entity: TEntityModel ) => {
       assertEntityTitle( title )
 
-      const schema = <IEntitySchema>api.normalize( title )
+      const schema = <EntitySchema>api.normalize( title )
 
       return filterEntityBySchema<TEntityModel>( entity, schema )
     },
     parent: ( title: string ) : string | undefined => {
       assertEntityTitle( title )
 
-      const schema = <IEntitySchema>api.normalize( title )
+      const schema = <EntitySchema>api.normalize( title )
 
       if( schema.wsParent ) return schema.wsParent
     },
     parentProperty: ( title: string ) : string | undefined => {
       assertEntityTitle( title )
 
-      const schema = <IEntitySchema>api.normalize( title )
+      const schema = <EntitySchema>api.normalize( title )
 
       if( schema.wsParentProperty ) return schema.wsParentProperty
     }

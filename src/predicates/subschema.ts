@@ -1,7 +1,7 @@
-import { IRefSchema, isRefSchema } from './ref-schema'
-import { IWsSchema, isWsSchema } from './ws-schema'
+import { RefSchema, isRefSchema } from './ref-schema'
+import { TypedSchema, isTypedSchema } from './typed-schema'
 
-export type TSubschema = IRefSchema | IWsSchema
+export type Subschema = RefSchema | TypedSchema
 
-export const isSubschema = ( value ) : value is TSubschema =>
-  isRefSchema( value ) || isWsSchema( value )
+export const isSubschema = ( value ) : value is Subschema =>
+  isRefSchema( value ) || isTypedSchema( value )

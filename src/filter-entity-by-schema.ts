@@ -1,9 +1,9 @@
 import { subschemaMap } from './subschema-map'
 import { flatten, expand } from '@mojule/json-pointer'
 import * as escapeRegExp from 'lodash.escaperegexp'
-import { IEntitySchema } from './predicates/entity-schema'
+import { EntitySchema } from './predicates/entity-schema'
 
-export const filterEntityBySchema = <TEntityModel>( entity: TEntityModel, schema: IEntitySchema ) => {
+export const filterEntityBySchema = <TEntityModel>( entity: TEntityModel, schema: EntitySchema ) => {
   const schemaPathMap = subschemaMap( schema )
   const entityPathMap = flatten( entity )
 

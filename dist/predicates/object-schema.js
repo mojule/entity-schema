@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const is_1 = require("@mojule/is");
-const app_schema_1 = require("./app-schema");
+const root_schema_1 = require("./root-schema");
 const subschema_1 = require("./subschema");
 const entity_schema_1 = require("./entity-schema");
 exports.isObjectSchemaProperties = (value) => is_1.is.object(value) &&
@@ -10,5 +10,5 @@ exports.isObjectSchemaProperties = (value) => is_1.is.object(value) &&
 exports.isObjectSchema = (value) => value.type === 'object' &&
     exports.isObjectSchemaProperties(value.properties) &&
     value.additionalProperties === false &&
-    app_schema_1.isAppSchema(value);
+    root_schema_1.isRootSchema(value);
 //# sourceMappingURL=object-schema.js.map

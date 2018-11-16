@@ -1,3 +1,3 @@
 import { JSONSchema4 } from 'json-schema';
-import { IAppSchema } from './predicates/app-schema';
-export declare const interfaceSchemaMapper: (appSchema: IAppSchema) => JSONSchema4;
+import { RootSchema } from './predicates/root-schema';
+export declare const interfaceSchemaMapper: (appSchema: RootSchema) => JSONSchema4;

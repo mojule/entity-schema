@@ -1,5 +1,5 @@
-import { IObjectSchema } from './object-schema';
-export interface IEntitySchema extends IObjectSchema {
+import { ObjectSchema } from './object-schema';
+export interface EntitySchema extends ObjectSchema {
     format: 'workingspec-entity';
 }
-export declare const isEntitySchema: (value: any) => value is IEntitySchema;
+export declare const isEntitySchema: (value: any) => value is EntitySchema;

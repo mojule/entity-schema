@@ -1,10 +1,10 @@
-import { IEntitySchema } from './predicates/entity-schema'
+import { EntitySchema } from './predicates/entity-schema'
 import { schemaWalk } from './schema-walk'
 import { predicates } from '.'
 
 const clone = subject => JSON.parse( JSON.stringify( subject ) )
 
-export const subschemaMapRemoveLeafNodes = ( schema: IEntitySchema ) => {
+export const subschemaMapRemoveLeafNodes = ( schema: EntitySchema ) => {
   const schemaMap = {}
 
   schemaWalk( schema, ( subSchema, path ) => {

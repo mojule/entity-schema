@@ -1,11 +1,11 @@
 import * as mongoose from 'mongoose'
 import * as camelCase from 'lodash.camelcase'
-import { IAppSchema } from '../predicates/app-schema'
+import { RootSchema } from '../predicates/root-schema'
 import { SchemaCollection } from '../schema-collection'
 import { pascalCase } from '../utils/pascal-case'
 import { IExistingValuesMap } from '../add-uniques'
 
-export const mongooseModels = <TMongooseModels>( schemaMap: IAppSchema[] ) => {
+export const mongooseModels = <TMongooseModels>( schemaMap: RootSchema[] ) => {
   const appSchemas = SchemaCollection( schemaMap )
 
   const createCtor = ( title: string ) => {

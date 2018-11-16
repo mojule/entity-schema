@@ -1,4 +1,4 @@
-import { IRefSchema } from './ref-schema';
-import { IWsSchema } from './ws-schema';
-export declare type TSubschema = IRefSchema | IWsSchema;
-export declare const isSubschema: (value: any) => value is TSubschema;
+import { RefSchema } from './ref-schema';
+import { TypedSchema } from './typed-schema';
+export declare type Subschema = RefSchema | TypedSchema;
+export declare const isSubschema: (value: any) => value is Subschema;

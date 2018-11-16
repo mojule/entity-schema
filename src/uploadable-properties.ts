@@ -1,6 +1,6 @@
-import { IObjectSchema } from './predicates/object-schema'
+import { ObjectSchema } from './predicates/object-schema'
 
-export const uploadablePropertyNames = ( objectSchema: IObjectSchema ) => {
+export const uploadablePropertyNames = ( objectSchema: ObjectSchema ) => {
   const { properties } = objectSchema
   const propertyNames = Object.keys( properties )
 

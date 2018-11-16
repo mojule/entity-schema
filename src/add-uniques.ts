@@ -1,7 +1,7 @@
 import { uniquePropertyNames } from './unique-properties'
 import * as Mapper from '@mojule/mapper'
 import { is } from '@mojule/is'
-import { IEntitySchema } from './predicates/entity-schema'
+import { EntitySchema } from './predicates/entity-schema'
 
 export interface IExistingValuesMap {
   [ propertyName: string ]: string[]
@@ -16,7 +16,7 @@ const isExistingValuesList = ( value ) : value is string[] =>
   Remember if this is an existing schema, you should filter its own value out of
   the existingValues before passing them in or it will fail to validate!
 */
-export const addUniques = ( schema: IEntitySchema, existingValues: IExistingValuesMap ) : IEntitySchema => {
+export const addUniques = ( schema: EntitySchema, existingValues: IExistingValuesMap ) : EntitySchema => {
   schema = clone( schema )
 
   const uniqueNames = uniquePropertyNames( schema )

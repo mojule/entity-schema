@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const ws_schema_1 = require("./ws-schema");
+const typed_schema_1 = require("./typed-schema");
 exports.isUniquePropertySchema = (value) => value &&
     value.wsUnique === true &&
-    ws_schema_1.isWsSchema(value);
+    typed_schema_1.isTypedSchema(value);
 //# sourceMappingURL=unique-property-schema.js.map

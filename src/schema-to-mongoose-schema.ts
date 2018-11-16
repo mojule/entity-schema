@@ -5,8 +5,8 @@ import { Schema } from 'mongoose'
 import { JSONSchema4 } from 'json-schema'
 import * as validate from 'mongoose-validator'
 import { is } from '@mojule/is'
-import { IEntitySchema } from './predicates/entity-schema'
-import { IWsSchema } from './predicates/ws-schema';
+import { EntitySchema } from './predicates/entity-schema'
+import { TypedSchema } from './predicates/typed-schema';
 
 const typeMap = {
   string: String,
@@ -51,8 +51,8 @@ const stringValidators = ( stringSchema : JSONSchema4, required: boolean ) => {
   return validators
 }
 
-const propertyToSchemaField = ( entitySchema: IEntitySchema, propertyName: string ) => {
-  const propertySchema = <IWsSchema>entitySchema.properties[ propertyName ]
+const propertyToSchemaField = ( entitySchema: EntitySchema, propertyName: string ) => {
+  const propertySchema = <TypedSchema>entitySchema.properties[ propertyName ]
   const propertyType: string = propertySchema.type
   const type = typeMap[ propertyType ]
   const required = Array.isArray( entitySchema.required ) && entitySchema.required.includes( propertyName )
@@ -66,7 +66,7 @@ const propertyToSchemaField = ( entitySchema: IEntitySchema, propertyName: strin
   return schemaField
 }
 
-export const schemaToMongooseSchema = ( entitySchema: IEntitySchema ) : Schema => {
+export const schemaToMongooseSchema = ( entitySchema: EntitySchema ) : Schema => {
   const schemaDefinition = Object.keys( entitySchema.properties ).reduce( ( map, key ) => {
     // don't include _id
     if( key === '_id' ) return map

@@ -1,16 +1,16 @@
-import { IWsSchema, isWsSchema } from './ws-schema'
+import { TypedSchema, isTypedSchema } from './typed-schema'
 import * as Is from '@mojule/is'
 
 const { is } = Is
 
-export interface IConstPropertySchema extends IWsSchema {
+export interface ConstPropertySchema extends TypedSchema {
   type: 'string',
   enum: [ string ],
   readOnly: true,
   default: string
 }
 
-export const isConstPropertySchema = ( value ) : value is IConstPropertySchema =>
+export const isConstPropertySchema = ( value ) : value is ConstPropertySchema =>
   value &&
   value.type === 'string' &&
   is.array( value.enum ) &&
@@ -19,4 +19,4 @@ export const isConstPropertySchema = ( value ) : value is IConstPropertySchema =
   value.readOnly === true &&
   is.string( value.default ) &&
   value.enum[ 0 ] === value.default &&
-  isWsSchema( value )
+  isTypedSchema( value )

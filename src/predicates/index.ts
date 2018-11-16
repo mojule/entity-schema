@@ -1,14 +1,14 @@
 import { is, Utils } from '@mojule/is'
 import { isOneOfSchema } from './oneof-schema'
 import { isEntitySchema } from './entity-schema'
-import { isAppSchema } from './app-schema'
+import { isRootSchema } from './root-schema'
 import { isEnumSchema } from './enum-schema'
 import { isRefSchema } from './ref-schema'
 import { isChildEntitySchema } from './child-entity-schema'
 import { isConstPropertySchema } from './const-property-schema'
 import { isEntityReferenceSchema } from './entity-reference-schema'
 import { isSubschema } from './subschema'
-import { isWsSchema } from './ws-schema'
+import { isTypedSchema } from './typed-schema'
 import { isObjectSchema } from './object-schema'
 import { isStringSchema } from './string-schema'
 import { isNumberSchema } from './number-schema'
@@ -29,10 +29,10 @@ export const predicates = {
   entitySchema: isEntitySchema,
   entityReferenceSchema: isEntityReferenceSchema,
   objectSchema: isObjectSchema,
-  appSchema: isAppSchema,
+  appSchema: isRootSchema,
   refSchema: isRefSchema,
   enumSchema: isEnumSchema,
-  wsSchema: isWsSchema,
+  wsSchema: isTypedSchema,
   subSchema: isSubschema,
   anySchema: ( value ) : value is any => is.object( value )
 }

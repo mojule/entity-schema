@@ -1,8 +1,8 @@
-import { IEntitySchema } from '../../../predicates/entity-schema'
-import { IEntityReferenceSchema } from '../../../predicates/entity-reference-schema';
-import { IAppSchema } from '../../../predicates/app-schema';
+import { EntitySchema } from '../../../predicates/entity-schema'
+import { EntityReferenceSchema } from '../../../predicates/entity-reference-schema';
+import { RootSchema } from '../../../predicates/root-schema';
 
-export const simpleTypesSchema: IEntitySchema = {
+export const simpleTypesSchema: EntitySchema = {
   id: 'http://example.com/schema/simple-types',
   title: 'Simple Types',
   type: 'object',
@@ -25,7 +25,7 @@ export const simpleTypesSchema: IEntitySchema = {
   additionalProperties: false
 }
 
-export const simpleArraySchema: IEntitySchema = {
+export const simpleArraySchema: EntitySchema = {
   id: 'http://example.com/schema/simple-array',
   title: 'Simple Array',
   type: 'object',
@@ -44,7 +44,7 @@ export const simpleArraySchema: IEntitySchema = {
   additionalProperties: false
 }
 
-export const personSchema: IEntitySchema = {
+export const personSchema: EntitySchema = {
   id: 'http://example.com/schema/person',
   title: 'Person',
   type: 'object',
@@ -59,7 +59,7 @@ export const personSchema: IEntitySchema = {
   additionalProperties: false
 }
 
-export const personReferenceSchema: IEntityReferenceSchema & IAppSchema = {
+export const personReferenceSchema: EntityReferenceSchema & RootSchema = {
   id: 'http://example.com/schema/person-reference',
   title: 'Person Reference',
   description: 'A person reference',
@@ -83,7 +83,7 @@ export const personReferenceSchema: IEntityReferenceSchema & IAppSchema = {
   additionalProperties: false
 }
 
-export const arrayOfEntitySchema: IEntitySchema = {
+export const arrayOfEntitySchema: EntitySchema = {
   id: 'http://example.com/schema/array-of-entity',
   title: 'Array of Entities',
   type: 'object',
@@ -109,7 +109,7 @@ export const arrayOfEntitySchema: IEntitySchema = {
   additionalProperties: false
 }
 
-export const simpleEnumSchema: IEntitySchema = {
+export const simpleEnumSchema: EntitySchema = {
   id: 'http://example.com/schema/simple-enum',
   title: 'Simple Enum',
   type: 'object',
@@ -127,7 +127,7 @@ export const simpleEnumSchema: IEntitySchema = {
   additionalProperties: false
 }
 
-export const simpleOneOfSchema: IEntitySchema = {
+export const simpleOneOfSchema: EntitySchema = {
   id: 'http://example.com/schema/simple-one-of',
   title: 'Simple OneOf',
   type: 'object',
@@ -210,7 +210,7 @@ export const simpleOneOfSchema: IEntitySchema = {
   additionalProperties: false
 }
 
-export const simpleFileSchema: IEntitySchema = {
+export const simpleFileSchema: EntitySchema = {
   id: 'http://example.com/schema/simple-file',
   title: 'Simple File',
   type: 'object',

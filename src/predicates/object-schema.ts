@@ -1,27 +1,27 @@
 import { is } from '@mojule/is'
-import { IAppSchema, isAppSchema } from './app-schema'
-import { TSubschema, isSubschema } from './subschema'
+import { RootSchema, isRootSchema } from './root-schema'
+import { Subschema, isSubschema } from './subschema'
 import { isEntitySchema } from './entity-schema'
 
-export interface IObjectSchemaProperties {
-  [ name: string ]: TSubschema
+export interface ObjectSchemaProperties {
+  [ name: string ]: Subschema
 }
 
-export interface IObjectSchema extends IAppSchema {
+export interface ObjectSchema extends RootSchema {
   type: 'object'
-  properties: IObjectSchemaProperties
+  properties: ObjectSchemaProperties
   additionalProperties: false
 }
 
-export const isObjectSchemaProperties = ( value ) : value is IObjectSchemaProperties =>
+export const isObjectSchemaProperties = ( value ) : value is ObjectSchemaProperties =>
   is.object( value ) &&
   Object.keys( value ).every( key =>
     isSubschema( value[ key ] ) &&
     !isEntitySchema( value[ key ] )
   )
 
-export const isObjectSchema = ( value ) : value is IObjectSchema =>
+export const isObjectSchema = ( value ) : value is ObjectSchema =>
   value.type === 'object' &&
   isObjectSchemaProperties( value.properties ) &&
   value.additionalProperties === false &&
-  isAppSchema( value )
+  isRootSchema( value )

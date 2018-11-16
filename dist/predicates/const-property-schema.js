@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const ws_schema_1 = require("./ws-schema");
+const typed_schema_1 = require("./typed-schema");
 const Is = require("@mojule/is");
 const { is } = Is;
 exports.isConstPropertySchema = (value) => value &&
@@ -11,5 +11,5 @@ exports.isConstPropertySchema = (value) => value &&
     value.readOnly === true &&
     is.string(value.default) &&
     value.enum[0] === value.default &&
-    ws_schema_1.isWsSchema(value);
+    typed_schema_1.isTypedSchema(value);
 //# sourceMappingURL=const-property-schema.js.map

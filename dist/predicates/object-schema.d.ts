@@ -1,12 +1,12 @@
-import { IAppSchema } from './app-schema';
-import { TSubschema } from './subschema';
-export interface IObjectSchemaProperties {
-    [name: string]: TSubschema;
+import { RootSchema } from './root-schema';
+import { Subschema } from './subschema';
+export interface ObjectSchemaProperties {
+    [name: string]: Subschema;
 }
-export interface IObjectSchema extends IAppSchema {
+export interface ObjectSchema extends RootSchema {
     type: 'object';
-    properties: IObjectSchemaProperties;
+    properties: ObjectSchemaProperties;
     additionalProperties: false;
 }
-export declare const isObjectSchemaProperties: (value: any) => value is IObjectSchemaProperties;
-export declare const isObjectSchema: (value: any) => value is IObjectSchema;
+export declare const isObjectSchemaProperties: (value: any) => value is ObjectSchemaProperties;
+export declare const isObjectSchema: (value: any) => value is ObjectSchema;

@@ -12,13 +12,13 @@ import {
   validOneOfSchema
 } from './fixtures/schema'
 
-import { IAppSchema } from '../predicates/app-schema'
+import { RootSchema } from '../predicates/root-schema'
 import { generateTypescript } from '../typescript/generate-typescript';
 
 
 describe( 'generate', () => {
   it( 'generates typescript interfaces', done => {
-    const schemaMap: IAppSchema[] = [ validAppSchema, validEntitySchema ]
+    const schemaMap: RootSchema[] = [ validAppSchema, validEntitySchema ]
 
     generateTypescript( schemaMap ).then(
       typescript => {

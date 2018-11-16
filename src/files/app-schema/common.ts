@@ -1,17 +1,17 @@
 import { kebabCase } from "lodash";
-import { IAppSchema } from "../../predicates/app-schema";
+import { RootSchema } from "../../predicates/root-schema";
 
 const defaultFileType = 'file'
 const defaultTagType = 'item'
 
-export const FilePathSchema = ( fileType = defaultFileType ): IAppSchema => ( {
+export const FilePathSchema = ( fileType = defaultFileType ): RootSchema => ( {
   id: 'http://workingspec.com/schema/file-path',
   title: 'Path',
   description: `Path to this ${ fileType }`,
   type: 'string'
 } )
 
-export const TagsSchema = ( tagType = defaultTagType ): IAppSchema => ( {
+export const TagsSchema = ( tagType = defaultTagType ): RootSchema => ( {
   id: 'http://workingspec.com/schema/tags',
   title: 'Tags',
   description: `Tags to help categorize this ${ tagType }`,
@@ -23,7 +23,7 @@ export const TagsSchema = ( tagType = defaultTagType ): IAppSchema => ( {
   }
 } )
 
-export const MetaSchema = (): IAppSchema => ( {
+export const MetaSchema = (): RootSchema => ( {
   id: 'http://workingspec.com/schema/file-meta',
   title: 'File Meta',
   description: 'Metadata about the file',
@@ -48,7 +48,7 @@ export const MetaSchema = (): IAppSchema => ( {
   required: [ 'filename', 'mimetype', 'size' ]
 } )
 
-export const ImageMetaSchema = (): IAppSchema => ( {
+export const ImageMetaSchema = (): RootSchema => ( {
   id: 'http://workingspec.com/schema/image-file-meta',
   title: 'Image File Meta',
   description: 'Metadata about the image file',
@@ -83,7 +83,7 @@ export const ImageMetaSchema = (): IAppSchema => ( {
   required: [ 'filename', 'mimetype', 'size', 'width', 'height' ]
 } )
 
-export const ReferenceSchema = ( title: string ): IAppSchema => ( {
+export const ReferenceSchema = ( title: string ): RootSchema => ( {
   id: `http://workingspec.com/schema/${ kebabCase( title ) }-reference`,
   title: `${ title } Reference`,
   description: `Links to a ${ title }`,

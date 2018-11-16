@@ -3,14 +3,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const is_1 = require("@mojule/is");
 const oneof_schema_1 = require("./oneof-schema");
 const entity_schema_1 = require("./entity-schema");
-const app_schema_1 = require("./app-schema");
+const root_schema_1 = require("./root-schema");
 const enum_schema_1 = require("./enum-schema");
 const ref_schema_1 = require("./ref-schema");
 const child_entity_schema_1 = require("./child-entity-schema");
 const const_property_schema_1 = require("./const-property-schema");
 const entity_reference_schema_1 = require("./entity-reference-schema");
 const subschema_1 = require("./subschema");
-const ws_schema_1 = require("./ws-schema");
+const typed_schema_1 = require("./typed-schema");
 const object_schema_1 = require("./object-schema");
 const string_schema_1 = require("./string-schema");
 const number_schema_1 = require("./number-schema");
@@ -30,10 +30,10 @@ exports.predicates = {
     entitySchema: entity_schema_1.isEntitySchema,
     entityReferenceSchema: entity_reference_schema_1.isEntityReferenceSchema,
     objectSchema: object_schema_1.isObjectSchema,
-    appSchema: app_schema_1.isAppSchema,
+    appSchema: root_schema_1.isRootSchema,
     refSchema: ref_schema_1.isRefSchema,
     enumSchema: enum_schema_1.isEnumSchema,
-    wsSchema: ws_schema_1.isWsSchema,
+    wsSchema: typed_schema_1.isTypedSchema,
     subSchema: subschema_1.isSubschema,
     anySchema: (value) => is_1.is.object(value)
 };

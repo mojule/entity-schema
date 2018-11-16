@@ -1,7 +1,7 @@
-import { IWsSchema } from './ws-schema';
-export interface IEnumSchema extends IWsSchema {
+import { TypedSchema } from './typed-schema';
+export interface EnumSchema extends TypedSchema {
     type: 'string';
     enum: string[];
     wsEnumTitles: string[];
 }
-export declare const isEnumSchema: (value: any) => value is IEnumSchema;
+export declare const isEnumSchema: (value: any) => value is EnumSchema;

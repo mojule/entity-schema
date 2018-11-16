@@ -1,6 +1,6 @@
-import { IWsSchema } from './ws-schema';
-import { TSubschema } from './subschema';
-export interface IOneOfSchema extends IWsSchema {
-    oneOf: TSubschema[];
+import { TypedSchema } from './typed-schema';
+import { Subschema } from './subschema';
+export interface OneOfSchema extends TypedSchema {
+    oneOf: Subschema[];
 }
-export declare const isOneOfSchema: (value: any) => value is IOneOfSchema;
+export declare const isOneOfSchema: (value: any) => value is OneOfSchema;

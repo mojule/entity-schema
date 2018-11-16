@@ -1,1 +1,1 @@
-{"version":3,"file":"integer-schema.js","sourceRoot":"","sources":["../../src/predicates/integer-schema.ts"],"names":[],"mappings":";;AAMa,QAAA,eAAe,GAAG,CAAE,KAAK,EAA4B,EAAE,CAClE,KAAK,IAAI,KAAK,CAAC,IAAI,KAAK,SAAS,CAAA"}
+{"version":3,"file":"integer-schema.js","sourceRoot":"","sources":["../../src/predicates/integer-schema.ts"],"names":[],"mappings":";;AAMa,QAAA,eAAe,GAAG,CAAE,KAAK,EAA2B,EAAE,CACjE,KAAK,IAAI,KAAK,CAAC,IAAI,KAAK,SAAS,CAAA"}

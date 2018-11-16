@@ -15,8 +15,8 @@ import {
 } from './fixtures/schema'
 
 import { is, Utils } from '@mojule/is'
-import { IAppSchema } from '../predicates/app-schema'
-import { IEntitySchema } from '../predicates/entity-schema'
+import { RootSchema } from '../predicates/root-schema'
+import { EntitySchema } from '../predicates/entity-schema'
 import { IExistingValuesMap } from '../add-uniques'
 import { ILinkMap } from '../add-links'
 
@@ -30,12 +30,12 @@ import { FilterSchemaForRoles } from '../filter-schema-for-roles';
 
 describe( 'Schema', () => {
   it( 'loadSchemas', () => {
-    assert.doesNotThrow( () => <IAppSchema[]>loadSchemas( './src/test/fixtures/json' ) )
+    assert.doesNotThrow( () => <RootSchema[]>loadSchemas( './src/test/fixtures/json' ) )
   })
 
   describe( 'Schema Collection Factory arguments', () => {
     it( 'from schema array', () => {
-      const schemas = <IAppSchema[]>loadSchemas( './src/test/fixtures/json' )
+      const schemas = <RootSchema[]>loadSchemas( './src/test/fixtures/json' )
 
       assert.doesNotThrow( () => {
         SchemaCollection( schemas )
@@ -43,8 +43,8 @@ describe( 'Schema', () => {
     })
 
     it( 'from cache', () => {
-      const schemas = <IAppSchema[]>loadSchemas( './src/test/fixtures/json' )
-      const schemas2 = <IAppSchema[]>loadSchemas( './src/test/fixtures/json' )
+      const schemas = <RootSchema[]>loadSchemas( './src/test/fixtures/json' )
+      const schemas2 = <RootSchema[]>loadSchemas( './src/test/fixtures/json' )
 
       // should refer to the same referential instance if it were loaded from cache
       assert.strictEqual( schemas, schemas2 )
@@ -278,7 +278,7 @@ describe( 'Schema', () => {
       const schemas = SchemaCollection( [ validAppSchema, entitySchemaWithArray, validChildSchema, validOneOfSchema, withOneOf ] )
 
       it( 'Schema with array', () => {
-        const schema = <IEntitySchema>schemas.normalize( 'entity-schema-array' )
+        const schema = <EntitySchema>schemas.normalize( 'entity-schema-array' )
 
         const expect = [
           '/', '/name', '/abbrev', '/tags', '/tags/[]'
@@ -292,7 +292,7 @@ describe( 'Schema', () => {
       })
 
       it( 'Schema with oneOf', () => {
-        const schema = <IEntitySchema>schemas.normalize( 'entity-schema-oneof' )
+        const schema = <EntitySchema>schemas.normalize( 'entity-schema-oneof' )
 
         const expect = [
           '/', '/name', '/one', '/one/?0', '/one/?1'
@@ -306,7 +306,7 @@ describe( 'Schema', () => {
       })
 
       it( 'Child schema', () => {
-        const schema = <IEntitySchema>schemas.normalize( 'valid-child-schema' )
+        const schema = <EntitySchema>schemas.normalize( 'valid-child-schema' )
 
         const expect = [
           '/', '/parent', '/parent/entityId', '/parent/entityType'
@@ -321,7 +321,7 @@ describe( 'Schema', () => {
     })
 
     it( 'Allows array schema with no items definition', () => {
-      const entitySchema : IEntitySchema = {
+      const entitySchema : EntitySchema = {
         id: "#",
         title: "foo",
         type: 'object',
@@ -343,7 +343,7 @@ describe( 'Schema', () => {
     })
 
     it( 'Allows entity schema with empty properties', () => {
-      const entitySchema : IEntitySchema = {
+      const entitySchema : EntitySchema = {
         id: "#",
         title: "foo",
         type: 'object',
@@ -360,7 +360,7 @@ describe( 'Schema', () => {
     })
 
     it( 'Rejects schema with $ref', () => {
-      const entitySchema : IEntitySchema = {
+      const entitySchema : EntitySchema = {
         id: "#",
         title: "foo",
         type: 'object',
@@ -505,7 +505,7 @@ describe( 'Schema', () => {
         abbrev: [ 'foo', 'bar' ]
       }
 
-      const normalized = <IEntitySchema>schemas.normalize( 'valid-entity-schema-uniques' )
+      const normalized = <EntitySchema>schemas.normalize( 'valid-entity-schema-uniques' )
 
       const withUniques = addUniques( normalized, existingValues )
 
@@ -517,7 +517,7 @@ describe( 'Schema', () => {
         baz: [ 'foo', 'bar' ]
       }
 
-      const normalized = <IEntitySchema>schemas.normalize( 'valid-entity-schema-uniques' )
+      const normalized = <EntitySchema>schemas.normalize( 'valid-entity-schema-uniques' )
 
       assert.throws( () => addUniques( normalized, existingValues ) )
     })
@@ -525,7 +525,7 @@ describe( 'Schema', () => {
 
   describe( 'Entity links', () => {
     const schemas = SchemaCollection( [ validAppSchema, validEntitySchema, entitySchemaWithLinks ])
-    const schema = <IEntitySchema>schemas.normalize( 'entity-schema-links' )
+    const schema = <EntitySchema>schemas.normalize( 'entity-schema-links' )
 
     it( 'gets link titles', () => {
       const linkTitles = linkTitlesForSchema( schema )
@@ -579,7 +579,7 @@ describe( 'Schema', () => {
     it( 'filters for currentUser', () => {
       const schema = filterSchemaForRoles( currentUserRole )
 
-      const expect: IEntitySchema = {
+      const expect: EntitySchema = {
         id: 'http://workingspec.com/schema/user',
         title: 'User',
         description: 'Person with access to the system',

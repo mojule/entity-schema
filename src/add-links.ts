@@ -1,6 +1,6 @@
 import * as Mapper from '@mojule/mapper'
 import { is } from '@mojule/is'
-import { IEntitySchema } from './predicates/entity-schema'
+import { EntitySchema } from './predicates/entity-schema'
 import { schemaWalk } from './schema-walk'
 import { isEntityReferenceSchema } from './predicates/entity-reference-schema'
 
@@ -22,7 +22,7 @@ const predicates = {
     is.array( value ) && value.every( predicates.link )
 }
 
-export const addLinks = ( schema: IEntitySchema, linkMap: ILinkMap ) : IEntitySchema => {
+export const addLinks = ( schema: EntitySchema, linkMap: ILinkMap ) : EntitySchema => {
   schema = clone( schema )
 
   schemaWalk( schema, subSchema => {

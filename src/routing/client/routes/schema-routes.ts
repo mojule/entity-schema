@@ -4,7 +4,7 @@ import { fetchJson } from '../utils/fetch-json'
 import { documentFragment, h2, h3 } from '../utils/h'
 import { objectToDom } from '../utils/object-to-dom'
 import { IClientRouterMap } from './client-router'
-import { IAppSchema } from '../../../predicates/app-schema'
+import { RootSchema } from '../../../predicates/root-schema'
 import { strictSelect } from '@mojule/dom-utils'
 
 const linkifySchemaDom = ( schemaDom: HTMLElement ) => {
@@ -42,7 +42,7 @@ export const schemaRoutes: IClientRouterMap = {
     try {
       const titles = await fetchJson( '/schema', getApiKey() )
 
-      const schema : IAppSchema | undefined =
+      const schema : RootSchema | undefined =
         title ?
         mode === 'normalized' ?
         await fetchJson( `/schema/${ title }/normalized`, getApiKey() ) :

@@ -1,8 +1,8 @@
 import { JSONSchema4 } from 'json-schema'
 
-export interface IBooleanSchema extends JSONSchema4 {
+export interface BooleanSchema extends JSONSchema4 {
   type: 'boolean'
 }
 
-export const isBooleanSchema = ( value ): value is IBooleanSchema =>
+export const isBooleanSchema = ( value ): value is BooleanSchema =>
   value && value.type === 'boolean'

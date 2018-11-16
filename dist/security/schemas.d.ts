@@ -1,1 +1,1 @@
-export declare const securitySchemas: import("../predicates/app-schema").IAppSchema[];
+export declare const securitySchemas: import("../predicates/root-schema").RootSchema[];

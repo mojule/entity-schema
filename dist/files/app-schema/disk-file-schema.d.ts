@@ -1,3 +1,3 @@
-import { IEntitySchema } from '../../predicates/entity-schema';
-export declare const diskFileSchema: IEntitySchema;
-export declare const diskFileReferenceSchema: import("../../predicates/app-schema").IAppSchema;
+import { EntitySchema } from '../../predicates/entity-schema';
+export declare const diskFileSchema: EntitySchema;
+export declare const diskFileReferenceSchema: import("../../predicates/root-schema").RootSchema;

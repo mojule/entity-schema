@@ -5,7 +5,7 @@
 */
 import * as Mapper from '@mojule/mapper'
 import { JSONSchema4 } from 'json-schema'
-import { IAppSchema } from './predicates/app-schema'
+import { RootSchema } from './predicates/root-schema'
 import { pascalCase } from './utils/pascal-case'
 
 const map = {
@@ -47,4 +47,4 @@ const map = {
   }
 }
 
-export const interfaceSchemaMapper = <( appSchema: IAppSchema ) => JSONSchema4>Mapper( { map } )
+export const interfaceSchemaMapper = <( appSchema: RootSchema ) => JSONSchema4>Mapper( { map } )

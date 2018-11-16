@@ -1,3 +1,3 @@
-import { IAppSchema } from '../../predicates/app-schema';
+import { RootSchema } from '../../predicates/root-schema';
 import { IRouteData } from './types';
-export declare const SchemaRoutes: (schemaCollection: IAppSchema[]) => IRouteData;
+export declare const SchemaRoutes: (schemaCollection: RootSchema[]) => IRouteData;

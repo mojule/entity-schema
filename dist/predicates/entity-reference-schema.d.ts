@@ -1,15 +1,15 @@
-import { IWsSchema } from './ws-schema';
-import { IConstPropertySchema } from './const-property-schema';
-export interface IEntityIdSchema extends IWsSchema {
+import { TypedSchema } from './typed-schema';
+import { ConstPropertySchema } from './const-property-schema';
+export interface EntityIdSchema extends TypedSchema {
     type: 'string';
     pattern: '^[0-9a-f]{24}$';
 }
-export interface IEntityReferenceSchema extends IWsSchema {
+export interface EntityReferenceSchema extends TypedSchema {
     type: 'object';
     properties: {
-        entityId: IEntityIdSchema;
-        entityType: IConstPropertySchema;
+        entityId: EntityIdSchema;
+        entityType: ConstPropertySchema;
     };
 }
-export declare const isEntityIdSchema: (value: any) => value is IEntityIdSchema;
-export declare const isEntityReferenceSchema: (value: any) => value is IEntityReferenceSchema;
+export declare const isEntityIdSchema: (value: any) => value is EntityIdSchema;
+export declare const isEntityReferenceSchema: (value: any) => value is EntityReferenceSchema;

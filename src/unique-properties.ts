@@ -1,6 +1,6 @@
-import { IEntitySchema } from './predicates/entity-schema'
+import { EntitySchema } from './predicates/entity-schema'
 
-export const uniquePropertyNames = ( entitySchema: IEntitySchema ) => {
+export const uniquePropertyNames = ( entitySchema: EntitySchema ) => {
   const { properties } = entitySchema
   const propertyNames = Object.keys( properties )
 

@@ -1,7 +1,7 @@
 import { JSONSchema4 } from 'json-schema'
-import { IEntitySchema } from './predicates/entity-schema'
+import { EntitySchema } from './predicates/entity-schema'
 import { ISchemaMap } from './schema-map'
-import { IAppSchema } from './predicates/app-schema'
+import { RootSchema } from './predicates/root-schema'
 import { Schema } from 'mongoose'
 
 export type SchemaMapper = ( from: JSONSchema4 ) => JSONSchema4
@@ -12,10 +12,10 @@ export interface SchemaCollectionApi {
   readonly entityTitles: string[]
   readonly enumTitles: string[]
   readonly validator: tv4.TV4
-  readonly entities: IEntitySchema[]
+  readonly entities: EntitySchema[]
   readonly map: ISchemaMap
-  get: ( title: string ) => IAppSchema
-  normalize: ( title: string ) => IAppSchema
+  get: ( title: string ) => RootSchema
+  normalize: ( title: string ) => RootSchema
   interfaceSchema: ( title: string ) => JSONSchema4
   mongooseSchema: ( title: string ) => Schema
   uniquePropertyNames: ( title: string ) => string[]

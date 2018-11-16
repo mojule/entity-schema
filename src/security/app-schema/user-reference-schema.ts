@@ -1,6 +1,6 @@
-import { IAppSchema } from '../../predicates/app-schema'
+import { RootSchema } from '../../predicates/root-schema'
 
-export const userReferenceSchema: IAppSchema = {
+export const userReferenceSchema: RootSchema = {
   id: 'http://workingspec.com/schema/user-reference',
   title: 'User Reference',
   description: 'Links to a User',

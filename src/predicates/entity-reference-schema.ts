@@ -1,30 +1,30 @@
-import { isWsSchema, IWsSchema } from './ws-schema'
+import { isTypedSchema, TypedSchema } from './typed-schema'
 import { is } from '@mojule/is'
-import { IConstPropertySchema, isConstPropertySchema } from './const-property-schema'
+import { ConstPropertySchema, isConstPropertySchema } from './const-property-schema'
 
-export interface IEntityIdSchema extends IWsSchema {
+export interface EntityIdSchema extends TypedSchema {
   type: 'string'
   pattern: '^[0-9a-f]{24}$'
 }
 
-export interface IEntityReferenceSchema extends IWsSchema {
+export interface EntityReferenceSchema extends TypedSchema {
   type: 'object'
   properties: {
-    entityId: IEntityIdSchema,
-    entityType: IConstPropertySchema
+    entityId: EntityIdSchema,
+    entityType: ConstPropertySchema
   }
 }
 
-export const isEntityIdSchema = ( value ) : value is IEntityIdSchema =>
+export const isEntityIdSchema = ( value ) : value is EntityIdSchema =>
   value &&
   value.type === 'string' &&
   value.pattern === '^[0-9a-f]{24}$' &&
-  isWsSchema( value )
+  isTypedSchema( value )
 
-export const isEntityReferenceSchema = ( value ) : value is IEntityReferenceSchema =>
+export const isEntityReferenceSchema = ( value ) : value is EntityReferenceSchema =>
   value &&
   value.type === 'object' &&
   is.object( value.properties ) &&
   isEntityIdSchema( value.properties.entityId ) &&
   isConstPropertySchema( value.properties.entityType ) &&
-  isWsSchema( value )
+  isTypedSchema( value )

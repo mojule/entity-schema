@@ -1,12 +1,12 @@
 import { subschemaMap } from '..'
-import { IEntitySchema } from '../predicates/entity-schema'
+import { EntitySchema } from '../predicates/entity-schema'
 import { userSchema } from '../security/app-schema/user-schema'
 import { flatten, glob, pointerValueArray, globPointerValues, get, pointerValueArrayToPointerMap, expand } from '@mojule/json-pointer'
 import { Role, Roles } from '../security/types'
 import { subschemaMapRemoveLeafNodes } from '../subschema-map-remove-leafs'
 import * as SchemaMapper from '@mojule/schema-mapper'
 
-const userSubSchemaMap = subschemaMapRemoveLeafNodes( <IEntitySchema>userSchema )
+const userSubSchemaMap = subschemaMapRemoveLeafNodes( <EntitySchema>userSchema )
 
 const flat = flatten( userSchema )
 

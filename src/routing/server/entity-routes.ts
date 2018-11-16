@@ -7,8 +7,8 @@ import { serverError, userError, notFoundError, NotFoundError, jsonError } from 
 import * as path from 'path'
 import * as bodyParser from 'body-parser'
 import { expand } from '@mojule/json-pointer'
-import { IEntitySchema } from '../../predicates/entity-schema'
-import { IAppSchema } from '../../predicates/app-schema'
+import { EntitySchema } from '../../predicates/entity-schema'
+import { RootSchema } from '../../predicates/root-schema'
 import { SchemaCollection } from '../../schema-collection'
 import { pascalCase } from '../../utils/pascal-case'
 import { IRouteData } from './types'
@@ -101,7 +101,7 @@ export interface Metadata {
   title: string
   body: any
   meta: any
-  schema: IEntitySchema
+  schema: EntitySchema
 }
 
 const uploadFiles = ( handleFile: FileHandler ) =>
@@ -122,7 +122,7 @@ const uploadFiles = ( handleFile: FileHandler ) =>
     }
   }
 
-export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRouteOptions = entityRouteOptions ): IRouteData => {
+export const EntityRoutes = ( schemaCollection: RootSchema[], options: EntityRouteOptions = entityRouteOptions ): IRouteData => {
   if ( options !== entityRouteOptions ) {
     let { modelResolvers, fileResolvers } = entityRouteOptions
 
@@ -191,7 +191,7 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
           uniqueValuesMap = excludeOwnProperties( doc, uniqueValuesMap )
         }
 
-        const entitySchema = <IEntitySchema>userSchemas.normalize( title )
+        const entitySchema = <EntitySchema>userSchemas.normalize( title )
         const schema = addUniques( entitySchema, uniqueValuesMap )
 
         return schema
@@ -212,7 +212,7 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
           return
         }
 
-        const systemSchema = <IEntitySchema>schemas.normalize( title )
+        const systemSchema = <EntitySchema>schemas.normalize( title )
         const defaultValues = entityFromSchema( systemSchema )
 
         // remove empty strings that aren't in required
@@ -258,7 +258,7 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
           return
         }
 
-        const systemSchema = <IEntitySchema>schemas.normalize( title )
+        const systemSchema = <EntitySchema>schemas.normalize( title )
 
         let model: Document
 
@@ -433,7 +433,7 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
             if ( doc === null )
               throw new NotFoundError( `No ${ title } found for ID ${ id }` )
 
-            const schema = <IEntitySchema>userSchemas.normalize( title )
+            const schema = <EntitySchema>userSchemas.normalize( title )
             const filteredResult = filterEntityBySchema( doc.toJSON(), schema )
 
             filteredResult._id = doc._id
@@ -463,7 +463,7 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
               throw new NotFoundError( `No ${ title } found for ID ${ id }` )
 
             const removed = await doc.remove()
-            const schema = <IEntitySchema>userSchemas.normalize( title )
+            const schema = <EntitySchema>userSchemas.normalize( title )
             const filteredResult = filterEntityBySchema( removed.toJSON(), schema )
 
             filteredResult._id = doc._id
@@ -487,7 +487,7 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
             }
 
             const docs = await Model.find( {} )
-            const schema = <IEntitySchema>userSchemas.normalize( title )
+            const schema = <EntitySchema>userSchemas.normalize( title )
 
             const filtered = docs.map( doc => {
               const filteredResult = filterEntityBySchema( doc.toJSON(), schema )
@@ -529,7 +529,7 @@ export const EntityRoutes = ( schemaCollection: IAppSchema[], options: EntityRou
             const query = Object.assign( {}, normal, expand( nested ) )
 
             const docs = await Model.find( query )
-            const schema = <IEntitySchema>userSchemas.normalize( title )
+            const schema = <EntitySchema>userSchemas.normalize( title )
 
             const filtered = docs.map( doc => {
               const filteredResult = filterEntityBySchema( doc.toJSON(), schema )

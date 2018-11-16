@@ -1,13 +1,13 @@
-import { IWsSchema, isWsSchema } from './ws-schema'
+import { TypedSchema, isTypedSchema } from './typed-schema'
 import { is } from '@mojule/is'
 
-export interface IEnumSchema extends IWsSchema {
+export interface EnumSchema extends TypedSchema {
   type: 'string'
   enum: string[]
   wsEnumTitles: string[]
 }
 
-export const isEnumSchema = ( value ) : value is IEnumSchema =>
+export const isEnumSchema = ( value ) : value is EnumSchema =>
   value &&
   value.type === 'string' &&
   is.array( value.enum ) &&
@@ -15,4 +15,4 @@ export const isEnumSchema = ( value ) : value is IEnumSchema =>
   is.array( value.wsEnumTitles ) &&
   value.wsEnumTitles.every( is.string ) &&
   value.enum.length === value.wsEnumTitles.length &&
-  isWsSchema( value )
+  isTypedSchema( value )

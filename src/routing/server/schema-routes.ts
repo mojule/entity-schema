@@ -2,14 +2,14 @@ import { Request, Response } from 'express-serve-static-core'
 import * as path from 'path'
 import { kebabCase } from 'lodash'
 import { serverError, notFoundError } from './json-errors'
-import { IAppSchema } from '../../predicates/app-schema'
+import { RootSchema } from '../../predicates/root-schema'
 import { IRouteData } from './types'
 import { SchemaCollection } from '../../schema-collection'
 import { Roles, PropertyAccesses } from '../../security/types'
 import { is } from '@mojule/is'
 import { getUser, getUserSchemas } from '../../utils/get-user';
 
-export const SchemaRoutes = ( schemaCollection: IAppSchema[] ): IRouteData => {
+export const SchemaRoutes = ( schemaCollection: RootSchema[] ): IRouteData => {
   const schemaRoute = title => {
     const routePath = kebabCase( title )
 
