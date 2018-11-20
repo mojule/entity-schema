@@ -1,18 +1,18 @@
 import { fetchJson, postJson, putJson, fetchJsonMultiple, postFormData, putFormData, postDelete } from '../utils/fetch-json'
-import { documentFragment, h2, h3, h4, button, input, p } from '../utils/h'
+import { documentFragment, h2, h3, h4, input, p } from '../utils/h'
 import { objectToDom } from '../utils/object-to-dom'
 import { startCase, kebabCase } from 'lodash'
 import { TitlesAnchorNav, ErrorPage, AppPage, ActionList } from '../templates'
 import { linkTitlesForSchema } from '../../../link-titles-for-schema'
 import { addLinks } from '../../../add-links'
-import { EntitySchema } from '../../../predicates/entity-schema'
 import { IClientRouterMap } from './client-router'
 import { schemaToForm } from '../../../forms/schema-to-form'
 import { schemaFormToEntityModel } from '../../../forms/schema-form-to-entity-model'
 import { uploadablePropertyNames } from '../../../uploadable-properties'
 import { entityModelToForm } from '../../../forms/entity-model-to-form'
-import { strictSelect } from '@mojule/dom-utils';
-import { is } from '@mojule/is';
+import { strictSelect } from '@mojule/dom-utils'
+import { is } from '@mojule/is'
+import { EntitySchema } from '@entity-schema/predicates';
 
 const schemaWithLinks = async ( schema, authorize?: string ) => {
   const linkTitles = linkTitlesForSchema( schema )
@@ -75,11 +75,6 @@ export const entityRoutes: IClientRouterMap = {
       const titles: string[] = await fetchJson( '/api/v1', getApiKey() )
       const schema = await getSchema( title, getApiKey() )
 
-      const entityNav = TitlesAnchorNav( {
-        routePrefix: '/entity',
-        titles,
-        currentTitle: title
-      } )
 
       const schemaForm = schemaToForm( document, schema )
 
@@ -190,7 +185,6 @@ export const entityRoutes: IClientRouterMap = {
     const id: string = req.params.id
 
     try {
-      const deleted = await postDelete( `/api/v1/${ title }/${ id }`, getApiKey() )
 
       res.redirect( `/entity/${ title }` )
     } catch ( err ) {

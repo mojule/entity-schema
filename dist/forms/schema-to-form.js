@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Mapper = require("@mojule/mapper");
 const H = require("@mojule/h");
-const predicates_1 = require("../predicates");
 const lodash_1 = require("lodash");
 const is_1 = require("@mojule/is");
 const dom_utils_1 = require("@mojule/dom-utils");
@@ -10,6 +9,7 @@ const uploadable_properties_1 = require("../uploadable-properties");
 const arrayify_schema_form_1 = require("./arrayify-schema-form");
 const oneof_schema_form_1 = require("./oneof-schema-form");
 const types_1 = require("./types");
+const predicates_1 = require("@entity-schema/predicates");
 const inputTypeMap = {
     string: 'text',
     number: 'number',

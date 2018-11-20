@@ -1,5 +1,3 @@
-import { MongooseDocument, Model } from 'mongoose'
-
 import {
   UserDocument, MongoUser, User, Roles, MongoApiKey, ApiKeyDocument
 } from './types'

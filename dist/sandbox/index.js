@@ -3,9 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const user_schema_1 = require("../security/app-schema/user-schema");
 const json_pointer_1 = require("@mojule/json-pointer");
 const types_1 = require("../security/types");
-const subschema_map_remove_leafs_1 = require("../subschema-map-remove-leafs");
 const SchemaMapper = require("@mojule/schema-mapper");
-const userSubSchemaMap = subschema_map_remove_leafs_1.subschemaMapRemoveLeafNodes(user_schema_1.userSchema);
+const mz_1 = require("mz");
+const app_schema_1 = require("../files/app-schema");
+const api_key_schema_1 = require("../security/app-schema/api-key-schema");
+const user_reference_schema_1 = require("../security/app-schema/user-reference-schema");
 const flat = json_pointer_1.flatten(user_schema_1.userSchema);
 console.log('flat', JSON.stringify(flat, null, 2));
 const pvas = json_pointer_1.pointerValueArray(flat);
@@ -20,10 +22,6 @@ const getParentPath = (path, search) => {
     if (searchIndex === -1)
         return;
     return segs.slice(0, searchIndex).join('/');
-};
-const getTerminalPath = (path) => {
-    const segs = path.split('/');
-    return segs[segs.length - 1];
 };
 console.log('getParentPath', getParentPath('/properties/password/wsSecurity/create/0', 'wsSecurity'));
 console.log('getParentPath', JSON.stringify(getParentPath('/wsSecurity/delete/0', 'wsSecurity')));
@@ -81,7 +79,16 @@ const schemaForAdmin = filterSchemaForRoles(user_schema_1.userSchema, [types_1.R
 const schemaForCurrentUser = filterSchemaForRoles(user_schema_1.userSchema, [types_1.Roles.currentUser]);
 const schemaForUser = filterSchemaForRoles(user_schema_1.userSchema, [types_1.Roles.user]);
 console.log(JSON.stringify({ schemaForAdmin, schemaForCurrentUser, schemaForUser }, null, 2));
-const { from, to } = SchemaMapper({ omitDefault: false });
+const { from } = SchemaMapper({ omitDefault: false });
 const userDefaults = from(user_schema_1.userSchema);
 console.log(JSON.stringify(userDefaults, null, 2));
+mz_1.fs.writeFileSync('./src/sandbox/zip-file.schema.json', JSON.stringify(app_schema_1.zipFileSchema, null, 2), 'utf8');
+mz_1.fs.writeFileSync('./src/sandbox/image-file.schema.json', JSON.stringify(app_schema_1.imageFileSchema, null, 2), 'utf8');
+mz_1.fs.writeFileSync('./src/sandbox/disk-file.schema.json', JSON.stringify(app_schema_1.diskFileSchema, null, 2), 'utf8');
+mz_1.fs.writeFileSync('./src/sandbox/zip-file-reference.schema.json', JSON.stringify(app_schema_1.zipFileReferenceSchema, null, 2), 'utf8');
+mz_1.fs.writeFileSync('./src/sandbox/image-file-reference.schema.json', JSON.stringify(app_schema_1.imageFileReferenceSchema, null, 2), 'utf8');
+mz_1.fs.writeFileSync('./src/sandbox/disk-file-reference.schema.json', JSON.stringify(app_schema_1.diskFileReferenceSchema, null, 2), 'utf8');
+mz_1.fs.writeFileSync('./src/sandbox/api-key.schema.json', JSON.stringify(api_key_schema_1.apiKeySchema, null, 2), 'utf8');
+mz_1.fs.writeFileSync('./src/sandbox/user.schema.json', JSON.stringify(user_schema_1.userSchema, null, 2), 'utf8');
+mz_1.fs.writeFileSync('./src/sandbox/user-reference.schema.json', JSON.stringify(user_reference_schema_1.userReferenceSchema, null, 2), 'utf8');
 //# sourceMappingURL=index.js.map

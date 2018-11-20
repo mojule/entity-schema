@@ -1,4 +1,4 @@
-import { EntitySchema } from './predicates/entity-schema'
+import { EntitySchema } from '@entity-schema/predicates'
 
 export const uniquePropertyNames = ( entitySchema: EntitySchema ) => {
   const { properties } = entitySchema

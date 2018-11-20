@@ -1,4 +1,4 @@
-import { RootSchema } from '../predicates/root-schema';
+import { RootSchema } from '@entity-schema/predicates';
 export interface GeneratedFile {
     filename: string;
     contents: string;

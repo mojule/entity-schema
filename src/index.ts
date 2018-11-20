@@ -14,7 +14,6 @@ import { schemaWalk } from './schema-walk'
 import { subschemaMap } from './subschema-map'
 import { uniquePropertyNames } from './unique-properties'
 import { uploadablePropertyNames } from './uploadable-properties'
-import { predicates, predicateUtils } from './predicates'
 import { oneOfSchemaForm } from './forms/oneof-schema-form'
 import { entityModelToForm } from './forms/entity-model-to-form'
 import { schemaFormToEntityModel } from './forms/schema-form-to-entity-model'
@@ -27,6 +26,7 @@ import { securitySchemas } from './security/schemas'
 import { ensureDirectories } from './utils/ensure-directories'
 import { ArrayifySymbol, OneOfSymbol } from './forms/types'
 import { writeFileBuffers } from './files/file-buffers'
+import { predicates, predicateUtils } from '@entity-schema/predicates'
 
 export {
   SchemaCollection, addLinks, addUniques, arrayifySchemaForm,

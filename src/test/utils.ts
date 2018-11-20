@@ -1,9 +1,6 @@
-/// <reference path="../../node_modules/@types/mocha/index.d.ts" />
-
 import * as assert from 'assert'
 import { uniqueValues } from '../utils/unique-values'
 import { arrayPointerInfo } from '../utils/arrays-in-path';
-import { flatten, expand } from '@mojule/json-pointer'
 
 describe( 'Utils', () => {
   describe( 'array', () => {

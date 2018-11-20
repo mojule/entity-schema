@@ -1,4 +1,4 @@
-import { RootSchema } from "../../predicates/root-schema";
+import { RootSchema } from '@entity-schema/predicates';
 export declare const FilePathSchema: (fileType?: string) => RootSchema;
 export declare const TagsSchema: (tagType?: string) => RootSchema;
 export declare const MetaSchema: () => RootSchema;

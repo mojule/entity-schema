@@ -4,8 +4,8 @@ import { fetchJson } from '../utils/fetch-json'
 import { documentFragment, h2, h3 } from '../utils/h'
 import { objectToDom } from '../utils/object-to-dom'
 import { IClientRouterMap } from './client-router'
-import { RootSchema } from '../../../predicates/root-schema'
 import { strictSelect } from '@mojule/dom-utils'
+import { RootSchema } from '@entity-schema/predicates'
 
 const linkifySchemaDom = ( schemaDom: HTMLElement ) => {
   const $refs = schemaDom.querySelectorAll( 'td[data-name="$ref"]' )

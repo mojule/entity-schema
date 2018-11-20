@@ -1,4 +1,4 @@
-import { flatten, expand } from "@mojule/json-pointer";
+import { flatten, expand } from '@mojule/json-pointer'
 
 export const deepAssign = ( ...values ) => {
   if ( !values.length ) return

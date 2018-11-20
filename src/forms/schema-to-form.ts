@@ -1,15 +1,14 @@
 import * as Mapper from '@mojule/mapper'
 import * as H from '@mojule/h'
-import { predicates } from '../predicates'
 import { JSONSchema4 } from 'json-schema'
 import { upperFirst, startCase } from 'lodash'
 import { is } from '@mojule/is'
 import { strictSelect } from '@mojule/dom-utils'
 import { uploadablePropertyNames } from '../uploadable-properties'
-import { ObjectSchema } from '../predicates/object-schema'
 import { arrayifySchemaForm } from './arrayify-schema-form'
 import { oneOfSchemaForm } from './oneof-schema-form'
 import { SchemaFormElement, ArrayifySymbol, OneOfSymbol } from './types'
+import { ObjectSchema, predicates } from '@entity-schema/predicates'
 
 const inputTypeMap = {
   string: 'text',

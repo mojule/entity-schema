@@ -4,7 +4,7 @@ import {
 } from '@mojule/json-pointer'
 
 import { Role, Roles, EntityAccess, EntityAccesses } from './security/types'
-import { RootSchema } from './predicates/root-schema'
+import { RootSchema } from '@entity-schema/predicates'
 
 const getParentPath = ( path: string, search: string ) => {
   const segs = path.split( '/' )

@@ -1,13 +1,11 @@
 import { Request, Response } from 'express-serve-static-core'
-import * as path from 'path'
 import { kebabCase } from 'lodash'
 import { serverError, notFoundError } from './json-errors'
-import { RootSchema } from '../../predicates/root-schema'
 import { IRouteData } from './types'
 import { SchemaCollection } from '../../schema-collection'
-import { Roles, PropertyAccesses } from '../../security/types'
-import { is } from '@mojule/is'
-import { getUser, getUserSchemas } from '../../utils/get-user';
+import { PropertyAccesses } from '../../security/types'
+import { getUserSchemas } from '../../utils/get-user'
+import { RootSchema } from '@entity-schema/predicates'
 
 export const SchemaRoutes = ( schemaCollection: RootSchema[] ): IRouteData => {
   const schemaRoute = title => {

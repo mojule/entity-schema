@@ -1,5 +1,5 @@
-import { EntitySchema } from './predicates/entity-schema'
 import { schemaWalk } from './schema-walk'
+import { EntitySchema } from '@entity-schema/predicates'
 
 export const subschemaMap = ( schema: EntitySchema ) => {
   const schemaMap = {}

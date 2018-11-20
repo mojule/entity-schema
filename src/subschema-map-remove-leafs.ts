@@ -1,6 +1,6 @@
-import { EntitySchema } from './predicates/entity-schema'
 import { schemaWalk } from './schema-walk'
 import { predicates } from '.'
+import { EntitySchema } from '@entity-schema/predicates'
 
 const clone = subject => JSON.parse( JSON.stringify( subject ) )
 

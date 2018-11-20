@@ -1,5 +1,5 @@
 import { FilePathSchema, TagsSchema, MetaSchema, ReferenceSchema } from './common'
-import { EntitySchema } from '../../predicates/entity-schema'
+import { EntitySchema } from '@entity-schema/predicates'
 
 // TODO - get this back into JSON and think of a more robust way to export it
 

@@ -1,14 +1,13 @@
 import * as uuid from 'uuid'
 import * as bcrypt from 'bcrypt'
 import * as pify from 'pify'
-import { Request, Response } from 'express-serve-static-core'
-import { Document, MongooseDocument, Model } from 'mongoose'
-import { ModelResolver, ModelResolverResult } from './types';
-import { EntityAccess, EntityAccesses } from '../security/types';
+import { Document } from 'mongoose'
+import { ModelResolver } from './types'
+import { EntityAccess, EntityAccesses } from '../security/types'
 
 const hash = pify( bcrypt.hash )
 
-export const apiKeyResolver: ModelResolver = async ( access: EntityAccess, document: Document, model, req: Request, res: Response ) => {
+export const apiKeyResolver: ModelResolver = async ( access: EntityAccess, document: Document ) => {
   if( access !== EntityAccesses.create ) return { document }
 
   const secret = uuid.v4()

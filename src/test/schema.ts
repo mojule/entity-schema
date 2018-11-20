@@ -1,5 +1,3 @@
-/// <reference path="../../node_modules/@types/mocha/index.d.ts" />
-
 import * as assert from 'assert'
 import * as mongoose from 'mongoose'
 
@@ -14,9 +12,7 @@ import {
   validOneOfSchema
 } from './fixtures/schema'
 
-import { is, Utils } from '@mojule/is'
-import { RootSchema } from '../predicates/root-schema'
-import { EntitySchema } from '../predicates/entity-schema'
+import { Utils } from '@mojule/is'
 import { IExistingValuesMap } from '../add-uniques'
 import { ILinkMap } from '../add-links'
 
@@ -24,9 +20,10 @@ import {
   SchemaCollection, loadSchemas, SchemaMap, subschemaMap, predicates,
   addUniques, linkTitlesForSchema, addLinks
 } from '..'
-import { userSchema } from '../security/app-schema/user-schema';
-import { Roles } from '../security/types';
-import { FilterSchemaForRoles } from '../filter-schema-for-roles';
+import { userSchema } from '../security/app-schema/user-schema'
+import { Roles } from '../security/types'
+import { FilterSchemaForRoles } from '../filter-schema-for-roles'
+import { RootSchema, EntitySchema } from '@entity-schema/predicates'
 
 describe( 'Schema', () => {
   it( 'loadSchemas', () => {
@@ -127,7 +124,6 @@ describe( 'Schema', () => {
 
     describe( 'mongooseSchema', () => {
       it( 'creates from an Entity Schema', () => {
-        const mongooseSchema = schemaCollection.mongooseSchema( 'valid-entity-schema' )
         // second time to test retrieving from cache - you can verify this in coverage report
         schemaCollection.mongooseSchema( 'valid-entity-schema' )
       })

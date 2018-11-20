@@ -1,0 +1,65 @@
+{
+  "id": "http://workingspec.com/schema/disk-file",
+  "title": "Disk File",
+  "description": "A file stored on disk",
+  "type": "object",
+  "format": "entity-schema",
+  "properties": {
+    "name": {
+      "title": "Name",
+      "type": "string",
+      "description": "The name of the disk file"
+    },
+    "path": {
+      "id": "http://workingspec.com/schema/file-path",
+      "title": "Path",
+      "description": "Path to this file",
+      "type": "string"
+    },
+    "meta": {
+      "id": "http://workingspec.com/schema/file-meta",
+      "title": "File Meta",
+      "description": "Metadata about the file",
+      "type": "object",
+      "properties": {
+        "filename": {
+          "title": "Filename",
+          "description": "The name of the file",
+          "type": "string"
+        },
+        "mimetype": {
+          "title": "Mime Type",
+          "description": "The mime type of the file",
+          "type": "string"
+        },
+        "size": {
+          "title": "Size",
+          "description": "The size of the file in bytes",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "filename",
+        "mimetype",
+        "size"
+      ]
+    },
+    "tags": {
+      "id": "http://workingspec.com/schema/tags",
+      "title": "Tags",
+      "description": "Tags to help categorize this file",
+      "type": "array",
+      "items": {
+        "title": "Tag",
+        "description": "Tag for categorizing this file",
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "path",
+    "meta"
+  ]
+}

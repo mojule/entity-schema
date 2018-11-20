@@ -1,8 +1,9 @@
 import * as Mapper from '@mojule/mapper'
 import { is } from '@mojule/is'
-import { EntitySchema } from './predicates/entity-schema'
 import { schemaWalk } from './schema-walk'
-import { isEntityReferenceSchema } from './predicates/entity-reference-schema'
+import {
+  EntitySchema, isEntityReferenceSchema
+} from '@entity-schema/predicates'
 
 export interface ILink {
   _id: string,

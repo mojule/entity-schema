@@ -1,5 +1,4 @@
 "use strict";
-/// <reference path="../../node_modules/@types/mocha/index.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require("assert");
 const mongoose = require("mongoose");
@@ -82,7 +81,6 @@ describe('Schema', () => {
         });
         describe('mongooseSchema', () => {
             it('creates from an Entity Schema', () => {
-                const mongooseSchema = schemaCollection.mongooseSchema('valid-entity-schema');
                 // second time to test retrieving from cache - you can verify this in coverage report
                 schemaCollection.mongooseSchema('valid-entity-schema');
             });

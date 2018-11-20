@@ -1,10 +1,5 @@
 import { JSONSchema4 } from 'json-schema';
-import { RootSchema } from '../../predicates/root-schema';
-import { EntitySchema } from '../../predicates/entity-schema';
-import { EnumSchema } from '../../predicates/enum-schema';
-import { ChildEntitySchema } from '../../predicates/child-entity-schema';
-import { ConstPropertySchema } from '../../predicates/const-property-schema';
-import { OneOfSchema } from '../../predicates/oneof-schema';
+import { RootSchema, EntitySchema, EnumSchema, ChildEntitySchema, ConstPropertySchema, OneOfSchema } from '@entity-schema/predicates';
 export declare const validAppSchema: RootSchema;
 export declare const validEntitySchema: EntitySchema;
 export declare const normalizedValidEntitySchema: EntitySchema;

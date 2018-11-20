@@ -1,6 +1,4 @@
-import { EntitySchema } from '../../../predicates/entity-schema';
-import { EntityReferenceSchema } from '../../../predicates/entity-reference-schema';
-import { RootSchema } from '../../../predicates/root-schema';
+import { EntitySchema, EntityReferenceSchema, RootSchema } from '@entity-schema/predicates';
 export declare const simpleTypesSchema: EntitySchema;
 export declare const simpleArraySchema: EntitySchema;
 export declare const personSchema: EntitySchema;

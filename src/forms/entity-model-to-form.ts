@@ -1,12 +1,12 @@
 import { flatten } from '@mojule/json-pointer'
 import { is } from '@mojule/is'
-import { EntitySchema } from '../predicates/entity-schema'
 import { schemaToForm } from './schema-to-form'
 import { filterEntityBySchema } from '../filter-entity-by-schema'
 import { subschemaMap } from '../subschema-map'
 import { strictSelect } from '@mojule/dom-utils'
 import { SchemaFieldEditor, ArrayifySymbol, OneOfSymbol, SchemaFormElement } from './types'
 import { arrayPointerInfo } from '../utils/arrays-in-path'
+import { EntitySchema } from '@entity-schema/predicates'
 
 export const entityModelToForm = <TEntityModel>( document: Document, schema: EntitySchema, model: TEntityModel ): SchemaFormElement => {
   const schemaFormEl = schemaToForm( document, schema )

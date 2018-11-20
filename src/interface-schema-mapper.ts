@@ -5,8 +5,8 @@
 */
 import * as Mapper from '@mojule/mapper'
 import { JSONSchema4 } from 'json-schema'
-import { RootSchema } from './predicates/root-schema'
 import { pascalCase } from './utils/pascal-case'
+import { RootSchema } from '@entity-schema/predicates'
 
 const map = {
   object: ( obj, options ) => {

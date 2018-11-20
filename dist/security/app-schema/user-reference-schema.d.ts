@@ -1,2 +1,2 @@
-import { RootSchema } from '../../predicates/root-schema';
+import { RootSchema } from '@entity-schema/predicates';
 export declare const userReferenceSchema: RootSchema;

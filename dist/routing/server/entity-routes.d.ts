@@ -1,9 +1,8 @@
 import { Model, Document } from 'mongoose';
-import { EntitySchema } from '../../predicates/entity-schema';
-import { RootSchema } from '../../predicates/root-schema';
 import { IRouteData } from './types';
 import { ModelResolverMap } from '../../model-resolvers/types';
 import { FileResolverMap } from '../../file-resolvers';
+import { EntitySchema, RootSchema } from '@entity-schema/predicates';
 export interface EntityRouteOptions {
     modelResolvers?: ModelResolverMap;
     fileResolvers?: FileResolverMap;

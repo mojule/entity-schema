@@ -1,5 +1,4 @@
 import * as Mapper from '@mojule/mapper'
-import { JSONSchema4 } from 'json-schema'
 import { SchemaResolver, SchemaMapper } from './types'
 import { is } from '@mojule/is'
 

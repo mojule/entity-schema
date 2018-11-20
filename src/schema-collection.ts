@@ -2,20 +2,18 @@ import * as tv4 from 'tv4'
 import { JSONSchema4 } from 'json-schema'
 import { SchemaMap, ISchemaMap, IAppSchemaMap } from './schema-map'
 import { NormalizeSchema } from './normalize-schema'
-import { predicates } from './predicates'
 import { uniqueValues } from './utils/unique-values'
 import { Schema } from 'mongoose'
 import { schemaToMongooseSchema } from './schema-to-mongoose-schema'
 import { interfaceSchemaMapper } from './interface-schema-mapper'
 import { uniquePropertyNames } from './unique-properties'
 import { filterEntityBySchema } from './filter-entity-by-schema'
-import { RootSchema } from './predicates/root-schema'
-import { EntitySchema } from './predicates/entity-schema'
 import { uploadablePropertyNames } from './uploadable-properties'
 import { Role, EntityAccess, EntityAccesses } from './security/types'
 import { FilterSchemaForRoles } from './filter-schema-for-roles'
 import { is } from '@mojule/is';
 import { SchemaCollectionApi } from './types'
+import { RootSchema, EntitySchema, predicates } from '@entity-schema/predicates'
 
 const SchemaMapResolver = ( schemaMap: ISchemaMap ) =>
   ( id: string ): JSONSchema4 => schemaMap[ id ]
@@ -46,10 +44,6 @@ const validateSchemas = ( schemas : RootSchema[] ) => {
 
   if( !uniqueValues( schemas, 'title' ) )
     throw Error( 'Expected title property to be unique within schemas' )
-}
-
-interface RoleFilters {
-  [ title: string ]: ( userRoles: Role[] ) => EntitySchema | {}
 }
 
 export const SchemaCollection = ( schemas: RootSchema[], userRoles?: Role[], accesses: EntityAccess[] = [ EntityAccesses.read ] ): SchemaCollectionApi => {

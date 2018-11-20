@@ -1,9 +1,8 @@
 /// <reference types="tv4" />
 import { JSONSchema4 } from 'json-schema';
-import { EntitySchema } from './predicates/entity-schema';
 import { ISchemaMap } from './schema-map';
-import { RootSchema } from './predicates/root-schema';
 import { Schema } from 'mongoose';
+import { EntitySchema, RootSchema } from '@entity-schema/predicates';
 export declare type SchemaMapper = (from: JSONSchema4) => JSONSchema4;
 export declare type SchemaResolver = (id: string) => JSONSchema4;
 export interface SchemaCollectionApi {

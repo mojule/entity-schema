@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Mapper = require("@mojule/mapper");
 const is_1 = require("@mojule/is");
 const schema_walk_1 = require("./schema-walk");
-const entity_reference_schema_1 = require("./predicates/entity-reference-schema");
+const predicates_1 = require("@entity-schema/predicates");
 const clone = Mapper();
 const predicates = {
     link: (value) => is_1.is.object(value) && is_1.is.string(value._id) && is_1.is.string(value.name),
@@ -12,7 +12,7 @@ const predicates = {
 exports.addLinks = (schema, linkMap) => {
     schema = clone(schema);
     schema_walk_1.schemaWalk(schema, subSchema => {
-        if (entity_reference_schema_1.isEntityReferenceSchema(subSchema)) {
+        if (predicates_1.isEntityReferenceSchema(subSchema)) {
             const title = subSchema.properties.entityType.default;
             const links = linkMap[title];
             if (!predicates.linkList(links))

@@ -62,8 +62,14 @@ describe( 'files', () => {
 
       const [ readCPath, readDPath ] = readPaths
 
-      assert( fileBuffers[ readCPath ].length === 1 && fileBuffers[ readCPath ][ 0 ] === 67 )
-      assert( fileBuffers[ readDPath ].length === 1 && fileBuffers[ readDPath ][ 0 ] === 68 )
+      assert(
+        fileBuffers[ readCPath ].length === 1 &&
+        fileBuffers[ readCPath ][ 0 ] === 67
+      )
+      assert(
+        fileBuffers[ readDPath ].length === 1 &&
+        fileBuffers[ readDPath ][ 0 ] === 68
+      )
     })
   } )
 

@@ -1,0 +1,28 @@
+{
+  "id": "http://workingspec.com/schema/image-file-reference",
+  "title": "Image File Reference",
+  "description": "Links to a Image File",
+  "type": "object",
+  "properties": {
+    "entityId": {
+      "title": "Image File",
+      "type": "string",
+      "pattern": "^[0-9a-f]{24}$",
+      "message": "Image File must be a 24 character hex string. (0-9, a-f)"
+    },
+    "entityType": {
+      "title": "Entity Type",
+      "type": "string",
+      "enum": [
+        "Image File"
+      ],
+      "readOnly": true,
+      "default": "Image File"
+    }
+  },
+  "required": [
+    "entityId",
+    "entityType"
+  ],
+  "additionalProperties": false
+}

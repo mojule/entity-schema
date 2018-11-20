@@ -1,3 +1,3 @@
-import { EntitySchema } from '../../predicates/entity-schema';
+import { EntitySchema } from '@entity-schema/predicates';
 export declare const imageFileSchema: EntitySchema;
-export declare const imageFileReferenceSchema: import("../../predicates/root-schema").RootSchema;
+export declare const imageFileReferenceSchema: import("@entity-schema/predicates/dist/root-schema").RootSchema;

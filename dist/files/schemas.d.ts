@@ -1,1 +1,1 @@
-export declare const fileSchemas: import("../predicates/entity-schema").EntitySchema[];
+export declare const fileSchemas: import("@entity-schema/predicates/dist/entity-schema").EntitySchema[];

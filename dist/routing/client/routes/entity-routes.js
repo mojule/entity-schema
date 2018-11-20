@@ -56,11 +56,6 @@ exports.entityRoutes = {
         try {
             const titles = await fetch_json_1.fetchJson('/api/v1', getApiKey());
             const schema = await getSchema(title, getApiKey());
-            const entityNav = templates_1.TitlesAnchorNav({
-                routePrefix: '/entity',
-                titles,
-                currentTitle: title
-            });
             const schemaForm = schema_to_form_1.schemaToForm(document, schema);
             const content = h_1.documentFragment(h_1.h2('Entities'), templates_1.TitlesAnchorNav({
                 routePrefix: '/entity',
@@ -137,7 +132,6 @@ exports.entityRoutes = {
         const title = req.params.title;
         const id = req.params.id;
         try {
-            const deleted = await fetch_json_1.postDelete(`/api/v1/${title}/${id}`, getApiKey());
             res.redirect(`/entity/${title}`);
         }
         catch (err) {

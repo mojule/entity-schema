@@ -7,8 +7,6 @@ import { serverError, userError, notFoundError, NotFoundError, jsonError } from 
 import * as path from 'path'
 import * as bodyParser from 'body-parser'
 import { expand } from '@mojule/json-pointer'
-import { EntitySchema } from '../../predicates/entity-schema'
-import { RootSchema } from '../../predicates/root-schema'
 import { SchemaCollection } from '../../schema-collection'
 import { pascalCase } from '../../utils/pascal-case'
 import { IRouteData } from './types'
@@ -25,6 +23,7 @@ import { FileResolverMap, fileResolvers } from '../../file-resolvers'
 import { EntityStorage, FileHandler } from '../../file-resolvers/entity-storage'
 import { getMultipartData } from '../../utils/get-multipart-values'
 import * as pify from 'pify'
+import { EntitySchema, RootSchema } from '@entity-schema/predicates';
 
 const { from: entityFromSchema } = SchemaMapper( { omitDefault: false } )
 

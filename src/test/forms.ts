@@ -1,10 +1,7 @@
-/// <reference path="../../node_modules/@types/mocha/index.d.ts" />
-
 import * as assert from 'assert'
 import * as doc from '@mojule/document'
 import { entityModelToForm } from '../forms/entity-model-to-form'
 import { schemaFormToEntityModel } from '../forms/schema-form-to-entity-model'
-import { EntitySchema } from '../predicates/entity-schema'
 import { simpleTypesSchema, simpleArraySchema, simpleEnumSchema, simpleOneOfSchema, simpleFileSchema, personSchema, personReferenceSchema, arrayOfEntitySchema } from './fixtures/forms/schema'
 import { strictSelect } from '@mojule/dom-utils'
 import { ArrayifySymbol, arrayifySchemaForm, SchemaCollection } from '..'
@@ -12,6 +9,7 @@ import * as H from '@mojule/h'
 import { IH } from '@mojule/h/types'
 import { ILinkMap, addLinks } from '../add-links';
 import { createFile, addFileList } from './fixtures/forms/addFileList'
+import { EntitySchema } from '@entity-schema/predicates';
 
 const document: Document = doc
 const h: IH = H( document )

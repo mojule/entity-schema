@@ -1,5 +1,5 @@
-import { kebabCase } from "lodash";
-import { RootSchema } from "../../predicates/root-schema";
+import { kebabCase } from 'lodash'
+import { RootSchema } from '@entity-schema/predicates'
 
 const defaultFileType = 'file'
 const defaultTagType = 'item'

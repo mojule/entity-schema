@@ -1,6 +1,7 @@
-import { EntitySchema } from './predicates/entity-schema'
 import { schemaWalk } from './schema-walk'
-import { isEntityReferenceSchema } from './predicates/entity-reference-schema'
+import {
+  EntitySchema, isEntityReferenceSchema
+} from '@entity-schema/predicates'
 
 export const linkTitlesForSchema = ( entitySchema: EntitySchema ) => {
   const titles : string[] = []

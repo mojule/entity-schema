@@ -1,0 +1,28 @@
+{
+  "id": "http://workingspec.com/schema/zip-file-reference",
+  "title": "Zip File Reference",
+  "description": "Links to a Zip File",
+  "type": "object",
+  "properties": {
+    "entityId": {
+      "title": "Zip File",
+      "type": "string",
+      "pattern": "^[0-9a-f]{24}$",
+      "message": "Zip File must be a 24 character hex string. (0-9, a-f)"
+    },
+    "entityType": {
+      "title": "Entity Type",
+      "type": "string",
+      "enum": [
+        "Zip File"
+      ],
+      "readOnly": true,
+      "default": "Zip File"
+    }
+  },
+  "required": [
+    "entityId",
+    "entityType"
+  ],
+  "additionalProperties": false
+}

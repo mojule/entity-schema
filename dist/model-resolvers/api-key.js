@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 const pify = require("pify");
 const types_1 = require("../security/types");
 const hash = pify(bcrypt.hash);
-exports.apiKeyResolver = async (access, document, model, req, res) => {
+exports.apiKeyResolver = async (access, document) => {
     if (access !== types_1.EntityAccesses.create)
         return { document };
     const secret = uuid.v4();

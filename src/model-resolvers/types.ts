@@ -1,4 +1,4 @@
-import { Document, MongooseDocument } from 'mongoose'
+import { Document } from 'mongoose'
 import { Request, Response } from 'express-serve-static-core'
 import { EntityAccess } from '../security/types'
 

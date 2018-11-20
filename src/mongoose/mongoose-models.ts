@@ -1,9 +1,8 @@
 import * as mongoose from 'mongoose'
-import * as camelCase from 'lodash.camelcase'
-import { RootSchema } from '../predicates/root-schema'
 import { SchemaCollection } from '../schema-collection'
 import { pascalCase } from '../utils/pascal-case'
 import { IExistingValuesMap } from '../add-uniques'
+import { RootSchema } from '@entity-schema/predicates'
 
 export const mongooseModels = <TMongooseModels>( schemaMap: RootSchema[] ) => {
   const rootSchemas = SchemaCollection( schemaMap )
@@ -36,7 +35,6 @@ export const mongooseModels = <TMongooseModels>( schemaMap: RootSchema[] ) => {
     }
 
     schema.statics.uniqueValuesMap = async function( parentId?: string ): Promise<IExistingValuesMap> {
-      const result: IExistingValuesMap = {}
       const names = rootSchemas.uniquePropertyNames( title )
 
       return Promise.all( names.map( propertyName => {

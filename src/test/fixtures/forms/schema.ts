@@ -1,6 +1,6 @@
-import { EntitySchema } from '../../../predicates/entity-schema'
-import { EntityReferenceSchema } from '../../../predicates/entity-reference-schema';
-import { RootSchema } from '../../../predicates/root-schema';
+import {
+  EntitySchema, EntityReferenceSchema, RootSchema
+} from '@entity-schema/predicates'
 
 export const simpleTypesSchema: EntitySchema = {
   id: 'http://example.com/schema/simple-types',

@@ -1,12 +1,8 @@
-import * as Mapper from '@mojule/mapper'
-import { ISchemaMap } from './schema-map'
-import { NormalizeSchema } from './normalize-schema'
 import { Schema } from 'mongoose'
 import { JSONSchema4 } from 'json-schema'
 import * as validate from 'mongoose-validator'
 import { is } from '@mojule/is'
-import { EntitySchema } from './predicates/entity-schema'
-import { TypedSchema } from './predicates/typed-schema';
+import { EntitySchema, TypedSchema } from '@entity-schema/predicates'
 
 const typeMap = {
   string: String,

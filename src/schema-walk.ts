@@ -1,7 +1,7 @@
 import * as Mapper from '@mojule/mapper'
-import { predicates } from './predicates'
 import { is } from '@mojule/is'
 import { JSONSchema4 } from 'json-schema'
+import { predicates } from '@entity-schema/predicates';
 
 const doCallback = ( schema, options ) => {
   const { callback, pathSegs } = options

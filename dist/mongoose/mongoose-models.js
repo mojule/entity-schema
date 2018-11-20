@@ -24,7 +24,6 @@ exports.mongooseModels = (schemaMap) => {
             return values;
         };
         schema.statics.uniqueValuesMap = async function (parentId) {
-            const result = {};
             const names = rootSchemas.uniquePropertyNames(title);
             return Promise.all(names.map(propertyName => {
                 const model = this.model(ctorName);

@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tv4 = require("tv4");
 const schema_map_1 = require("./schema-map");
 const normalize_schema_1 = require("./normalize-schema");
-const predicates_1 = require("./predicates");
 const unique_values_1 = require("./utils/unique-values");
 const schema_to_mongoose_schema_1 = require("./schema-to-mongoose-schema");
 const interface_schema_mapper_1 = require("./interface-schema-mapper");
@@ -13,6 +12,7 @@ const uploadable_properties_1 = require("./uploadable-properties");
 const types_1 = require("./security/types");
 const filter_schema_for_roles_1 = require("./filter-schema-for-roles");
 const is_1 = require("@mojule/is");
+const predicates_1 = require("@entity-schema/predicates");
 const SchemaMapResolver = (schemaMap) => (id) => schemaMap[id];
 const validateSchemas = (schemas) => {
     if (!Array.isArray(schemas)) {

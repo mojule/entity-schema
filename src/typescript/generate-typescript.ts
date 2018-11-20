@@ -1,9 +1,8 @@
 import { compile } from 'json-schema-to-typescript'
-import { JSONSchema4 } from 'json-schema'
 import { kebabCase } from 'lodash'
-import { RootSchema } from '../predicates/root-schema'
 import { SchemaCollection } from '../schema-collection'
 import { pascalCase } from '../utils/pascal-case'
+import { RootSchema } from '@entity-schema/predicates'
 
 export interface GeneratedFile {
   filename: string

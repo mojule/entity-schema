@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Mapper = require("@mojule/mapper");
-const predicates_1 = require("./predicates");
 const is_1 = require("@mojule/is");
+const predicates_1 = require("@entity-schema/predicates");
 const doCallback = (schema, options) => {
     const { callback, pathSegs } = options;
     const path = '/' + pathSegs.join('/');

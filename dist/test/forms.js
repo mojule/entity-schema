@@ -1,5 +1,4 @@
 "use strict";
-/// <reference path="../../node_modules/@types/mocha/index.d.ts" />
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require("assert");
 const doc = require("@mojule/document");

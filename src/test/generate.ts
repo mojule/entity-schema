@@ -1,19 +1,11 @@
 import * as assert from 'assert'
-import * as mongoose from 'mongoose'
 
 import {
-  validAppSchema, validEntitySchema, normalizedValidEntitySchema,
-  validEntitySchemaInterfaceSchema, toMongooseSchema, validEntitySchemaUniques,
-  entitySchemaWithArray, entitySchemaWithLinks, entitySchemaWithLinksAdded,
-  validEntitySchemaUniquesAdded,
-  validEnumSchema,
-  validChildSchema,
-  withOneOf,
-  validOneOfSchema
+  validAppSchema, validEntitySchema
 } from './fixtures/schema'
 
-import { RootSchema } from '../predicates/root-schema'
-import { generateTypescript } from '../typescript/generate-typescript';
+import { generateTypescript } from '../typescript/generate-typescript'
+import { RootSchema } from '@entity-schema/predicates'
 
 
 describe( 'generate', () => {

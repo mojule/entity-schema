@@ -1,12 +1,11 @@
-import { subschemaMap } from '..'
-import { EntitySchema } from '../predicates/entity-schema'
 import { userSchema } from '../security/app-schema/user-schema'
-import { flatten, glob, pointerValueArray, globPointerValues, get, pointerValueArrayToPointerMap, expand } from '@mojule/json-pointer'
+import { flatten, pointerValueArray, globPointerValues, get, pointerValueArrayToPointerMap, expand } from '@mojule/json-pointer'
 import { Role, Roles } from '../security/types'
-import { subschemaMapRemoveLeafNodes } from '../subschema-map-remove-leafs'
 import * as SchemaMapper from '@mojule/schema-mapper'
-
-const userSubSchemaMap = subschemaMapRemoveLeafNodes( <EntitySchema>userSchema )
+import { fs } from 'mz';
+import { zipFileSchema, imageFileSchema, diskFileSchema, zipFileReferenceSchema, imageFileReferenceSchema, diskFileReferenceSchema } from '../files/app-schema';
+import { apiKeySchema } from '../security/app-schema/api-key-schema';
+import { userReferenceSchema } from '../security/app-schema/user-reference-schema'
 
 const flat = flatten( userSchema )
 
@@ -33,11 +32,6 @@ const getParentPath = ( path: string, search: string ) => {
   return segs.slice( 0, searchIndex ).join( '/' )
 }
 
-const getTerminalPath = ( path: string ) => {
-  const segs = path.split( '/' )
-
-  return segs[ segs.length - 1 ]
-}
 
 console.log( 'getParentPath', getParentPath( '/properties/password/wsSecurity/create/0', 'wsSecurity' ) )
 console.log( 'getParentPath', JSON.stringify( getParentPath( '/wsSecurity/delete/0', 'wsSecurity' ) ) )
@@ -117,8 +111,18 @@ const schemaForUser = filterSchemaForRoles( userSchema, [ Roles.user ] )
 
 console.log( JSON.stringify( { schemaForAdmin, schemaForCurrentUser, schemaForUser } , null, 2 ) )
 
-const { from, to } = SchemaMapper( { omitDefault: false })
+const { from } = SchemaMapper( { omitDefault: false })
 
 const userDefaults = from( userSchema )
 
 console.log( JSON.stringify( userDefaults, null, 2 ) )
+
+fs.writeFileSync( './src/sandbox/zip-file.schema.json', JSON.stringify( zipFileSchema, null, 2 ), 'utf8' )
+fs.writeFileSync( './src/sandbox/image-file.schema.json', JSON.stringify( imageFileSchema, null, 2 ), 'utf8' )
+fs.writeFileSync( './src/sandbox/disk-file.schema.json', JSON.stringify( diskFileSchema, null, 2 ), 'utf8' )
+fs.writeFileSync( './src/sandbox/zip-file-reference.schema.json', JSON.stringify( zipFileReferenceSchema, null, 2 ), 'utf8' )
+fs.writeFileSync( './src/sandbox/image-file-reference.schema.json', JSON.stringify( imageFileReferenceSchema, null, 2 ), 'utf8' )
+fs.writeFileSync( './src/sandbox/disk-file-reference.schema.json', JSON.stringify( diskFileReferenceSchema, null, 2 ), 'utf8' )
+fs.writeFileSync( './src/sandbox/api-key.schema.json', JSON.stringify( apiKeySchema, null, 2 ), 'utf8' )
+fs.writeFileSync( './src/sandbox/user.schema.json', JSON.stringify( userSchema, null, 2 ), 'utf8' )
+fs.writeFileSync( './src/sandbox/user-reference.schema.json', JSON.stringify( userReferenceSchema, null, 2 ), 'utf8' )

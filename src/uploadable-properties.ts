@@ -1,4 +1,4 @@
-import { ObjectSchema } from './predicates/object-schema'
+import { ObjectSchema } from '@entity-schema/predicates'
 
 export const uploadablePropertyNames = ( objectSchema: ObjectSchema ) => {
   const { properties } = objectSchema

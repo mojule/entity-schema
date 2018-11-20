@@ -1,9 +1,0 @@
-{
-  "id": "http://workingspec.com/meta-schema/subschema",
-  "title": "Subschema",
-  "type": "object",
-  "oneOf": [
-    { "$ref": "http://workingspec.com/meta-schema/ref-schema" },
-    { "$ref": "http://workingspec.com/meta-schema/ws-schema" }
-  ]
-}
