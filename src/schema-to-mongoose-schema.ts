@@ -6,6 +6,7 @@ import { EntitySchema, TypedSchema } from '@entity-schema/predicates'
 
 const typeMap = {
   string: String,
+  integer: Number,
   number: Number,
   boolean: Boolean,
   array: Array,
@@ -51,6 +52,9 @@ const propertyToSchemaField = ( entitySchema: EntitySchema, propertyName: string
   const propertySchema = <TypedSchema>entitySchema.properties[ propertyName ]
   const propertyType: string = propertySchema.type
   const type = typeMap[ propertyType ]
+
+  if ( !type ) throw Error( `propertyToSchemaField: no type mapping for ${ propertyType }` )
+
   const required = Array.isArray( entitySchema.required ) && entitySchema.required.includes( propertyName )
   const schemaField: any = { type, required }
 
