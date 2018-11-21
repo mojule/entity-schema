@@ -22,6 +22,8 @@
   },
   "homepage": "https://github.com/mojule/entity-schema#readme",
   "dependencies": {
+    "@entity-schema/collection": "^0.1.1",
+    "@entity-schema/common-schema": "^0.1.0",
     "@entity-schema/predicates": "^0.1.0",
     "@mojule/dom-mapper": "^0.1.0",
     "@mojule/dom-utils": "^0.2.8",

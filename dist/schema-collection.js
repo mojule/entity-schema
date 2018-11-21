@@ -1,9 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const tv4 = require("tv4");
-const schema_map_1 = require("./schema-map");
-const normalize_schema_1 = require("./normalize-schema");
-const unique_values_1 = require("./utils/unique-values");
 const schema_to_mongoose_schema_1 = require("./schema-to-mongoose-schema");
 const interface_schema_mapper_1 = require("./interface-schema-mapper");
 const unique_properties_1 = require("./unique-properties");
@@ -13,28 +10,7 @@ const types_1 = require("./security/types");
 const filter_schema_for_roles_1 = require("./filter-schema-for-roles");
 const is_1 = require("@mojule/is");
 const predicates_1 = require("@entity-schema/predicates");
-const SchemaMapResolver = (schemaMap) => (id) => schemaMap[id];
-const validateSchemas = (schemas) => {
-    if (!Array.isArray(schemas)) {
-        throw Error('Expected an array of app schema');
-    }
-    const badSchemas = schemas.filter(schema => !predicates_1.predicates.rootSchema(schema));
-    if (badSchemas.length) {
-        let err = Error(`${badSchemas.length} bad schemas found`);
-        try {
-            const badSchemaList = badSchemas.map(bad => JSON.stringify(bad)).join('\n');
-            err = Error(`Bad schemas:\n${badSchemaList}`);
-        }
-        catch (e) {
-            throw err;
-        }
-        throw err;
-    }
-    if (schemas.length === 0)
-        throw Error('Must provide at least one schema');
-    if (!unique_values_1.uniqueValues(schemas, 'title'))
-        throw Error('Expected title property to be unique within schemas');
-};
+const collection_1 = require("@entity-schema/collection");
 exports.SchemaCollection = (schemas, userRoles, accesses = [types_1.EntityAccesses.read]) => {
     if (Array.isArray(userRoles)) {
         schemas = schemas.map(schema => {
@@ -42,10 +18,7 @@ exports.SchemaCollection = (schemas, userRoles, accesses = [types_1.EntityAccess
             return filterForRoles(userRoles, accesses);
         }).filter(schema => !is_1.is.empty(schema));
     }
-    validateSchemas(schemas);
-    const map = schema_map_1.SchemaMap(schemas);
-    const resolver = SchemaMapResolver(map);
-    const normalize = normalize_schema_1.NormalizeSchema(resolver);
+    const map = collection_1.createRootSchemaMap(schemas);
     const validator = tv4.freshApi();
     const titles = [];
     const titleMap = {};
@@ -103,7 +76,8 @@ exports.SchemaCollection = (schemas, userRoles, accesses = [types_1.EntityAccess
             assertTitle(title);
             if (normalizedSchemaCache.has(title))
                 return normalizedSchemaCache.get(title);
-            const normalizedSchema = normalize(titleMap[title]);
+            const schema = titleMap[title];
+            const normalizedSchema = collection_1.resolveRefSchemas(schema.id, map);
             normalizedSchemaCache.set(title, normalizedSchema);
             return normalizedSchema;
         },

@@ -20,7 +20,7 @@ import {
   SchemaCollection, loadSchemas, SchemaMap, subschemaMap, predicates,
   addUniques, linkTitlesForSchema, addLinks
 } from '..'
-import { userSchema } from '../security/app-schema/user-schema'
+import { userSchema } from '@entity-schema/common-schema'
 import { Roles } from '../security/types'
 import { FilterSchemaForRoles } from '../filter-schema-for-roles'
 import { RootSchema, EntitySchema } from '@entity-schema/predicates'

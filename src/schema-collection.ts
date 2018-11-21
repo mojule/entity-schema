@@ -1,8 +1,6 @@
 import * as tv4 from 'tv4'
 import { JSONSchema4 } from 'json-schema'
-import { SchemaMap, ISchemaMap, IAppSchemaMap } from './schema-map'
-import { NormalizeSchema } from './normalize-schema'
-import { uniqueValues } from './utils/unique-values'
+import { IAppSchemaMap } from './schema-map'
 import { Schema } from 'mongoose'
 import { schemaToMongooseSchema } from './schema-to-mongoose-schema'
 import { interfaceSchemaMapper } from './interface-schema-mapper'
@@ -11,40 +9,10 @@ import { filterEntityBySchema } from './filter-entity-by-schema'
 import { uploadablePropertyNames } from './uploadable-properties'
 import { Role, EntityAccess, EntityAccesses } from './security/types'
 import { FilterSchemaForRoles } from './filter-schema-for-roles'
-import { is } from '@mojule/is';
+import { is } from '@mojule/is'
 import { SchemaCollectionApi } from './types'
 import { RootSchema, EntitySchema, predicates } from '@entity-schema/predicates'
-
-const SchemaMapResolver = ( schemaMap: ISchemaMap ) =>
-  ( id: string ): JSONSchema4 => schemaMap[ id ]
-
-const validateSchemas = ( schemas : RootSchema[] ) => {
-  if( !Array.isArray( schemas ) ){
-    throw Error( 'Expected an array of app schema' )
-  }
-
-  const badSchemas = schemas.filter( schema => !predicates.rootSchema( schema ) )
-
-  if( badSchemas.length ){
-    let err = Error( `${ badSchemas.length } bad schemas found` )
-
-    try {
-      const badSchemaList = badSchemas.map( bad => JSON.stringify( bad ) ).join( '\n' )
-
-      err =  Error( `Bad schemas:\n${ badSchemaList }` )
-    } catch( e ){
-      throw err
-    }
-
-    throw err
-  }
-
-  if( schemas.length === 0 )
-    throw Error( 'Must provide at least one schema' )
-
-  if( !uniqueValues( schemas, 'title' ) )
-    throw Error( 'Expected title property to be unique within schemas' )
-}
+import { resolveRefSchemas, createRootSchemaMap } from '@entity-schema/collection'
 
 export const SchemaCollection = ( schemas: RootSchema[], userRoles?: Role[], accesses: EntityAccess[] = [ EntityAccesses.read ] ): SchemaCollectionApi => {
   if( Array.isArray( userRoles ) ){
@@ -57,11 +25,7 @@ export const SchemaCollection = ( schemas: RootSchema[], userRoles?: Role[], acc
     ).filter( schema => !is.empty( schema ) )
   }
 
-  validateSchemas( schemas )
-
-  const map = SchemaMap( schemas )
-  const resolver = SchemaMapResolver( map )
-  const normalize = NormalizeSchema( resolver )
+  const map = createRootSchemaMap( schemas )
   const validator = tv4.freshApi()
 
   const titles : string[] = []
@@ -132,7 +96,8 @@ export const SchemaCollection = ( schemas: RootSchema[], userRoles?: Role[], acc
       if( normalizedSchemaCache.has( title ) )
         return normalizedSchemaCache.get( title )!
 
-      const normalizedSchema = <RootSchema>normalize( titleMap[ title ] )
+      const schema = titleMap[ title ]
+      const normalizedSchema = resolveRefSchemas( schema.id, map )
 
       normalizedSchemaCache.set( title, normalizedSchema )
 

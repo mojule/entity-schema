@@ -5,6 +5,7 @@ const validate = require("mongoose-validator");
 const is_1 = require("@mojule/is");
 const typeMap = {
     string: String,
+    integer: Number,
     number: Number,
     boolean: Boolean,
     array: Array,
@@ -41,6 +42,8 @@ const propertyToSchemaField = (entitySchema, propertyName) => {
     const propertySchema = entitySchema.properties[propertyName];
     const propertyType = propertySchema.type;
     const type = typeMap[propertyType];
+    if (!type)
+        throw Error(`propertyToSchemaField: no type mapping for ${propertyType}`);
     const required = Array.isArray(entitySchema.required) && entitySchema.required.includes(propertyName);
     const schemaField = { type, required };
     const validators = stringValidators(propertySchema, required);

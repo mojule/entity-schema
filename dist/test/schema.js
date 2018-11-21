@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const schema_1 = require("./fixtures/schema");
 const is_1 = require("@mojule/is");
 const __1 = require("..");
-const user_schema_1 = require("../security/app-schema/user-schema");
+const common_schema_1 = require("@entity-schema/common-schema");
 const types_1 = require("../security/types");
 const filter_schema_for_roles_1 = require("../filter-schema-for-roles");
 describe('Schema', () => {
@@ -418,10 +418,10 @@ describe('Schema', () => {
         const adminRole = [types_1.Roles.admin];
         const currentUserRole = [types_1.Roles.currentUser];
         const userRole = [types_1.Roles.user];
-        const filterSchemaForRoles = filter_schema_for_roles_1.FilterSchemaForRoles(user_schema_1.userSchema);
+        const filterSchemaForRoles = filter_schema_for_roles_1.FilterSchemaForRoles(common_schema_1.userSchema);
         it('filters for admin', () => {
             const schema = filterSchemaForRoles(adminRole);
-            assert.deepEqual(schema, user_schema_1.userSchema);
+            assert.deepEqual(schema, common_schema_1.userSchema);
         });
         it('filters for currentUser', () => {
             const schema = filterSchemaForRoles(currentUserRole);
