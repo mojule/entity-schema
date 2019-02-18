@@ -6,7 +6,6 @@ import { filterEntityBySchema } from './filter-entity-by-schema'
 import { interfaceSchemaMapper } from './interface-schema-mapper'
 import { linkTitlesForSchema } from './link-titles-for-schema'
 import { loadSchemas } from './load-schemas'
-import { SchemaMap } from './schema-map'
 import { schemaToForm } from './forms/schema-to-form'
 import { schemaToMongooseSchema } from './schema-to-mongoose-schema'
 import { schemaWalk } from './schema-walk'
@@ -28,7 +27,7 @@ import { predicates, predicateUtils } from '@entity-schema/predicates'
 export {
   SchemaCollection, addLinks, addUniques, arrayifySchemaForm,
   filterEntityBySchema, interfaceSchemaMapper, linkTitlesForSchema,
-  loadSchemas, SchemaMap, schemaToForm, schemaToMongooseSchema, schemaWalk,
+  loadSchemas, schemaToForm, schemaToMongooseSchema, schemaWalk,
   subschemaMap, uniquePropertyNames, uploadablePropertyNames, predicates,
   ArrayifySymbol, oneOfSchemaForm, OneOfSymbol, entityModelToForm,
   schemaFormToEntityModel, predicateUtils, mongooseModels, EntityRoutes,

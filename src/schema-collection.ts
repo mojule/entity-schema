@@ -1,6 +1,5 @@
 import * as tv4 from 'tv4'
 import { JSONSchema4 } from 'json-schema'
-import { IAppSchemaMap } from './schema-map'
 import { Schema } from 'mongoose'
 import { schemaToMongooseSchema } from './schema-to-mongoose-schema'
 import { interfaceSchemaMapper } from './interface-schema-mapper'
@@ -12,7 +11,7 @@ import { FilterSchemaForRoles } from './filter-schema-for-roles'
 import { is } from '@mojule/is'
 import { SchemaCollectionApi } from './types'
 import { RootSchema, EntitySchema, predicates } from '@entity-schema/predicates'
-import { resolveRefSchemas, createRootSchemaMap } from '@entity-schema/collection'
+import { resolveRefSchemas, createRootSchemaMap, RootSchemaMap } from '@entity-schema/collection'
 
 export const SchemaCollection = ( schemas: RootSchema[], userRoles?: Role[], accesses: EntityAccess[] = [ EntityAccesses.read ] ): SchemaCollectionApi => {
   if( Array.isArray( userRoles ) ){
@@ -29,7 +28,7 @@ export const SchemaCollection = ( schemas: RootSchema[], userRoles?: Role[], acc
   const validator = tv4.freshApi()
 
   const titles : string[] = []
-  const titleMap : IAppSchemaMap = {}
+  const titleMap : RootSchemaMap = {}
   const entitySchemas : EntitySchema[] = []
   const entityTitles : string[] = []
   const enumTitles: string[] = []
