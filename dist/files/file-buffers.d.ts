@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { FilePathBuffers } from '../files/types';
 export declare const writeFileBuffers: (rootPath: string, fileBuffers: FilePathBuffers) => Promise<any[]>;
 export declare const readFileBuffers: (paths: string[]) => Promise<FilePathBuffers>;

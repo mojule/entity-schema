@@ -1,4 +1,3 @@
-/// <reference types="node" />
 export interface FileMeta {
     filename: string;
     mimetype: string;

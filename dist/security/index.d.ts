@@ -1,7 +1,7 @@
 import { Model } from 'mongoose';
 import { UserDocument, ApiKeyDocument } from './types';
 import { Request } from 'express-serve-static-core';
-export declare const PassportSecurity: (User: Model<UserDocument>, ApiKey: Model<ApiKeyDocument>) => {
+export declare const PassportSecurity: (User: Model<UserDocument, {}>, ApiKey: Model<ApiKeyDocument, {}>) => {
     strategy: (email: any, password: any, done: any) => void;
     apiKeyStrategy: (id: any, secret: any, done: any) => void;
     serializeUser: (user: UserDocument, cb: any) => void;

@@ -42,7 +42,7 @@ exports.FilterSchemaForRoles = (schema) => {
             });
         };
         const filteredPvs = pvas.filter(pv => {
-            if (!userRoles.includes(types_1.Roles.admin) && pv.pointer.includes('/ws'))
+            if (!userRoles.includes(types_1.Roles.admin) && pv.pointer.includes('/wsSecurity'))
                 return false;
             if (pv.pointer.includes('/required/')) {
                 const parent = getParentPath(pv.pointer, 'required');
