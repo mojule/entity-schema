@@ -23,7 +23,7 @@ import { FileResolverMap, fileResolvers } from '../../file-resolvers'
 import { EntityStorage, FileHandler } from '../../file-resolvers/entity-storage'
 import { getMultipartData } from '../../utils/get-multipart-values'
 import * as pify from 'pify'
-import { EntitySchema, RootSchema } from '@entity-schema/predicates';
+import { EntitySchema, RootSchema } from '@entity-schema/predicates'
 
 const { from: entityFromSchema } = SchemaMapper( { omitDefault: false } )
 

@@ -6,13 +6,10 @@ import { TitlesAnchorNav, ErrorPage, AppPage, ActionList } from '../templates'
 import { linkTitlesForSchema } from '../../../link-titles-for-schema'
 import { addLinks } from '../../../add-links'
 import { IClientRouterMap } from './client-router'
-import { schemaToForm } from '../../../forms/schema-to-form'
-import { schemaFormToEntityModel } from '../../../forms/schema-form-to-entity-model'
 import { uploadablePropertyNames } from '../../../uploadable-properties'
-import { entityModelToForm } from '../../../forms/entity-model-to-form'
 import { strictSelect } from '@mojule/dom-utils'
 import { is } from '@mojule/is'
-import { EntitySchema } from '@entity-schema/predicates';
+import { EntitySchema } from '@entity-schema/predicates'
 
 const schemaWithLinks = async ( schema, authorize?: string ) => {
   const linkTitles = linkTitlesForSchema( schema )
