@@ -10,6 +10,11 @@ import { uploadablePropertyNames } from '../../../uploadable-properties'
 import { strictSelect } from '@mojule/dom-utils'
 import { is } from '@mojule/is'
 import { EntitySchema } from '@entity-schema/predicates'
+import { ClientFormTemplates, SchemaToFormElements, getEntries, entriesToPointers } from '@mojule/schema-forms'
+import { expand } from '@mojule/json-pointer';
+
+const templates = ClientFormTemplates( document, Event )
+const toForm = SchemaToFormElements( templates )
 
 const schemaWithLinks = async ( schema, authorize?: string ) => {
   const linkTitles = linkTitlesForSchema( schema )
@@ -73,7 +78,7 @@ export const entityRoutes: IClientRouterMap = {
       const schema = await getSchema( title, getApiKey() )
 
 
-      const schemaForm = schemaToForm( document, schema )
+      const schemaForm = toForm( schema )
 
       const content = documentFragment(
         h2( 'Entities' ),
@@ -89,7 +94,7 @@ export const entityRoutes: IClientRouterMap = {
       const postHandler = async e => {
         e.preventDefault()
 
-        const model = schemaFormToEntityModel( schemaForm )
+        const model = getData( <HTMLFormElement>schemaForm )
 
         const uploadableProperties = uploadablePropertyNames( schema )
         const hasUploadable = uploadableProperties.length > 0
@@ -132,7 +137,7 @@ export const entityRoutes: IClientRouterMap = {
       const schema = await getSchema( title, getApiKey() )
       const entity = await fetchJson( `/api/v1/${ title }/${ id }`, getApiKey() )
 
-      const entityForm = entityModelToForm( document, schema, entity )
+      const entityForm = toForm( schema, title, entity )
 
       const content = documentFragment(
         h2( 'Entities' ),
@@ -149,7 +154,7 @@ export const entityRoutes: IClientRouterMap = {
         e.preventDefault()
 
         const uploadableProperties = uploadablePropertyNames( schema )
-        const model = schemaFormToEntityModel( entityForm )
+        const model = getData( <HTMLFormElement>entityForm )
         const hasUploadable = !!uploadableProperties.length
 
         const uri = `/api/v1/${ title }/${ id }`
@@ -260,4 +265,17 @@ export const entityRoutes: IClientRouterMap = {
       res.send( ErrorPage( err ) )
     }
   }
+}
+
+export const getData = ( form: HTMLFormElement ) => {
+  const entries = getEntries( form, false )
+  const pointers = entriesToPointers( entries )
+
+  const map: any = {}
+
+  pointers.forEach( ( [ pointer, value ] ) => {
+    map[ pointer ] = value
+  } )
+
+  return expand( map )
 }

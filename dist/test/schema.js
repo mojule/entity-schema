@@ -188,11 +188,6 @@ describe('Schema', () => {
             });
         });
     });
-    describe('SchemaMap', () => {
-        it('Schema with no id', () => {
-            assert.throws(() => __1.SchemaMap([{ type: 'object' }]));
-        });
-    });
     describe('Subschema Map', () => {
         describe('Reduces subschema to a JSON pointer path -> schema map', () => {
             const schemas = __1.SchemaCollection([schema_1.validAppSchema, schema_1.entitySchemaWithArray, schema_1.validChildSchema, schema_1.validOneOfSchema, schema_1.withOneOf]);

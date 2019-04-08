@@ -7,12 +7,13 @@ const lodash_1 = require("lodash");
 const templates_1 = require("../templates");
 const link_titles_for_schema_1 = require("../../../link-titles-for-schema");
 const add_links_1 = require("../../../add-links");
-const schema_to_form_1 = require("../../../forms/schema-to-form");
-const schema_form_to_entity_model_1 = require("../../../forms/schema-form-to-entity-model");
 const uploadable_properties_1 = require("../../../uploadable-properties");
-const entity_model_to_form_1 = require("../../../forms/entity-model-to-form");
 const dom_utils_1 = require("@mojule/dom-utils");
 const is_1 = require("@mojule/is");
+const schema_forms_1 = require("@mojule/schema-forms");
+const json_pointer_1 = require("@mojule/json-pointer");
+const templates = schema_forms_1.ClientFormTemplates(document, Event);
+const toForm = schema_forms_1.SchemaToFormElements(templates);
 const schemaWithLinks = async (schema, authorize) => {
     const linkTitles = link_titles_for_schema_1.linkTitlesForSchema(schema);
     const fetchJsonMap = linkTitles.reduce((map, title) => {
@@ -56,7 +57,7 @@ exports.entityRoutes = {
         try {
             const titles = await fetch_json_1.fetchJson('/api/v1', getApiKey());
             const schema = await getSchema(title, getApiKey());
-            const schemaForm = schema_to_form_1.schemaToForm(document, schema);
+            const schemaForm = toForm(schema);
             const content = h_1.documentFragment(h_1.h2('Entities'), templates_1.TitlesAnchorNav({
                 routePrefix: '/entity',
                 titles,
@@ -64,7 +65,7 @@ exports.entityRoutes = {
             }), h_1.h3(`New ${lodash_1.startCase(title)}`), schemaForm);
             const postHandler = async (e) => {
                 e.preventDefault();
-                const model = schema_form_to_entity_model_1.schemaFormToEntityModel(schemaForm);
+                const model = exports.getData(schemaForm);
                 const uploadableProperties = uploadable_properties_1.uploadablePropertyNames(schema);
                 const hasUploadable = uploadableProperties.length > 0;
                 const uri = `/api/v1/${title}`;
@@ -97,7 +98,7 @@ exports.entityRoutes = {
             const titles = await fetch_json_1.fetchJson('/api/v1', getApiKey());
             const schema = await getSchema(title, getApiKey());
             const entity = await fetch_json_1.fetchJson(`/api/v1/${title}/${id}`, getApiKey());
-            const entityForm = entity_model_to_form_1.entityModelToForm(document, schema, entity);
+            const entityForm = toForm(schema, title, entity);
             const content = h_1.documentFragment(h_1.h2('Entities'), templates_1.TitlesAnchorNav({
                 routePrefix: '/entity',
                 titles,
@@ -106,7 +107,7 @@ exports.entityRoutes = {
             const putHandler = async (e) => {
                 e.preventDefault();
                 const uploadableProperties = uploadable_properties_1.uploadablePropertyNames(schema);
-                const model = schema_form_to_entity_model_1.schemaFormToEntityModel(entityForm);
+                const model = exports.getData(entityForm);
                 const hasUploadable = !!uploadableProperties.length;
                 const uri = `/api/v1/${title}/${id}`;
                 const putter = hasUploadable ?
@@ -181,5 +182,14 @@ exports.entityRoutes = {
             res.send(templates_1.ErrorPage(err));
         }
     }
+};
+exports.getData = (form) => {
+    const entries = schema_forms_1.getEntries(form, false);
+    const pointers = schema_forms_1.entriesToPointers(entries);
+    const map = {};
+    pointers.forEach(([pointer, value]) => {
+        map[pointer] = value;
+    });
+    return json_pointer_1.expand(map);
 };
 //# sourceMappingURL=entity-routes.js.map

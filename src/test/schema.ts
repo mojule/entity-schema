@@ -17,8 +17,8 @@ import { IExistingValuesMap } from '../add-uniques'
 import { ILinkMap } from '../add-links'
 
 import {
-  SchemaCollection, loadSchemas, SchemaMap, subschemaMap, predicates,
-  addUniques, linkTitlesForSchema, addLinks
+  SchemaCollection, loadSchemas, subschemaMap, predicates, addUniques,
+  linkTitlesForSchema, addLinks
 } from '..'
 import { userSchema } from '@entity-schema/common-schema'
 import { Roles } from '../security/types'
@@ -260,12 +260,6 @@ describe( 'Schema', () => {
       it( 'parentProperty is undefined', () => {
         assert.strictEqual( collection.parentProperty( 'valid-entity-schema' ), undefined )
       })
-    })
-  })
-
-  describe( 'SchemaMap', () => {
-    it( 'Schema with no id', () => {
-      assert.throws( () => SchemaMap( [ { type: 'object' }] ))
     })
   })
 
