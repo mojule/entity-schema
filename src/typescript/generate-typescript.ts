@@ -70,10 +70,10 @@ const generateEnums = ( enumTitles: string[], schemaCollection ) => {
     const enumSchema = schemaCollection.get( title )
 
     const keys = <string[]>enumSchema.enum
-    const titles = <string[]>enumSchema._esTitles
+    const titles = <string[]>enumSchema._enumTitles
 
     if ( keys.length !== titles.length ) {
-      throw Error( 'Enum - enum.length must be the same as _esTitles.length' )
+      throw Error( 'Enum - enum.length must be the same as _enumTitles.length' )
     }
 
     const keyToTitleMap = keys.reduce( ( map, key, i ) => {

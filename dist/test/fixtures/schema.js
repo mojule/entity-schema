@@ -234,7 +234,7 @@ exports.entitySchemaWithLinksAdded = {
                     pattern: "^[0-9a-f]{24}$",
                     message: "Parent must be a 24 character hex string. (0-9, a-f)",
                     enum: ['foo'],
-                    _esTitles: ['Foo']
+                    _enumTitles: ['Foo']
                 },
                 entityType: {
                     title: "Entity Type",
@@ -257,7 +257,7 @@ exports.validEnumSchema = {
     enum: [
         "notSpecified", "other", "internal", "manufacturer"
     ],
-    _esTitles: [
+    _enumTitles: [
         "Not Specified", "Other", "Internal", "Manufacturer"
     ]
 };

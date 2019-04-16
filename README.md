@@ -251,7 +251,7 @@ A schema representing a string enum
 
 It should be of type string, with an `enum` keyword listing possible values
 
-It should have a `_esTitles` keyword that lists human readable titles for the
+It should have a `_enumTitles` keyword that lists human readable titles for the
 enums - so these two arrays should have the same length
 
 ```json
@@ -261,7 +261,7 @@ enums - so these two arrays should have the same length
   "enum": [
     "foo", "bar", "baz"
   ],
-  "_esTitles": [
+  "_enumTitles": [
     "Foo", "Bar", "Baz"
   ]
 }

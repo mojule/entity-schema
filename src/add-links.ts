@@ -34,7 +34,7 @@ export const addLinks = ( schema: EntitySchema, linkMap: ILinkMap ) : EntitySche
       if( !predicates.linkList( links ) ) throw Error( `Expected a list of links for ${ title }` )
 
       subSchema.properties.entityId.enum = links.map( link => link._id )
-      subSchema.properties.entityId._esTitles = links.map( link => link.name )
+      subSchema.properties.entityId._enumTitles = links.map( link => link.name )
     }
   })
 

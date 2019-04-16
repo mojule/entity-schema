@@ -119,7 +119,7 @@ export const simpleEnumSchema: EntitySchema = {
       type: 'string',
       title: 'String Enum',
       enum: [ 'foo', 'bar', 'baz' ],
-      _esTitles: [ 'Foo', 'Bar', 'Baz' ],
+      _enumTitles: [ 'Foo', 'Bar', 'Baz' ],
       message: 'Must be Foo, Bar or Baz'
     }
   },
