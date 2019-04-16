@@ -1,5 +1,5 @@
 import { fetchJson, postJson, putJson, fetchJsonMultiple, postFormData, putFormData, postDelete } from '../utils/fetch-json'
-import { documentFragment, h2, h3, h4, input, p } from '../utils/h'
+import { documentFragment, h2, h3, h4, input, p, form } from '../utils/h'
 import { objectToDom } from '../utils/object-to-dom'
 import { startCase, kebabCase } from 'lodash'
 import { TitlesAnchorNav, ErrorPage, AppPage, ActionList } from '../templates'
@@ -12,9 +12,13 @@ import { is } from '@mojule/is'
 import { EntitySchema } from '@entity-schema/predicates'
 import { ClientFormTemplates, SchemaToFormElements, getEntries, entriesToPointers } from '@mojule/schema-forms'
 import { expand } from '@mojule/json-pointer';
+import { JSONSchema4 } from 'json-schema';
 
 const templates = ClientFormTemplates( document, Event )
-const toForm = SchemaToFormElements( templates )
+const toFormElements = SchemaToFormElements( templates )
+
+const toForm = ( schema: JSONSchema4, name?: string, value? ) =>
+  form( toFormElements( schema, name, value ) )
 
 const schemaWithLinks = async ( schema, authorize?: string ) => {
   const linkTitles = linkTitlesForSchema( schema )
