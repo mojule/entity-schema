@@ -13,7 +13,8 @@ const is_1 = require("@mojule/is");
 const schema_forms_1 = require("@mojule/schema-forms");
 const json_pointer_1 = require("@mojule/json-pointer");
 const templates = schema_forms_1.ClientFormTemplates(document, Event);
-const toForm = schema_forms_1.SchemaToFormElements(templates);
+const toFormElements = schema_forms_1.SchemaToFormElements(templates);
+const toForm = (schema, name, value) => h_1.form(toFormElements(schema, name, value));
 const schemaWithLinks = async (schema, authorize) => {
     const linkTitles = link_titles_for_schema_1.linkTitlesForSchema(schema);
     const fetchJsonMap = linkTitles.reduce((map, title) => {
