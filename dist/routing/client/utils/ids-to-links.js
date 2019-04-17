@@ -6,8 +6,8 @@ const nameMap = new Map();
 exports.getSchemaTitle = async (title) => {
     if (!nameMap.has(title)) {
         const result = await fetch_json_1.fetchJson(`/schema/${title}`);
-        if (typeof result['name'] === 'string') {
-            nameMap.set(title, result['name']);
+        if (typeof result['title'] === 'string') {
+            nameMap.set(title, result['title']);
         }
         else {
             nameMap.set(title, title);

@@ -8,8 +8,8 @@ export const getSchemaTitle = async ( title: string ) => {
   if ( !nameMap.has( title ) ) {
     const result = await fetchJson( `/schema/${ title }` )
 
-    if ( typeof result[ 'name' ] === 'string' ) {
-      nameMap.set( title, result[ 'name' ] )
+    if ( typeof result[ 'title' ] === 'string' ) {
+      nameMap.set( title, result[ 'title' ] )
     } else {
       nameMap.set( title, title )
     }
