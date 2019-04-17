@@ -7,22 +7,24 @@ exports.AppPageTemplate = (deps) => {
     const AnchorLinkItem = anchor_link_item_1.AnchorLinkItemTemplate(deps);
     const AppPage = (model = {}, ...childNodes) => {
         const { currentPath = '' } = model;
-        const navList = nav(ul());
-        const main = div();
-        const dom = documentFragment(navList, main);
-        childNodes.forEach(childNode => {
-            main.appendChild(childNode);
-        });
         const anchorLinkModels = [
-            { path: '/schema', title: 'Schema', isCurrent: currentPath === '/schema' },
-            { path: '/entity', title: 'Entities', isCurrent: currentPath === '/entity' },
-            { path: '/files', title: 'Files', isCurrent: currentPath === '/files' }
+            {
+                path: '/schema',
+                title: 'Schema',
+                isCurrent: currentPath.startsWith('/schema')
+            },
+            {
+                path: '/entity',
+                title: 'Entities',
+                isCurrent: currentPath.startsWith('/entity')
+            },
+            {
+                path: '/files',
+                title: 'Files',
+                isCurrent: currentPath.startsWith('/files')
+            }
         ];
-        anchorLinkModels.forEach(model => {
-            const anchorLink = AnchorLinkItem(model);
-            navList.appendChild(anchorLink);
-        });
-        return dom;
+        return documentFragment(nav({ class: 'primary-nav' }, ul(...anchorLinkModels.map(AnchorLinkItem))), div(...childNodes));
     };
     return AppPage;
 };

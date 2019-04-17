@@ -2,7 +2,7 @@ import { fetchJson, postJson, putJson, fetchJsonMultiple, postFormData, putFormD
 import { documentFragment, h2, h3, h4, input, p, form } from '../utils/h'
 import { objectToDom } from '../utils/object-to-dom'
 import { startCase, kebabCase } from 'lodash'
-import { TitlesAnchorNav, ErrorPage, AppPage, ActionList } from '../templates'
+import { AnchorNav, ErrorPage, AppPage, ActionList } from '../templates'
 import { linkTitlesForSchema } from '../../../link-titles-for-schema'
 import { addLinks } from '../../../add-links'
 import { IClientRouterMap } from './client-router'
@@ -74,12 +74,15 @@ export const entityRoutes: IClientRouterMap = {
       const types: string[] = await fetchJson( '/api/v1', getApiKey() )
       const schema = await getSchema( title, getApiKey() )
       const links = await entityTypesToLinks( types, '/entity', title )
+      const nav = AnchorNav( links )
+
+      nav.classList.add( 'seconary-nav' )
 
       const schemaForm = toForm( schema )
 
       const content = documentFragment(
         h2( 'Entities' ),
-        TitlesAnchorNav( links ),
+        nav,
         h3( `New ${ startCase( title ) }` ),
         schemaForm
       )
@@ -130,12 +133,15 @@ export const entityRoutes: IClientRouterMap = {
       const links = await entityTypesToLinks( types, '/entity', title )
       const schema = await getSchema( title, getApiKey() )
       const entity = await fetchJson( `/api/v1/${ title }/${ id }`, getApiKey() )
+      const nav = AnchorNav( links )
+
+      nav.classList.add( 'seconary-nav' )
 
       const entityForm = toForm( schema, title, entity )
 
       const content = documentFragment(
         h2( 'Entities' ),
-        TitlesAnchorNav( links ),
+        nav,
         h3( `Edit ${ startCase( title ) } ${ id }` ),
         entityForm
       )
@@ -190,15 +196,21 @@ export const entityRoutes: IClientRouterMap = {
     try {
       const types = await fetchJson( '/api/v1', getApiKey() )
       const links = await entityTypesToLinks( types, '/entity', title )
+      const nav = AnchorNav( links )
+
+      nav.classList.add( 'seconary-nav' )
 
       const content = documentFragment(
         h2( 'Entities' ),
-        TitlesAnchorNav( links )
+        nav
       )
 
       if ( title ) {
         const ids: string[] = await fetchJson( `/api/v1/${ title }`, getApiKey() )
         const links = await entityIdsForTypeToLinks( ids, '/entity', title, id )
+        const nav = AnchorNav( links )
+
+        nav.classList.add( 'tertiary-nav' )
 
         content.appendChild(
           documentFragment(
@@ -207,9 +219,9 @@ export const entityRoutes: IClientRouterMap = {
               title: `Create new ${ startCase( title ) }`
             } ] ),
 
-            h3( `${ startCase( title ) } IDs` ),
+            h3( `${ startCase( title ) } Entities` ),
 
-            TitlesAnchorNav( links )
+            nav
           )
         )
       }

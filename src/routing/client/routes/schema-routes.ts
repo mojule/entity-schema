@@ -1,5 +1,5 @@
 import { startCase } from 'lodash'
-import { TitlesAnchorNav, ActionList, AppPage, ErrorPage } from '../templates'
+import { AnchorNav, ActionList, AppPage, ErrorPage } from '../templates'
 import { fetchJson } from '../utils/fetch-json'
 import { documentFragment, h2, h3 } from '../utils/h'
 import { objectToDom } from '../utils/object-to-dom'
@@ -44,7 +44,9 @@ export const schemaRoutes: IClientRouterMap = {
 
       const links = await schemaNamesToLinks( titles )
 
-      const schemaNav = TitlesAnchorNav( links )
+      const schemaNav = AnchorNav( links )
+
+      schemaNav.classList.add( 'secondary-nav' )
 
       const content = documentFragment(
         h2( 'Schemas' ),

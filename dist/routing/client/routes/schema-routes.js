@@ -32,7 +32,8 @@ exports.schemaRoutes = {
                     await fetch_json_1.fetchJson(`/schema/${title}`, get_api_key_1.getApiKey()) :
                 undefined;
             const links = await ids_to_links_1.schemaNamesToLinks(titles);
-            const schemaNav = templates_1.TitlesAnchorNav(links);
+            const schemaNav = templates_1.AnchorNav(links);
+            schemaNav.classList.add('secondary-nav');
             const content = h_1.documentFragment(h_1.h2('Schemas'), schemaNav);
             if (schema && title) {
                 const schemaDom = object_to_dom_1.objectToDom(schema);

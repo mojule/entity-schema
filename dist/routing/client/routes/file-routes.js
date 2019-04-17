@@ -9,8 +9,9 @@ exports.FileRoutes = (resolverNames) => {
     const ids = ['disk-file', 'image-file', 'zip-file'];
     return {
         '/files': async (_req, res) => {
-            const links = await ids_to_links_1.entityTypesToLinks(ids, '/file');
-            const filesNav = templates_1.TitlesAnchorNav(links);
+            const links = await ids_to_links_1.entityTypesToLinks(ids, '/files');
+            const filesNav = templates_1.AnchorNav(links);
+            filesNav.classList.add('secondary-nav');
             const content = h_1.documentFragment(h_1.h2('Files'), filesNav);
             res.send(templates_1.AppPage({ currentPath: '/files' }, content));
         },
@@ -27,7 +28,8 @@ exports.FileRoutes = (resolverNames) => {
                 value: 'Create File'
             }));
             const links = await ids_to_links_1.entityIdsForTypeToLinks(ids, '/files', 'disk-file');
-            const filesNav = templates_1.TitlesAnchorNav(links);
+            const filesNav = templates_1.AnchorNav(links);
+            filesNav.classList.add('secondary-nav');
             const content = h_1.documentFragment(h_1.h2('Files'), filesNav, h_1.h3('Upload File'), formEl);
             formEl.addEventListener('submit', async (e) => {
                 e.preventDefault();
@@ -62,7 +64,8 @@ exports.FileRoutes = (resolverNames) => {
                 value: 'Create File'
             }));
             const links = await ids_to_links_1.entityIdsForTypeToLinks(ids, '/files', 'image-file');
-            const filesNav = templates_1.TitlesAnchorNav(links);
+            const filesNav = templates_1.AnchorNav(links);
+            filesNav.classList.add('secondary-nav');
             const content = h_1.documentFragment(h_1.h2('Files'), filesNav, h_1.h3('Upload Image File'), formEl);
             formEl.addEventListener('submit', async (e) => {
                 e.preventDefault();
@@ -97,7 +100,8 @@ exports.FileRoutes = (resolverNames) => {
                 value: 'Create File'
             }));
             const links = await ids_to_links_1.entityIdsForTypeToLinks(ids, '/files', 'zip-file');
-            const filesNav = templates_1.TitlesAnchorNav(links);
+            const filesNav = templates_1.AnchorNav(links);
+            filesNav.classList.add('secondary-nav');
             const content = h_1.documentFragment(h_1.h2('Files'), filesNav, h_1.h3('Upload Zip File'), formEl);
             formEl.addEventListener('submit', async (e) => {
                 e.preventDefault();

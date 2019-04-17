@@ -54,8 +54,10 @@ exports.entityRoutes = {
             const types = await fetch_json_1.fetchJson('/api/v1', get_api_key_1.getApiKey());
             const schema = await getSchema(title, get_api_key_1.getApiKey());
             const links = await ids_to_links_1.entityTypesToLinks(types, '/entity', title);
+            const nav = templates_1.AnchorNav(links);
+            nav.classList.add('seconary-nav');
             const schemaForm = toForm(schema);
-            const content = h_1.documentFragment(h_1.h2('Entities'), templates_1.TitlesAnchorNav(links), h_1.h3(`New ${lodash_1.startCase(title)}`), schemaForm);
+            const content = h_1.documentFragment(h_1.h2('Entities'), nav, h_1.h3(`New ${lodash_1.startCase(title)}`), schemaForm);
             const postHandler = async (e) => {
                 e.preventDefault();
                 const model = exports.getData(schemaForm);
@@ -92,8 +94,10 @@ exports.entityRoutes = {
             const links = await ids_to_links_1.entityTypesToLinks(types, '/entity', title);
             const schema = await getSchema(title, get_api_key_1.getApiKey());
             const entity = await fetch_json_1.fetchJson(`/api/v1/${title}/${id}`, get_api_key_1.getApiKey());
+            const nav = templates_1.AnchorNav(links);
+            nav.classList.add('seconary-nav');
             const entityForm = toForm(schema, title, entity);
-            const content = h_1.documentFragment(h_1.h2('Entities'), templates_1.TitlesAnchorNav(links), h_1.h3(`Edit ${lodash_1.startCase(title)} ${id}`), entityForm);
+            const content = h_1.documentFragment(h_1.h2('Entities'), nav, h_1.h3(`Edit ${lodash_1.startCase(title)} ${id}`), entityForm);
             const putHandler = async (e) => {
                 e.preventDefault();
                 const uploadableProperties = uploadable_properties_1.uploadablePropertyNames(schema);
@@ -135,14 +139,18 @@ exports.entityRoutes = {
         try {
             const types = await fetch_json_1.fetchJson('/api/v1', get_api_key_1.getApiKey());
             const links = await ids_to_links_1.entityTypesToLinks(types, '/entity', title);
-            const content = h_1.documentFragment(h_1.h2('Entities'), templates_1.TitlesAnchorNav(links));
+            const nav = templates_1.AnchorNav(links);
+            nav.classList.add('seconary-nav');
+            const content = h_1.documentFragment(h_1.h2('Entities'), nav);
             if (title) {
                 const ids = await fetch_json_1.fetchJson(`/api/v1/${title}`, get_api_key_1.getApiKey());
                 const links = await ids_to_links_1.entityIdsForTypeToLinks(ids, '/entity', title, id);
+                const nav = templates_1.AnchorNav(links);
+                nav.classList.add('tertiary-nav');
                 content.appendChild(h_1.documentFragment(templates_1.ActionList([{
                         path: `/entity/${title}/create`,
                         title: `Create new ${lodash_1.startCase(title)}`
-                    }]), h_1.h3(`${lodash_1.startCase(title)} IDs`), templates_1.TitlesAnchorNav(links)));
+                    }]), h_1.h3(`${lodash_1.startCase(title)} Entities`), nav));
             }
             if (id) {
                 const entity = await fetch_json_1.fetchJson(`/api/v1/${title}/${id}`, get_api_key_1.getApiKey());

@@ -17,7 +17,7 @@ import { ErrorPageTemplate } from './error-page'
 
 import {
   AnchorNavTemplate
-} from './titles-anchor-nav'
+} from './anchor-nav'
 
 const deps: AdminTemplateDeps = { h }
 
@@ -25,4 +25,4 @@ export const ActionList = ActionListTemplate( deps )
 export const AnchorLinkItem = AnchorLinkItemTemplate( deps )
 export const AppPage = AppPageTemplate( deps )
 export const ErrorPage = ErrorPageTemplate( deps )
-export const TitlesAnchorNav = AnchorNavTemplate( deps )
+export const AnchorNav = AnchorNavTemplate( deps )

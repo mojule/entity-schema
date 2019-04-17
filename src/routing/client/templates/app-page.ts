@@ -1,6 +1,5 @@
 import { AnchorLinkItemModel, AnchorLinkItemTemplate } from './anchor-link-item'
 import { AdminTemplateDeps } from './types'
-import { strictSelect } from '@mojule/dom-utils'
 
 export interface AppPageModel {
   currentPath? : string
@@ -12,33 +11,35 @@ export const AppPageTemplate = ( deps: AdminTemplateDeps ) => {
   const AnchorLinkItem = AnchorLinkItemTemplate( deps )
 
   const AppPage = ( model: AppPageModel = {}, ...childNodes : Node[] ) => {
-    const {
-      currentPath = ''
-    } = model
-
-    const navList = nav( ul() )
-    const main = div()
-    const dom = documentFragment(
-      navList, main
-    )
-
-    childNodes.forEach( childNode => {
-      main.appendChild( childNode )
-    })
+    const { currentPath = '' } = model
 
     const anchorLinkModels : AnchorLinkItemModel[] = [
-      { path: '/schema', title: 'Schema', isCurrent: currentPath === '/schema' },
-      { path: '/entity', title: 'Entities', isCurrent: currentPath === '/entity' },
-      { path: '/files', title: 'Files', isCurrent: currentPath === '/files' }
+      {
+        path: '/schema',
+        title: 'Schema',
+        isCurrent: currentPath.startsWith( '/schema' )
+      },
+      {
+        path: '/entity',
+        title: 'Entities',
+        isCurrent: currentPath.startsWith( '/entity' )
+      },
+      {
+        path: '/files',
+        title: 'Files',
+        isCurrent: currentPath.startsWith( '/files')
+      }
     ]
 
-    anchorLinkModels.forEach( model => {
-      const anchorLink = AnchorLinkItem( model )
-
-      navList.appendChild( anchorLink )
-    })
-
-    return dom
+    return documentFragment(
+      nav(
+        { class: 'primary-nav' },
+        ul(
+          ...anchorLinkModels.map( AnchorLinkItem )
+        )
+      ),
+      div( ...childNodes )
+    )
   }
 
   return AppPage

@@ -1,5 +1,5 @@
 import { documentFragment, form, input, label, h2, select, option, h3 } from '../utils/h'
-import { TitlesAnchorNav, AppPage, ErrorPage } from '../templates'
+import { AnchorNav, AppPage, ErrorPage } from '../templates'
 import { IClientRouterMap } from './client-router'
 import { sendFile } from '../utils/fetch-json'
 import { strictSelect } from '@mojule/dom-utils'
@@ -9,9 +9,11 @@ export const FileRoutes = ( resolverNames: string[] ): IClientRouterMap => {
   const ids = [ 'disk-file', 'image-file', 'zip-file' ]
   return {
     '/files': async ( _req, res ) => {
-      const links = await entityTypesToLinks( ids, '/file' )
+      const links = await entityTypesToLinks( ids, '/files' )
 
-      const filesNav = TitlesAnchorNav( links )
+      const filesNav = AnchorNav( links )
+
+      filesNav.classList.add( 'secondary-nav' )
 
       const content = documentFragment(
         h2( 'Files' ),
@@ -42,7 +44,9 @@ export const FileRoutes = ( resolverNames: string[] ): IClientRouterMap => {
       )
 
       const links = await entityIdsForTypeToLinks( ids, '/files', 'disk-file' )
-      const filesNav = TitlesAnchorNav( links )
+      const filesNav = AnchorNav( links )
+
+      filesNav.classList.add( 'secondary-nav' )
 
       const content = documentFragment(
         h2( 'Files' ),
@@ -93,7 +97,9 @@ export const FileRoutes = ( resolverNames: string[] ): IClientRouterMap => {
       )
 
       const links = await entityIdsForTypeToLinks( ids, '/files', 'image-file' )
-      const filesNav = TitlesAnchorNav( links )
+      const filesNav = AnchorNav( links )
+
+      filesNav.classList.add( 'secondary-nav' )
 
       const content = documentFragment(
         h2( 'Files' ),
@@ -153,7 +159,9 @@ export const FileRoutes = ( resolverNames: string[] ): IClientRouterMap => {
 
       const links = await entityIdsForTypeToLinks( ids, '/files', 'zip-file' )
 
-      const filesNav = TitlesAnchorNav( links )
+      const filesNav = AnchorNav( links )
+
+      filesNav.classList.add( 'secondary-nav' )
 
       const content = documentFragment(
         h2( 'Files' ),
