@@ -43,7 +43,7 @@ export const FileRoutes = ( resolverNames: string[] ): IClientRouterMap => {
         )
       )
 
-      const links = await entityIdsForTypeToLinks( ids, '/files', 'disk-file', 'disk-file' )
+      const links = await entityTypesToLinks( ids, '/files', 'disk-file' )
       const filesNav = AnchorNav( links )
 
       filesNav.classList.add( 'secondary-nav' )
@@ -96,7 +96,7 @@ export const FileRoutes = ( resolverNames: string[] ): IClientRouterMap => {
         )
       )
 
-      const links = await entityIdsForTypeToLinks( ids, '/files', 'image-file', 'image-file' )
+      const links = await entityTypesToLinks( ids, '/files', 'image-file' )
       const filesNav = AnchorNav( links )
 
       filesNav.classList.add( 'secondary-nav' )
@@ -157,7 +157,7 @@ export const FileRoutes = ( resolverNames: string[] ): IClientRouterMap => {
         )
       )
 
-      const links = await entityIdsForTypeToLinks( ids, '/files', 'zip-file', 'zip-file' )
+      const links = await entityTypesToLinks( ids, '/files', 'zip-file' )
 
       const filesNav = AnchorNav( links )
 
