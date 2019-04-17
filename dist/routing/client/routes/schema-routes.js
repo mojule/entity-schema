@@ -5,7 +5,8 @@ const templates_1 = require("../templates");
 const fetch_json_1 = require("../utils/fetch-json");
 const h_1 = require("../utils/h");
 const object_to_dom_1 = require("../utils/object-to-dom");
-const dom_utils_1 = require("@mojule/dom-utils");
+const ids_to_links_1 = require("../utils/ids-to-links");
+const get_api_key_1 = require("../utils/get-api-key");
 const linkifySchemaDom = (schemaDom) => {
     const $refs = schemaDom.querySelectorAll('td[data-name="$ref"]');
     for (let td of $refs) {
@@ -19,28 +20,19 @@ const linkifySchemaDom = (schemaDom) => {
         td.appendChild(link);
     }
 };
-const getApiKey = () => {
-    const clientDiv = dom_utils_1.strictSelect(document, '.client');
-    const { apiKey } = clientDiv.dataset;
-    if (apiKey)
-        return 'Basic ' + apiKey;
-};
 exports.schemaRoutes = {
     '/schema/:title?/:mode?': async (req, res) => {
         const title = req.params.title;
         const mode = req.params.mode;
         try {
-            const titles = await fetch_json_1.fetchJson('/schema', getApiKey());
+            const titles = await fetch_json_1.fetchJson('/schema', get_api_key_1.getApiKey());
             const schema = title ?
                 mode === 'normalized' ?
-                    await fetch_json_1.fetchJson(`/schema/${title}/normalized`, getApiKey()) :
-                    await fetch_json_1.fetchJson(`/schema/${title}`, getApiKey()) :
+                    await fetch_json_1.fetchJson(`/schema/${title}/normalized`, get_api_key_1.getApiKey()) :
+                    await fetch_json_1.fetchJson(`/schema/${title}`, get_api_key_1.getApiKey()) :
                 undefined;
-            const schemaNav = templates_1.TitlesAnchorNav({
-                routePrefix: '/schema',
-                titles,
-                currentTitle: title
-            });
+            const links = await ids_to_links_1.idsToLinks(titles, '/schema', title);
+            const schemaNav = templates_1.TitlesAnchorNav(links);
             const content = h_1.documentFragment(h_1.h2('Schemas'), schemaNav);
             if (schema && title) {
                 const schemaDom = object_to_dom_1.objectToDom(schema);

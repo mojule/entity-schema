@@ -1,7 +1,3 @@
+import { AnchorLinkItemModel } from './anchor-link-item';
 import { AdminTemplateDeps } from './types';
-export interface TitlesAnchorNavModel {
-    routePrefix?: string;
-    titles: string[];
-    currentTitle?: string;
-}
-export declare const TitlesAnchorNavTemplate: (deps: AdminTemplateDeps) => (model: TitlesAnchorNavModel) => HTMLElement;
+export declare const AnchorNavTemplate: (deps: AdminTemplateDeps) => (model: AnchorLinkItemModel[]) => HTMLElement;

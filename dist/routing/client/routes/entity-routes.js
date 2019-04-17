@@ -8,10 +8,11 @@ const templates_1 = require("../templates");
 const link_titles_for_schema_1 = require("../../../link-titles-for-schema");
 const add_links_1 = require("../../../add-links");
 const uploadable_properties_1 = require("../../../uploadable-properties");
-const dom_utils_1 = require("@mojule/dom-utils");
 const is_1 = require("@mojule/is");
 const schema_forms_1 = require("@mojule/schema-forms");
 const json_pointer_1 = require("@mojule/json-pointer");
+const get_api_key_1 = require("../utils/get-api-key");
+const ids_to_links_1 = require("../utils/ids-to-links");
 const templates = schema_forms_1.ClientFormTemplates(document, Event);
 const toFormElements = schema_forms_1.SchemaToFormElements(templates);
 const toForm = (schema, name, value) => h_1.form(toFormElements(schema, name, value));
@@ -37,12 +38,6 @@ const getSchema = async (title, authorize) => {
     const schema = await schemaWithLinks(normalizedSchema, authorize);
     return schema;
 };
-const getApiKey = () => {
-    const clientDiv = dom_utils_1.strictSelect(document, '.client');
-    const { apiKey } = clientDiv.dataset;
-    if (apiKey)
-        return 'Basic ' + apiKey;
-};
 let message = null;
 // destructive! allows for one-time messages
 const getMessage = () => {
@@ -56,14 +51,11 @@ exports.entityRoutes = {
     '/entity/:title/create': async (req, res) => {
         const title = req.params.title;
         try {
-            const titles = await fetch_json_1.fetchJson('/api/v1', getApiKey());
-            const schema = await getSchema(title, getApiKey());
+            const ids = await fetch_json_1.fetchJson('/api/v1', get_api_key_1.getApiKey());
+            const schema = await getSchema(title, get_api_key_1.getApiKey());
+            const links = await ids_to_links_1.idsToLinks(ids, '/entity', title);
             const schemaForm = toForm(schema);
-            const content = h_1.documentFragment(h_1.h2('Entities'), templates_1.TitlesAnchorNav({
-                routePrefix: '/entity',
-                titles,
-                currentTitle: title
-            }), h_1.h3(`New ${lodash_1.startCase(title)}`), schemaForm);
+            const content = h_1.documentFragment(h_1.h2('Entities'), templates_1.TitlesAnchorNav(links), h_1.h3(`New ${lodash_1.startCase(title)}`), schemaForm);
             const postHandler = async (e) => {
                 e.preventDefault();
                 const model = exports.getData(schemaForm);
@@ -71,8 +63,8 @@ exports.entityRoutes = {
                 const hasUploadable = uploadableProperties.length > 0;
                 const uri = `/api/v1/${title}`;
                 const poster = hasUploadable ?
-                    fetch_json_1.postFormData(uri, model, 'POST', getApiKey()) :
-                    fetch_json_1.postJson(uri, model, 'POST', getApiKey());
+                    fetch_json_1.postFormData(uri, model, 'POST', get_api_key_1.getApiKey()) :
+                    fetch_json_1.postJson(uri, model, 'POST', get_api_key_1.getApiKey());
                 try {
                     const newEntity = await poster;
                     if (newEntity._meta) {
@@ -96,15 +88,12 @@ exports.entityRoutes = {
         const title = req.params.title;
         const id = req.params.id;
         try {
-            const titles = await fetch_json_1.fetchJson('/api/v1', getApiKey());
-            const schema = await getSchema(title, getApiKey());
-            const entity = await fetch_json_1.fetchJson(`/api/v1/${title}/${id}`, getApiKey());
+            const ids = await fetch_json_1.fetchJson('/api/v1', get_api_key_1.getApiKey());
+            const links = await ids_to_links_1.idsToLinks(ids, '/entity', title);
+            const schema = await getSchema(title, get_api_key_1.getApiKey());
+            const entity = await fetch_json_1.fetchJson(`/api/v1/${title}/${id}`, get_api_key_1.getApiKey());
             const entityForm = toForm(schema, title, entity);
-            const content = h_1.documentFragment(h_1.h2('Entities'), templates_1.TitlesAnchorNav({
-                routePrefix: '/entity',
-                titles,
-                currentTitle: title
-            }), h_1.h3(`Edit ${lodash_1.startCase(title)} ${id}`), entityForm);
+            const content = h_1.documentFragment(h_1.h2('Entities'), templates_1.TitlesAnchorNav(links), h_1.h3(`Edit ${lodash_1.startCase(title)} ${id}`), entityForm);
             const putHandler = async (e) => {
                 e.preventDefault();
                 const uploadableProperties = uploadable_properties_1.uploadablePropertyNames(schema);
@@ -112,8 +101,8 @@ exports.entityRoutes = {
                 const hasUploadable = !!uploadableProperties.length;
                 const uri = `/api/v1/${title}/${id}`;
                 const putter = hasUploadable ?
-                    fetch_json_1.putFormData(uri, model, getApiKey()) :
-                    fetch_json_1.putJson(uri, model, getApiKey());
+                    fetch_json_1.putFormData(uri, model, get_api_key_1.getApiKey()) :
+                    fetch_json_1.putJson(uri, model, get_api_key_1.getApiKey());
                 try {
                     const updatedEntity = await putter;
                     res.redirect(`/entity/${title}/${updatedEntity._id}`);
@@ -144,25 +133,19 @@ exports.entityRoutes = {
         const title = req.params.title;
         const id = req.params.id;
         try {
-            const titles = await fetch_json_1.fetchJson('/api/v1', getApiKey());
-            const content = h_1.documentFragment(h_1.h2('Entities'), templates_1.TitlesAnchorNav({
-                routePrefix: '/entity',
-                titles,
-                currentTitle: title
-            }));
+            const entityNames = await fetch_json_1.fetchJson('/api/v1', get_api_key_1.getApiKey());
+            const links = await ids_to_links_1.idsToLinks(entityNames, '/entity', title);
+            const content = h_1.documentFragment(h_1.h2('Entities'), templates_1.TitlesAnchorNav(links));
             if (title) {
-                const ids = await fetch_json_1.fetchJson(`/api/v1/${title}`, getApiKey());
+                const ids = await fetch_json_1.fetchJson(`/api/v1/${title}`, get_api_key_1.getApiKey());
+                const links = await ids_to_links_1.idsToLinks(ids, `/entity/${title}`, id);
                 content.appendChild(h_1.documentFragment(templates_1.ActionList([{
                         path: `/entity/${title}/create`,
                         title: `Create new ${lodash_1.startCase(title)}`
-                    }]), h_1.h3(`${lodash_1.startCase(title)} IDs`), templates_1.TitlesAnchorNav({
-                    routePrefix: `/entity/${title}`,
-                    titles: ids,
-                    currentTitle: id
-                })));
+                    }]), h_1.h3(`${lodash_1.startCase(title)} IDs`), templates_1.TitlesAnchorNav(links)));
             }
             if (id) {
-                const entity = await fetch_json_1.fetchJson(`/api/v1/${title}/${id}`, getApiKey());
+                const entity = await fetch_json_1.fetchJson(`/api/v1/${title}/${id}`, get_api_key_1.getApiKey());
                 const message = getMessage();
                 content.appendChild(h_1.documentFragment((message ?
                     h_1.documentFragment(h_1.h3('Message'), h_1.p(message)) :

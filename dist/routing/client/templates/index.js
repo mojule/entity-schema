@@ -11,5 +11,5 @@ exports.ActionList = action_list_1.ActionListTemplate(deps);
 exports.AnchorLinkItem = anchor_link_item_1.AnchorLinkItemTemplate(deps);
 exports.AppPage = app_page_1.AppPageTemplate(deps);
 exports.ErrorPage = error_page_1.ErrorPageTemplate(deps);
-exports.TitlesAnchorNav = titles_anchor_nav_1.TitlesAnchorNavTemplate(deps);
+exports.TitlesAnchorNav = titles_anchor_nav_1.AnchorNavTemplate(deps);
 //# sourceMappingURL=index.js.map

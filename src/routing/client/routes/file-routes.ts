@@ -3,15 +3,15 @@ import { TitlesAnchorNav, AppPage, ErrorPage } from '../templates'
 import { IClientRouterMap } from './client-router'
 import { sendFile } from '../utils/fetch-json'
 import { strictSelect } from '@mojule/dom-utils'
+import { idsToLinks } from '../utils/ids-to-links'
 
 export const FileRoutes = ( resolverNames: string[] ): IClientRouterMap => {
+  const ids = [ 'disk-file', 'image-file', 'zip-file' ]
   return {
     '/files': async ( _req, res ) => {
-      const filesNav = TitlesAnchorNav( {
-        routePrefix: '/files',
-        titles: [ 'disk-file', 'image-file', 'zip-file' ],
-        currentTitle: ''
-      } )
+      const links = await idsToLinks( ids, '/files' )
+
+      const filesNav = TitlesAnchorNav( links )
 
       const content = documentFragment(
         h2( 'Files' ),
@@ -41,11 +41,8 @@ export const FileRoutes = ( resolverNames: string[] ): IClientRouterMap => {
         )
       )
 
-      const filesNav = TitlesAnchorNav( {
-        routePrefix: '/files',
-        titles: [ 'disk-file', 'image-file', 'zip-file' ],
-        currentTitle: 'disk-file'
-      } )
+      const links = await idsToLinks( ids, '/files', 'disk-file' )
+      const filesNav = TitlesAnchorNav( links )
 
       const content = documentFragment(
         h2( 'Files' ),
@@ -95,11 +92,8 @@ export const FileRoutes = ( resolverNames: string[] ): IClientRouterMap => {
         )
       )
 
-      const filesNav = TitlesAnchorNav( {
-        routePrefix: '/files',
-        titles: [ 'disk-file', 'image-file', 'zip-file' ],
-        currentTitle: 'image-file'
-      } )
+      const links = await idsToLinks( ids, '/files', 'image-file' )
+      const filesNav = TitlesAnchorNav( links )
 
       const content = documentFragment(
         h2( 'Files' ),
@@ -157,11 +151,9 @@ export const FileRoutes = ( resolverNames: string[] ): IClientRouterMap => {
         )
       )
 
-      const filesNav = TitlesAnchorNav( {
-        routePrefix: '/files',
-        titles: [ 'disk-file', 'image-file', 'zip-file' ],
-        currentTitle: 'zip-file'
-      } )
+      const links = await idsToLinks( ids, '/files', 'zip-file' )
+
+      const filesNav = TitlesAnchorNav( links )
 
       const content = documentFragment(
         h2( 'Files' ),

@@ -1,0 +1,1 @@
+{"version":3,"file":"get-api-key.js","sourceRoot":"","sources":["../../../../src/routing/client/utils/get-api-key.ts"],"names":[],"mappings":";;AAAA,iDAAgD;AAEnC,QAAA,SAAS,GAAG,GAAG,EAAE;IAC5B,MAAM,SAAS,GAAmB,wBAAY,CAAE,QAAQ,EAAE,SAAS,CAAE,CAAA;IACrE,MAAM,EAAE,MAAM,EAAE,GAAG,SAAS,CAAC,OAAO,CAAA;IAEpC,IAAK,MAAM;QACT,OAAO,QAAQ,GAAG,MAAM,CAAA;AAC5B,CAAC,CAAA"}

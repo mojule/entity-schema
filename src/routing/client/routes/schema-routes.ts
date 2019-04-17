@@ -4,8 +4,9 @@ import { fetchJson } from '../utils/fetch-json'
 import { documentFragment, h2, h3 } from '../utils/h'
 import { objectToDom } from '../utils/object-to-dom'
 import { IClientRouterMap } from './client-router'
-import { strictSelect } from '@mojule/dom-utils'
 import { RootSchema } from '@entity-schema/predicates'
+import { idsToLinks } from '../utils/ids-to-links'
+import { getApiKey } from '../utils/get-api-key'
 
 const linkifySchemaDom = ( schemaDom: HTMLElement ) => {
   const $refs = schemaDom.querySelectorAll( 'td[data-name="$ref"]' )
@@ -26,14 +27,6 @@ const linkifySchemaDom = ( schemaDom: HTMLElement ) => {
   }
 }
 
-const getApiKey = () => {
-  const clientDiv = <HTMLDivElement>strictSelect( document, '.client' )
-  const { apiKey } = clientDiv.dataset
-
-  if ( apiKey )
-    return 'Basic ' + apiKey
-}
-
 export const schemaRoutes: IClientRouterMap = {
   '/schema/:title?/:mode?': async ( req, res ) => {
     const title : string | undefined = req.params.title
@@ -49,11 +42,9 @@ export const schemaRoutes: IClientRouterMap = {
         await fetchJson( `/schema/${ title }`, getApiKey() ) :
         undefined
 
-      const schemaNav = TitlesAnchorNav({
-        routePrefix: '/schema',
-        titles,
-        currentTitle: title
-      })
+      const links = await idsToLinks( titles, '/schema', title )
+
+      const schemaNav = TitlesAnchorNav( links )
 
       const content = documentFragment(
         h2( 'Schemas' ),
