@@ -76,7 +76,7 @@ export const entityRoutes: IClientRouterMap = {
       const links = await entityTypesToLinks( types, '/entity', title )
       const nav = AnchorNav( links )
 
-      nav.classList.add( 'seconary-nav' )
+      nav.classList.add( 'secondary-nav' )
 
       const schemaForm = toForm( schema )
 
@@ -135,7 +135,7 @@ export const entityRoutes: IClientRouterMap = {
       const entity = await fetchJson( `/api/v1/${ title }/${ id }`, getApiKey() )
       const nav = AnchorNav( links )
 
-      nav.classList.add( 'seconary-nav' )
+      nav.classList.add( 'secondary-nav' )
 
       const entityForm = toForm( schema, title, entity )
 
@@ -198,7 +198,7 @@ export const entityRoutes: IClientRouterMap = {
       const links = await entityTypesToLinks( types, '/entity', title )
       const nav = AnchorNav( links )
 
-      nav.classList.add( 'seconary-nav' )
+      nav.classList.add( 'secondary-nav' )
 
       const content = documentFragment(
         h2( 'Entities' ),
