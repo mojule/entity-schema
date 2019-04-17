@@ -31,7 +31,7 @@ exports.schemaRoutes = {
                     await fetch_json_1.fetchJson(`/schema/${title}/normalized`, get_api_key_1.getApiKey()) :
                     await fetch_json_1.fetchJson(`/schema/${title}`, get_api_key_1.getApiKey()) :
                 undefined;
-            const links = await ids_to_links_1.schemaNamesToLinks(titles);
+            const links = await ids_to_links_1.schemaNamesToLinks(titles, title);
             const schemaNav = templates_1.AnchorNav(links);
             schemaNav.classList.add('secondary-nav');
             const content = h_1.documentFragment(h_1.h2('Schemas'), schemaNav);

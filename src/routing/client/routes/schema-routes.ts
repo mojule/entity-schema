@@ -42,7 +42,7 @@ export const schemaRoutes: IClientRouterMap = {
         await fetchJson( `/schema/${ title }`, getApiKey() ) :
         undefined
 
-      const links = await schemaNamesToLinks( titles )
+      const links = await schemaNamesToLinks( titles, title )
 
       const schemaNav = AnchorNav( links )
 

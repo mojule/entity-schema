@@ -27,7 +27,7 @@ exports.FileRoutes = (resolverNames) => {
                 type: 'submit',
                 value: 'Create File'
             }));
-            const links = await ids_to_links_1.entityIdsForTypeToLinks(ids, '/files', 'disk-file');
+            const links = await ids_to_links_1.entityIdsForTypeToLinks(ids, '/files', 'disk-file', 'disk-file');
             const filesNav = templates_1.AnchorNav(links);
             filesNav.classList.add('secondary-nav');
             const content = h_1.documentFragment(h_1.h2('Files'), filesNav, h_1.h3('Upload File'), formEl);
@@ -63,7 +63,7 @@ exports.FileRoutes = (resolverNames) => {
                 type: 'submit',
                 value: 'Create File'
             }));
-            const links = await ids_to_links_1.entityIdsForTypeToLinks(ids, '/files', 'image-file');
+            const links = await ids_to_links_1.entityIdsForTypeToLinks(ids, '/files', 'image-file', 'image-file');
             const filesNav = templates_1.AnchorNav(links);
             filesNav.classList.add('secondary-nav');
             const content = h_1.documentFragment(h_1.h2('Files'), filesNav, h_1.h3('Upload Image File'), formEl);
@@ -99,7 +99,7 @@ exports.FileRoutes = (resolverNames) => {
                 type: 'submit',
                 value: 'Create File'
             }));
-            const links = await ids_to_links_1.entityIdsForTypeToLinks(ids, '/files', 'zip-file');
+            const links = await ids_to_links_1.entityIdsForTypeToLinks(ids, '/files', 'zip-file', 'zip-file');
             const filesNav = templates_1.AnchorNav(links);
             filesNav.classList.add('secondary-nav');
             const content = h_1.documentFragment(h_1.h2('Files'), filesNav, h_1.h3('Upload Zip File'), formEl);
