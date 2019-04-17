@@ -189,6 +189,9 @@ exports.getData = (form) => {
     const pointers = schema_forms_1.entriesToPointers(entries);
     const map = {};
     pointers.forEach(([pointer, value]) => {
+        // the submit button
+        if (pointer === '/')
+            return;
         map[pointer] = value;
     });
     return json_pointer_1.expand(map);

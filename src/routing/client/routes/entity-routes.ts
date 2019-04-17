@@ -278,6 +278,9 @@ export const getData = ( form: HTMLFormElement ) => {
   const map: any = {}
 
   pointers.forEach( ( [ pointer, value ] ) => {
+    // the submit button
+    if( pointer === '/' ) return
+
     map[ pointer ] = value
   } )
 
