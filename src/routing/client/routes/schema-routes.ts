@@ -5,8 +5,8 @@ import { documentFragment, h2, h3 } from '../utils/h'
 import { objectToDom } from '../utils/object-to-dom'
 import { IClientRouterMap } from './client-router'
 import { RootSchema } from '@entity-schema/predicates'
-import { idsToLinks } from '../utils/ids-to-links'
 import { getApiKey } from '../utils/get-api-key'
+import { schemaNamesToLinks } from '../utils/ids-to-links';
 
 const linkifySchemaDom = ( schemaDom: HTMLElement ) => {
   const $refs = schemaDom.querySelectorAll( 'td[data-name="$ref"]' )
@@ -42,7 +42,7 @@ export const schemaRoutes: IClientRouterMap = {
         await fetchJson( `/schema/${ title }`, getApiKey() ) :
         undefined
 
-      const links = await idsToLinks( titles, '/schema', title )
+      const links = await schemaNamesToLinks( titles )
 
       const schemaNav = TitlesAnchorNav( links )
 

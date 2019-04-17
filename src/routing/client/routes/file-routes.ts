@@ -3,13 +3,13 @@ import { TitlesAnchorNav, AppPage, ErrorPage } from '../templates'
 import { IClientRouterMap } from './client-router'
 import { sendFile } from '../utils/fetch-json'
 import { strictSelect } from '@mojule/dom-utils'
-import { idsToLinks } from '../utils/ids-to-links'
+import { entityTypesToLinks, entityIdsForTypeToLinks } from '../utils/ids-to-links';
 
 export const FileRoutes = ( resolverNames: string[] ): IClientRouterMap => {
   const ids = [ 'disk-file', 'image-file', 'zip-file' ]
   return {
     '/files': async ( _req, res ) => {
-      const links = await idsToLinks( ids, '/files' )
+      const links = await entityTypesToLinks( ids, '/file' )
 
       const filesNav = TitlesAnchorNav( links )
 
@@ -41,7 +41,7 @@ export const FileRoutes = ( resolverNames: string[] ): IClientRouterMap => {
         )
       )
 
-      const links = await idsToLinks( ids, '/files', 'disk-file' )
+      const links = await entityIdsForTypeToLinks( ids, '/files', 'disk-file' )
       const filesNav = TitlesAnchorNav( links )
 
       const content = documentFragment(
@@ -92,7 +92,7 @@ export const FileRoutes = ( resolverNames: string[] ): IClientRouterMap => {
         )
       )
 
-      const links = await idsToLinks( ids, '/files', 'image-file' )
+      const links = await entityIdsForTypeToLinks( ids, '/files', 'image-file' )
       const filesNav = TitlesAnchorNav( links )
 
       const content = documentFragment(
@@ -151,7 +151,7 @@ export const FileRoutes = ( resolverNames: string[] ): IClientRouterMap => {
         )
       )
 
-      const links = await idsToLinks( ids, '/files', 'zip-file' )
+      const links = await entityIdsForTypeToLinks( ids, '/files', 'zip-file' )
 
       const filesNav = TitlesAnchorNav( links )
 

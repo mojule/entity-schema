@@ -13,7 +13,7 @@ import { ClientFormTemplates, SchemaToFormElements, getEntries, entriesToPointer
 import { expand } from '@mojule/json-pointer';
 import { JSONSchema4 } from 'json-schema';
 import { getApiKey } from '../utils/get-api-key'
-import { idsToLinks } from '../utils/ids-to-links'
+import { entityTypesToLinks, entityIdsForTypeToLinks } from '../utils/ids-to-links';
 
 const templates = ClientFormTemplates( document, Event )
 const toFormElements = SchemaToFormElements( templates )
@@ -71,9 +71,9 @@ export const entityRoutes: IClientRouterMap = {
     const title: string = req.params.title
 
     try {
-      const ids: string[] = await fetchJson( '/api/v1', getApiKey() )
+      const types: string[] = await fetchJson( '/api/v1', getApiKey() )
       const schema = await getSchema( title, getApiKey() )
-      const links = await idsToLinks( ids, '/entity', title )
+      const links = await entityTypesToLinks( types, '/entity', title )
 
       const schemaForm = toForm( schema )
 
@@ -126,8 +126,8 @@ export const entityRoutes: IClientRouterMap = {
     const id: string = req.params.id
 
     try {
-      const ids: string[] = await fetchJson( '/api/v1', getApiKey() )
-      const links = await idsToLinks( ids, '/entity', title )
+      const types: string[] = await fetchJson( '/api/v1', getApiKey() )
+      const links = await entityTypesToLinks( types, '/entity', title )
       const schema = await getSchema( title, getApiKey() )
       const entity = await fetchJson( `/api/v1/${ title }/${ id }`, getApiKey() )
 
@@ -188,8 +188,8 @@ export const entityRoutes: IClientRouterMap = {
     const id: string | undefined = req.params.id
 
     try {
-      const entityNames = await fetchJson( '/api/v1', getApiKey() )
-      const links = await idsToLinks( entityNames, '/entity', title )
+      const types = await fetchJson( '/api/v1', getApiKey() )
+      const links = await entityTypesToLinks( types, '/entity', title )
 
       const content = documentFragment(
         h2( 'Entities' ),
@@ -198,7 +198,8 @@ export const entityRoutes: IClientRouterMap = {
 
       if ( title ) {
         const ids: string[] = await fetchJson( `/api/v1/${ title }`, getApiKey() )
-        const links = await idsToLinks( ids, `/entity/${ title }`, id )
+        const links = await entityIdsForTypeToLinks( ids, '/entity', title, id )
+
         content.appendChild(
           documentFragment(
             ActionList( [ {

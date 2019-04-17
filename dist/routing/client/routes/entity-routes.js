@@ -51,9 +51,9 @@ exports.entityRoutes = {
     '/entity/:title/create': async (req, res) => {
         const title = req.params.title;
         try {
-            const ids = await fetch_json_1.fetchJson('/api/v1', get_api_key_1.getApiKey());
+            const types = await fetch_json_1.fetchJson('/api/v1', get_api_key_1.getApiKey());
             const schema = await getSchema(title, get_api_key_1.getApiKey());
-            const links = await ids_to_links_1.idsToLinks(ids, '/entity', title);
+            const links = await ids_to_links_1.entityTypesToLinks(types, '/entity', title);
             const schemaForm = toForm(schema);
             const content = h_1.documentFragment(h_1.h2('Entities'), templates_1.TitlesAnchorNav(links), h_1.h3(`New ${lodash_1.startCase(title)}`), schemaForm);
             const postHandler = async (e) => {
@@ -88,8 +88,8 @@ exports.entityRoutes = {
         const title = req.params.title;
         const id = req.params.id;
         try {
-            const ids = await fetch_json_1.fetchJson('/api/v1', get_api_key_1.getApiKey());
-            const links = await ids_to_links_1.idsToLinks(ids, '/entity', title);
+            const types = await fetch_json_1.fetchJson('/api/v1', get_api_key_1.getApiKey());
+            const links = await ids_to_links_1.entityTypesToLinks(types, '/entity', title);
             const schema = await getSchema(title, get_api_key_1.getApiKey());
             const entity = await fetch_json_1.fetchJson(`/api/v1/${title}/${id}`, get_api_key_1.getApiKey());
             const entityForm = toForm(schema, title, entity);
@@ -133,12 +133,12 @@ exports.entityRoutes = {
         const title = req.params.title;
         const id = req.params.id;
         try {
-            const entityNames = await fetch_json_1.fetchJson('/api/v1', get_api_key_1.getApiKey());
-            const links = await ids_to_links_1.idsToLinks(entityNames, '/entity', title);
+            const types = await fetch_json_1.fetchJson('/api/v1', get_api_key_1.getApiKey());
+            const links = await ids_to_links_1.entityTypesToLinks(types, '/entity', title);
             const content = h_1.documentFragment(h_1.h2('Entities'), templates_1.TitlesAnchorNav(links));
             if (title) {
                 const ids = await fetch_json_1.fetchJson(`/api/v1/${title}`, get_api_key_1.getApiKey());
-                const links = await ids_to_links_1.idsToLinks(ids, `/entity/${title}`, id);
+                const links = await ids_to_links_1.entityIdsForTypeToLinks(ids, '/entity', title, id);
                 content.appendChild(h_1.documentFragment(templates_1.ActionList([{
                         path: `/entity/${title}/create`,
                         title: `Create new ${lodash_1.startCase(title)}`
