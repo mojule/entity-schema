@@ -57,7 +57,7 @@ export const FilterSchemaForRoles = ( schema: RootSchema ) => {
     }
 
     const filteredPvs = pvas.filter( pv => {
-      if ( !userRoles.includes( Roles.admin ) && pv.pointer.includes( '/ws' ) ) return false
+      if ( !userRoles.includes( Roles.admin ) && pv.pointer.includes( '/wsSecurity' ) ) return false
 
       if ( pv.pointer.includes( '/required/' ) ) {
         const parent = getParentPath( pv.pointer, 'required' )

@@ -1,3 +1,3 @@
 import { Schema } from 'mongoose';
-import { EntitySchema } from '@entity-schema/predicates';
-export declare const schemaToMongooseSchema: (entitySchema: EntitySchema) => Schema;
+import { IEntitySchema } from './predicates/entity-schema';
+export declare const schemaToMongooseSchema: (entitySchema: IEntitySchema) => Schema<any>;
