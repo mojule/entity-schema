@@ -43,7 +43,7 @@
     "@types/pify": "^3.0.2",
     "@types/tv4": "^1.2.29",
     "@types/uuid": "^3.4.4",
-    "bcrypt": "^3.0.4",
+    "bcrypt": "^5.0.0",
     "body-parser": "^1.18.3",
     "busboy": "^0.3.0",
     "json-schema-to-typescript": "^6.1.1",
